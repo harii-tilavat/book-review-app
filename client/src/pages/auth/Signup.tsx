@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import TextBox from "../../components/comman/TextBox";
 import Button from "../../components/comman/Button";
+import { UserGroupIcon } from "@heroicons/react/16/solid";
 
 type SignUpFormValues = {
   username: string;
@@ -27,6 +28,7 @@ const SignUp = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
+        <UserGroupIcon className="w-16 h-16 text-blue-500 mx-auto" />
         <h2 className="text-2xl font-semibold text-center text-gray-700 mb-4">Sign Up</h2>
 
         <form onSubmit={handleSubmit(onSubmit)}>
