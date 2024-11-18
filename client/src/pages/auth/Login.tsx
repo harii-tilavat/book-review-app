@@ -1,10 +1,24 @@
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import TextBox from "../../components/comman/TextBox";
+import Button from "../../components/comman/Button";
 
-export interface LoginForm {
+interface LoginForm {
   email: string;
   password: string;
+  testPassword: string;
 }
+
+// const toastOptions: ToastOptions = {
+//   position: "top-right",
+//   autoClose: 1000,
+//   hideProgressBar: false,
+//   closeOnClick: true,
+//   pauseOnHover: true,
+//   draggable: true,
+//   progress: undefined,
+// };
 
 const Login = () => {
   const {
@@ -13,6 +27,7 @@ const Login = () => {
     formState: { errors },
   } = useForm<LoginForm>();
   const onSubmit = (data: LoginForm) => {
+    toast.success("Login successful!");
     console.log("LOGIN : ", data);
   };
   return (
@@ -21,28 +36,16 @@ const Login = () => {
         <h2 className="text-2xl font-semibold text-center text-gray-700 mb-4">Login</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Email Field */}
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700">
-              Username
-            </label>
-            <input id="email" type="text" className="mt-1 p-2 w-full border rounded-md" {...register("email", { required: "User name is required!" })} />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
-          </div>
+          <TextBox id="email" label="Email" type="text" register={register("email", { required: "Email is required!" })} error={errors.email} />
 
           {/* Password */}
-          <div className="mb-4">
-            <label htmlFor="password" className="block text-gray-700">
-              Password
-            </label>
-            <input id="password" type="password" className="mt-1 p-2 w-full border rounded-md" {...register("password", { required: "Password is required!", minLength: { message: "Minimum 6 characters required!", value: 6 } })} />
-            {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
-          </div>
+          <TextBox id="password" label="Password" type="text" register={register("password", { required: "Password is required!" })} error={errors.password} />
 
           {/* Submit Button */}
           <div className="mb-4">
-            <button type="submit" className="w-full p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+            <Button type="submit" className="w-full">
               Login
-            </button>
+            </Button>
           </div>
           <div className="mb-4">
             <p className="mt-4 text-center text-sm">

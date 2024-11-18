@@ -1,5 +1,8 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import TextBox from "../../components/comman/TextBox";
+import Button from "../../components/comman/Button";
 
 type SignUpFormValues = {
   username: string;
@@ -18,6 +21,7 @@ const SignUp = () => {
   // Handle form submission
   const onSubmit: SubmitHandler<SignUpFormValues> = (data) => {
     console.log(data); // Replace this with your API submission logic
+    toast.success("Signup successfully!");
   };
 
   return (
@@ -27,56 +31,40 @@ const SignUp = () => {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Username Field */}
-          <div className="mb-4">
-            <label className="block text-gray-700" htmlFor="username">
-              Username
-            </label>
-            <input id="username" type="text" className="mt-1 p-2 w-full border rounded-md" {...register("username", { required: "Username is required" })} />
-            {errors.username && <p className="text-red-500 text-sm">{errors.username.message}</p>}
-          </div>
+          <TextBox id="username" type="text" label="Username" error={errors.username} register={register("username", { required: "Username is required" })} />
 
           {/* Email Field */}
-          <div className="mb-4">
-            <label className="block text-gray-700" htmlFor="email">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              className="mt-1 p-2 w-full border rounded-md"
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-                  message: "Invalid email format",
-                },
-              })}
-            />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
-          </div>
+          <TextBox
+            id="email"
+            type="email"
+            label="Email"
+            error={errors.email}
+            register={register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+                message: "Invalid email format!",
+              },
+            })}
+          />
 
           {/* Password Field */}
-          <div className="mb-4">
-            <label className="block text-gray-700" htmlFor="password">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              className="mt-1 p-2 w-full border rounded-md"
-              {...register("password", {
-                required: "Password is required",
-                minLength: { value: 6, message: "Password must be at least 6 characters" },
-              })}
-            />
-            {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
-          </div>
+          <TextBox
+            id="password"
+            type="text"
+            label="Password"
+            error={errors.password}
+            register={register("password", {
+              required: "Password is required",
+              minLength: { value: 6, message: "Password must be at least 6 characters" },
+            })}
+          />
 
           {/* Submit Button */}
           <div className="mb-4">
-            <button type="submit" className="w-full p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+            <Button type="submit" className="w-full">
               Sign Up
-            </button>
+            </Button>
           </div>
         </form>
 
