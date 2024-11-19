@@ -1,15 +1,11 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import TextBox from "../../components/comman/TextBox";
 import Button from "../../components/comman/Button";
 import { UserGroupIcon } from "@heroicons/react/16/solid";
-
-type SignUpFormValues = {
-  username: string;
-  email: string;
-  password: string;
-};
+import { UserModel } from "../../models/UserModel";
+import { useAuth } from "../../context/AuthContext";
 
 const SignUp = () => {
   // Initialize the form with useForm hook and TypeScript types
@@ -17,12 +13,19 @@ const SignUp = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignUpFormValues>();
+  } = useForm<UserModel>();
 
+  const navigate = useNavigate();
+  const { registerUser } = useAuth();
   // Handle form submission
-  const onSubmit: SubmitHandler<SignUpFormValues> = (data) => {
-    console.log(data); // Replace this with your API submission logic
-    toast.success("Signup successfully!");
+  const onSubmit: SubmitHandler<UserModel> = (user: UserModel) => {
+    try {
+      registerUser(user);
+      toast.success("Signup successfull!");
+      navigate("/login");
+    } catch (error: any) {
+      toast.error((error && error.message) || "Signup failed! Please try again.");
+    }
   };
 
   return (
@@ -53,7 +56,7 @@ const SignUp = () => {
           {/* Password Field */}
           <TextBox
             id="password"
-            type="text"
+            type="password"
             label="Password"
             error={errors.password}
             register={register("password", {

@@ -4,13 +4,9 @@ import { toast } from "react-toastify";
 import TextBox from "../../components/comman/TextBox";
 import Button from "../../components/comman/Button";
 import { LockClosedIcon } from "@heroicons/react/16/solid";
-import { useTheme } from "../../context/ThemeContext";
-
-interface LoginForm {
-  email: string;
-  password: string;
-  testPassword: string;
-}
+import { UserLoginModel } from "../../models/UserModel";
+import { useAuth } from "../../context/AuthContext";
+import { useEffect } from "react";
 
 // const toastOptions: ToastOptions = {
 //   position: "top-right",
@@ -24,16 +20,27 @@ interface LoginForm {
 
 const Login = () => {
   const navigate = useNavigate();
+  const { loginUser, isAuthenticated } = useAuth();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginForm>();
+  } = useForm<UserLoginModel>();
 
-  const onSubmit = (data: LoginForm) => {
-    toast.success("Login successful!");
-    navigate("/");
-    console.log("LOGIN : ", data);
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated]);
+
+  const onSubmit = (user: UserLoginModel) => {
+    try {
+      loginUser(user);
+      toast.success("Login successful!");
+      navigate("/");
+    } catch (error: any) {
+      toast.error((error && error.message) || "Authentication failed! Please try again.");
+    }
   };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
@@ -41,12 +48,35 @@ const Login = () => {
         <LockClosedIcon className="w-12 h-12 text-blue-500 mx-auto" />
         <h2 className="text-2xl font-semibold text-center text-gray-700 dark:text-gray-100 mb-4">Login</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
-
           {/* Email Field */}
-          <TextBox id="email" label="Email" type="text" register={register("email", { required: "Email is required!" })} error={errors.email} />
+          <TextBox
+            id="email"
+            label="Email"
+            type="text"
+            register={register("email", {
+              required: "Email is required!",
+              pattern: {
+                value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+                message: "Invalid email format!",
+              },
+            })}
+            error={errors.email}
+          />
 
           {/* Password */}
-          <TextBox id="password" label="Password" type="password" register={register("password", { required: "Password is required!" })} error={errors.password} />
+          <TextBox
+            id="password"
+            label="Password"
+            type="password"
+            register={register("password", {
+              required: "Password is required!",
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters",
+              },
+            })}
+            error={errors.password}
+          />
 
           {/* Submit Button */}
           <div className="mb-4">
