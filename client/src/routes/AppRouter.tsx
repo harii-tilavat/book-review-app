@@ -6,6 +6,7 @@ import Layout from "../pages/Layout";
 import ProtectedRoute from "./ProtectedRoute";
 import AddBook from "../pages/AddBook";
 import MyReviews from "../pages/MyReviews";
+import BookDetails from "../pages/BookDetails";
 const AppRouter = () => {
   return (
     <Routes>
@@ -29,6 +30,14 @@ const AppRouter = () => {
           element={
             <ProtectedRoute>
               <MyReviews />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/view-book/:id"
+          element={
+            <ProtectedRoute>
+              <BookDetails />
             </ProtectedRoute>
           }
         />

@@ -2,8 +2,6 @@ import React, { createContext, useContext, useState } from "react";
 import { UserLoginModel, UserModel } from "../models/UserModel";
 import BaseProps from "../utils/types/BaseProps";
 import { Navigate } from "react-router-dom";
-import { toast } from "react-toastify";
-
 export class AuthModel {
   isAuthenticated!: boolean;
   currentUser?: UserModel | null;

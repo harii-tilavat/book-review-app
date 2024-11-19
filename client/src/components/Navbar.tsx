@@ -14,7 +14,7 @@ interface NavigationModel {
 }
 
 const navigation: Array<NavigationModel> = [
-  { name: "Dashboard", href: "/", current: true, isProtected: false },
+  // { name: "Dashboard", href: "/", current: true, isProtected: false },
   { name: "Add book", href: "/add-book", current: false, isProtected: true },
   { name: "My reviews", href: "/my-reviews", current: false, isProtected: true },
   // { name: "Calendar", href: "#", current: false },
@@ -26,9 +26,13 @@ export default function Example() {
   const location = useLocation();
   const { isAuthenticated, currentUser, logoutUser } = useAuth();
   const navigationList = navigation.filter((i) => !i.isProtected || isAuthenticated);
-  // console.log("LOCATION : ", location);
+
+  console.log("LOCATION : ", location);
   function goToLogin() {
     navigate("/login");
+  }
+  function isActive(href: string): boolean {
+    return location.pathname === href;
   }
   function handleLogout() {
     if (confirm("Are you sure to logout?")) {
@@ -60,7 +64,7 @@ export default function Example() {
             <div className="hidden sm:ml-6 sm:flex sm:items-center">
               <div className="flex space-x-4">
                 {navigationList.map((item: NavigationModel) => (
-                  <Link key={item.name} to={item.href} aria-current={item.current ? "page" : undefined} className={clsx(item.current ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white", "rounded-md px-3 py-2 text-sm font-medium")}>
+                  <Link key={item.name} to={item.href} aria-current={item.current ? "page" : undefined} className={clsx(isActive(item.href) ? "bg-gray-700 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white", "rounded-md px-3 py-2 text-sm font-medium")}>
                     {item.name}
                   </Link>
                 ))}
@@ -97,14 +101,10 @@ export default function Example() {
                   className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                 >
                   <MenuItem>
-                    <span className="cursor-pointer block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">
-                      Your Profile
-                    </span>
+                    <span className="cursor-pointer block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">Your Profile</span>
                   </MenuItem>
                   <MenuItem>
-                    <span className="cursor-pointer block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">
-                      Settings
-                    </span>
+                    <span className="cursor-pointer block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">Settings</span>
                   </MenuItem>
                   <MenuItem>
                     <span className="cursor-pointer block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none" onClick={handleLogout}>
