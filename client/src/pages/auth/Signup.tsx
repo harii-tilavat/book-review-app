@@ -26,10 +26,10 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+      <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 shadow-lg rounded-lg">
         <UserGroupIcon className="w-16 h-16 text-blue-500 mx-auto" />
-        <h2 className="text-2xl font-semibold text-center text-gray-700 mb-4">Sign Up</h2>
+        <h2 className="text-2xl font-semibold text-center text-gray-700 dark:text-gray-100 mb-4">Sign Up</h2>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Username Field */}
@@ -70,7 +70,7 @@ const SignUp = () => {
           </div>
         </form>
 
-        <p className="mt-4 text-center text-sm">
+        <p className="mt-4 text-center text-sm dark:text-gray-400">
           Already have an account?{" "}
           <Link to="/login" className="text-indigo-600 hover:text-indigo-700">
             Login here
