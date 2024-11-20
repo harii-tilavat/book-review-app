@@ -136,7 +136,7 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit }) => {
             {/* Submit Button */}
             <div className="flex justify-end space-x-4">
               <button type="button" className="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg shadow-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 font-semibold" onClick={handleResetForm}>
-                Reset Form
+                Reset
               </button>
               <Button type="submit">{bookDetail ? "Update Book" : "Add Book"}</Button>
             </div>

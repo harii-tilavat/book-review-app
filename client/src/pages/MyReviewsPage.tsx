@@ -52,7 +52,7 @@ const MyReviews: React.FC<{ reviews: ReviewModel[] }> = ({ reviews = DUMMY_BOOKS
   };
 
   return (
-    <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 shadow-lg rounded-lg p-8">
+    <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 rounded-lg p-8 mt-5">
       <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6">My Reviews</h1>
 
       <div>{reviews.length === 0 ? <div className="text-lg text-gray-600 dark:text-gray-300">You haven't reviewed any books yet.</div> : reviews.map((review) => <ReviewItem key={review.id} review={review} onEdit={handleEditReview} onDelete={handleDeleteReview} />)}</div>

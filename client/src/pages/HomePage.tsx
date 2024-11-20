@@ -1,28 +1,7 @@
-import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
-import Button from "../components/comman/Button";
-import { DUMMY_BOOKS } from "../utils/constants";
-import { useState } from "react";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import BookCard from "../components/BookCard";
-import { BookModel } from "../models/BookModel";
+import BookList from "../components/BookList";
 const Home = () => {
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [bookId, setBookId] = useState("");
   const navigate = useNavigate();
-
-  function openDeleteModal(id: string) {
-    setIsDeleteModalOpen(true);
-    setBookId(id);
-  }
-  function closeDeleteModal() {
-    setIsDeleteModalOpen(false);
-    setBookId("");
-  }
-  function deleteBook() {
-    toast.success(bookId + "Book deleted successfully");
-    closeDeleteModal();
-  }
   return (
     <div className="container mx-auto p-6">
       {/* Landing Section */}
@@ -41,40 +20,9 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Book Management Section */}
-      <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-        <h2 className="text-2xl font-bold">Book Management</h2>
-        <div className="flex space-x-4">
-          <input type="text" className="px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 bg-transparent" placeholder="Search by title, author, or ISBN" />
-          <Button>Add New Book</Button>
-        </div>
+      <div className="book-list-wrapper">
+        <BookList />
       </div>
-
-      {/* Book Cards */}
-      <div className="book-card-list">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6  py-2">
-          {DUMMY_BOOKS.map((book: BookModel) => (
-            <BookCard key={book.id} book={book} onDelete={openDeleteModal} />
-          ))}
-        </div>
-      </div>
-
-      {/* Delete Confirmation Modal */}
-      <Dialog open={isDeleteModalOpen} onClose={closeDeleteModal}>
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <DialogPanel className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-            <DialogTitle className="text-xl font-semibold mb-4">Are you sure you want to delete this book?</DialogTitle>
-            <div className="flex space-x-4">
-              <button className="bg-red-500 text-white px-4 py-2 rounded-md" onClick={deleteBook}>
-                Yes, Delete
-              </button>
-              <button className="bg-gray-500 text-white px-4 py-2 rounded-md" onClick={closeDeleteModal}>
-                Cancel
-              </button>
-            </div>
-          </DialogPanel>
-        </div>
-      </Dialog>
     </div>
   );
 };
