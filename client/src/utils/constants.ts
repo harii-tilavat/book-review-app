@@ -1,47 +1,8 @@
-// export const DUMMY_BOOKS = [
-//     {
-//         id: '1',
-//         title: "The Great Gatsby",
-//         author: "F. Scott Fitzgerald",
-//         isbn: "9780743273565",
-//         genre: "Classic",
-//         cover: "https://via.placeholder.com/150?text=Cover+Image+1",
-//         rating: 4.5,
-//         reviews: [
-//             { id: '1', user: "Alice", comment: "Amazing read!", rating: 5 },
-//             { id: '2', user: "Bob", comment: "Quite good!", rating: 4 },
-//         ],
-//     },
-//     {
-//         id: '2',
-//         title: "1984",
-//         author: "George Orwell",
-//         isbn: "9780451524935",
-//         genre: "Dystopian",
-//         cover: "https://via.placeholder.com/150?text=Cover+Image+1",
-//         rating: 4.8,
-//         reviews: [
-//             { id: '1', user: "Carol", comment: "A must-read!", rating: 5 },
-//         ],
-//     },
-//     {
-//         id: '3',
-//         title: "To Kill a Mockingbird",
-//         author: "Harper Lee",
-//         isbn: "9780061120084",
-//         genre: "Fiction",
-//         cover: "https://via.placeholder.com/150?text=Cover+Image+1",
-//         rating: 4.3,
-//         reviews: [
-//             { id: '1', user: "Dave", comment: "Loved it!", rating: 4 },
-//             { id: '2', user: "Eve", comment: "A thought-provoking story.", rating: 5 },
-//         ],
-//     },
-// ];
 export const DUMMY_BOOKS = [
     {
         id: "1",
         title: "The Great Gatsby",
+        userId: "1",
         author: "F. Scott Fitzgerald",
         isbn: "9780743273565",
         genre: "Classic",
@@ -49,11 +10,13 @@ export const DUMMY_BOOKS = [
         rating: 4.2,
         reviews: [
             {
+                id: '13456',
                 user: "John Doe",
                 text: "A fantastic look at the Jazz Age and the American Dream.",
                 rating: 4,
             },
             {
+                id: '2342',
                 user: "Jane Smith",
                 text: "A timeless classic that explores deep themes of love and loss.",
                 rating: 5,
@@ -63,6 +26,7 @@ export const DUMMY_BOOKS = [
     {
         id: "2",
         title: "To Kill a Mockingbird",
+        userId: "2",
         author: "Harper Lee",
         isbn: "9780061120084",
         genre: "Historical Fiction",
@@ -70,11 +34,13 @@ export const DUMMY_BOOKS = [
         rating: 4.8,
         reviews: [
             {
+                id: '341',
                 user: "Michael Johnson",
                 text: "A deeply moving novel about race and morality in the South.",
                 rating: 5,
             },
             {
+                id: '342',
                 user: "Emily Davis",
                 text: "An eye-opening read that stays with you long after finishing.",
                 rating: 5,
@@ -84,6 +50,7 @@ export const DUMMY_BOOKS = [
     {
         id: "3",
         title: "1984",
+        userId: "3",
         author: "George Orwell",
         isbn: "9780451524935",
         genre: "Dystopian",
@@ -91,11 +58,13 @@ export const DUMMY_BOOKS = [
         rating: 4.6,
         reviews: [
             {
+                id: '145',
                 user: "Alice Brown",
                 text: "Chilling and thought-provoking. A must-read for any dystopian fan.",
                 rating: 4,
             },
             {
+                id: '223',
                 user: "David Lee",
                 text: "A brilliant work that shows the dangers of totalitarianism.",
                 rating: 5,
@@ -105,6 +74,7 @@ export const DUMMY_BOOKS = [
     {
         id: "4",
         title: "Pride and Prejudice",
+        userId: "4",
         author: "Jane Austen",
         isbn: "9780141439518",
         genre: "Romance",
@@ -112,11 +82,13 @@ export const DUMMY_BOOKS = [
         rating: 4.4,
         reviews: [
             {
+                id: '112',
                 user: "Charlotte Wilson",
                 text: "An exquisite romance with sharp wit and insightful commentary.",
                 rating: 5,
             },
             {
+                id: '13434',
                 user: "Thomas Harris",
                 text: "A delightful and timeless love story. Truly one of the best.",
                 rating: 4,
@@ -126,6 +98,7 @@ export const DUMMY_BOOKS = [
     {
         id: "5",
         title: "The Catcher in the Rye",
+        userId: "5",
         author: "J.D. Salinger",
         isbn: "9780316769488",
         genre: "Coming-of-Age",
@@ -133,6 +106,7 @@ export const DUMMY_BOOKS = [
         rating: 3.9,
         reviews: [
             {
+                id: '534',
                 user: "Sarah Walker",
                 text: "A deep and introspective look into teenage angst and alienation.",
                 rating: 4,
@@ -142,6 +116,7 @@ export const DUMMY_BOOKS = [
     {
         id: "6",
         title: "Moby-Dick",
+        userId: "6",
         author: "Herman Melville",
         isbn: "9780142437247",
         genre: "Adventure",
@@ -153,6 +128,7 @@ export const DUMMY_BOOKS = [
     {
         id: "7",
         title: "The Hobbit",
+        userId: "7",
         author: "J.R.R. Tolkien",
         isbn: "9780547928227",
         genre: "Fantasy",
@@ -160,11 +136,13 @@ export const DUMMY_BOOKS = [
         rating: 4.7,
         reviews: [
             {
+                id: '234',
                 user: "Peter King",
                 text: "A brilliant and adventurous fantasy novel that captures the imagination.",
                 rating: 5,
             },
             {
+                id: '234234',
                 user: "Anna Bell",
                 text: "A delightful and easy-to-read fantasy story for all ages.",
                 rating: 4,

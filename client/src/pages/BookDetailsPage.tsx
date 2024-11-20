@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog, DialogTitle } from "@headlessui/react";
 import { StarIcon } from "@heroicons/react/24/solid";
 import { DUMMY_BOOKS } from "../utils/constants";
@@ -8,18 +8,28 @@ import Button from "../components/comman/Button";
 import ReviewItem from "../components/ReviewItem";
 import { ArrowLeftIcon } from "@heroicons/react/16/solid";
 
-const BookDetailPage = ({}) => {
+const BookDetailsPage = ({}) => {
   const [isReviewOpen, setIsReviewOpen] = useState(false);
-  const params = useParams();
+  const params = useParams<{ id: string }>();
   const navigate = useNavigate();
   const book = DUMMY_BOOKS.find((b) => b.id === params["id"]);
-  if (!book) {
-    navigate("/");
-    return;
-  }
   const handleOpenReview = () => setIsReviewOpen(true);
   const handleCloseReview = () => setIsReviewOpen(false);
-
+  if (!book) {
+    return (
+      <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 shadow-lg rounded-lg p-8 mt-5">
+        <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6">Book Not Found</h1>
+        <p className="text-lg text-gray-600 dark:text-gray-300">Sorry, we couldn't find the book you were looking for. Please check the ID or try again later.</p>
+        <button
+          onClick={() => navigate("/")} // Replace with your route or navigation logic
+          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm mt-4"
+        >
+          <ArrowLeftIcon className="h-5 w-5 mr-2" /> {/* Icon with margin */}
+          Back to Book List
+        </button>
+      </div>
+    );
+  }
   return (
     <div className="container mx-auto p-6 max-w-7xl">
       <div className="navigate-back my-3">
@@ -47,7 +57,7 @@ const BookDetailPage = ({}) => {
             <h2 className="text-xl font-semibold ">Rating</h2>
             <div className="flex items-center mt-2">
               {[...Array(5)].map((_, index) => (
-                <StarIcon key={index} className={`h-6 w-6 ${index < book.rating ? "text-yellow-500" : "text-gray-300"}`} />
+                <StarIcon key={index} className={`h-6 w-6 ${index < book!.rating ? "text-yellow-500" : "text-gray-300"}`} />
               ))}
               <span className="ml-2 text-sm text-gray-600 dark:text-gray-100">
                 {book.rating}/5 ({book.reviews.length} reviews)
@@ -72,7 +82,6 @@ const BookDetailPage = ({}) => {
         </div>
       </div>
 
-      {/* Add Review Modal */}
       {/* Add Review Modal */}
       {isReviewOpen && (
         <Dialog open={isReviewOpen} onClose={handleCloseReview} className="fixed z-10 inset-0 overflow-y-auto">
@@ -123,4 +132,4 @@ const BookDetailPage = ({}) => {
   );
 };
 
-export default BookDetailPage;
+export default BookDetailsPage;

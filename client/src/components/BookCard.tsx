@@ -18,7 +18,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, onDelete }) => {
   }
 
   return (
-    <div key={book.id} className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+    <div key={book.id} className="bg-white dark:bg-gray-700 shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
       {/* Book Cover */}
       <img src={book.cover} alt={book.title} className="h-48 w-full object-cover" />
 

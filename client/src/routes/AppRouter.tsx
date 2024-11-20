@@ -1,13 +1,13 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../pages/auth/Login";
 import Signup from "../pages/auth/Signup";
-import Home from "../pages/Home";
+import Home from "../pages/HomePage";
 import Layout from "../pages/Layout";
 import ProtectedRoute from "./ProtectedRoute";
-import AddBook from "../pages/AddBook";
-import BookDetails from "../pages/BookDetails";
-import MyReviews from "../pages/MyReviews";
-import EditBookDetails from "../pages/EditBookDetails";
+import AddBook from "../pages/AddBookPage";
+import BookDetails from "../pages/BookDetailsPage";
+import MyReviews from "../pages/MyReviewsPage";
+import EditBookDetails from "../pages/EditBookPage";
 const AppRouter = () => {
   return (
     <Routes>

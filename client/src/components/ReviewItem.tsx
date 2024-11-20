@@ -1,6 +1,7 @@
 import React from "react";
 import { ReviewModel } from "../models/BookModel";
-import { PencilIcon, StarIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { StarIcon } from "@heroicons/react/16/solid";
 
 interface ReviewProps {
   review: ReviewModel;
