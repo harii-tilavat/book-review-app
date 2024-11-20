@@ -16,6 +16,7 @@ const AppRouter = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/book-detail/:id" element={<BookDetails />}></Route>
 
         {/* Protected routes */}
         <Route
@@ -26,14 +27,6 @@ const AppRouter = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/book-detail/:id"
-          element={
-            <ProtectedRoute>
-              <BookDetails />
-            </ProtectedRoute>
-          }
-        ></Route>
 
         <Route
           path="/edit-book/:id"

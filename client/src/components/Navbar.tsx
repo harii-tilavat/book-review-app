@@ -27,7 +27,6 @@ export default function Example() {
   const { isAuthenticated, currentUser, logoutUser } = useAuth();
   const navigationList = navigation.filter((i) => !i.isProtected || isAuthenticated);
 
-  console.log("LOCATION : ", location);
   function goToLogin() {
     navigate("/login");
   }
@@ -98,16 +97,16 @@ export default function Example() {
                 </div>
                 <MenuItems
                   transition
-                  className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                  className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-gray-25 dark:bg-gray-900 py-1 shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                 >
                   <MenuItem>
-                    <span className="cursor-pointer block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">Your Profile</span>
+                    <span className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-gray-100 data-[focus]:bg-gray-100 dark:data-[focus]:bg-gray-700 data-[focus]:outline-none">Your Profile</span>
                   </MenuItem>
                   <MenuItem>
-                    <span className="cursor-pointer block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">Settings</span>
+                    <span className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-gray-100 data-[focus]:bg-gray-100 dark:data-[focus]:bg-gray-700 data-[focus]:outline-none">Settings</span>
                   </MenuItem>
                   <MenuItem>
-                    <span className="cursor-pointer block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none" onClick={handleLogout}>
+                    <span className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-gray-100 data-[focus]:bg-gray-100 dark:data-[focus]:bg-gray-700 data-[focus]:outline-none" onClick={handleLogout}>
                       Sign out
                     </span>
                   </MenuItem>

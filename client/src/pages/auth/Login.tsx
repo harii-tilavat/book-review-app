@@ -45,7 +45,7 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
       <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 shadow-lg rounded-lg">
-        <LockClosedIcon className="w-12 h-12 text-blue-500 mx-auto" />
+        <LockClosedIcon className="w-12 h-12 text-blue-600 mx-auto" />
         <h2 className="text-2xl font-semibold text-center text-gray-700 dark:text-gray-100 mb-4">Login</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Email Field */}
