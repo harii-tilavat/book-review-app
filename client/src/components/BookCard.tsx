@@ -8,7 +8,7 @@ interface BookCardProps {
 }
 const BookCard: React.FC<BookCardProps> = ({ book, onDelete }) => {
   const navigate = useNavigate();
-
+  
   function editBook(id: string) {
     // EDIT BOOK
     navigate("/edit-book/" + id);
@@ -26,13 +26,13 @@ const BookCard: React.FC<BookCardProps> = ({ book, onDelete }) => {
       <div className="p-4">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{book.title}</h3>
         <div className="flex flex-col gap-1">
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
             <span className="font-semibold">Author:</span> {book.author}
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-gray-500 dark:text-gray-300">
             <span className="font-semibold">ISBN:</span> {book.isbn}
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-gray-500 dark:text-gray-300">
             <span className="font-semibold">Genre:</span> {book.genre}
           </p>
         </div>

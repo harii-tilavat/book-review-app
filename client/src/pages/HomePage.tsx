@@ -52,7 +52,7 @@ const Home = () => {
 
       {/* Book Cards */}
       <div className="book-card-list">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6  py-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6  py-2">
           {DUMMY_BOOKS.map((book: BookModel) => (
             <BookCard key={book.id} book={book} onDelete={openDeleteModal} />
           ))}

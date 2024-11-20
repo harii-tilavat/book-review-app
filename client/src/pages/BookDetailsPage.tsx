@@ -54,15 +54,19 @@ const BookDetailsPage = ({}) => {
 
           {/* Rating Section */}
           <div className="mt-6">
-            <h2 className="text-xl font-semibold ">Rating</h2>
-            <div className="flex items-center mt-2">
-              {[...Array(5)].map((_, index) => (
-                <StarIcon key={index} className={`h-6 w-6 ${index < book!.rating ? "text-yellow-500" : "text-gray-300"}`} />
-              ))}
-              <span className="ml-2 text-sm text-gray-600 dark:text-gray-100">
-                {book.rating}/5 ({book.reviews.length} reviews)
-              </span>
-            </div>
+            {book.reviews.length > 0 && (
+              <>
+                <h2 className="text-xl font-semibold ">Rating</h2>
+                <div className="flex items-center mt-2">
+                  {[...Array(5)].map((_, index) => (
+                    <StarIcon key={index} className={`h-6 w-6 ${index < book!.rating ? "text-yellow-500" : "text-gray-300"}`} />
+                  ))}
+                  <span className="ml-2 text-sm text-gray-600 dark:text-gray-100">
+                    {book.rating}/5 ({book.reviews.length} reviews)
+                  </span>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Add Review Button */}
@@ -74,12 +78,15 @@ const BookDetailsPage = ({}) => {
 
       {/* Reviews Section */}
       <div className="mt-10">
-        <h2 className="text-2xl font-semibold ">Reviews</h2>
+        {book.reviews.length > 0 ? <>
+          <h2 className="text-2xl font-semibold ">Reviews</h2>
         <div className="mt-4 space-y-6">
           {book.reviews.map((review: ReviewModel, index: number) => (
             <ReviewItem review={review} key={index} onDelete={() => {}} onEdit={() => {}} />
           ))}
         </div>
+        </>:<p className="text-center font-semibold">No reviews available in this book.</p>}
+        
       </div>
 
       {/* Add Review Modal */}
