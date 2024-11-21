@@ -1,4 +1,4 @@
-const ConfigRepo = require("../repositories/configRepository");
+const ConfigRepo = require("../repositories/configRepo");
 const CryptoUtils = require("../utils/cryptoUtils");
 const { AppError } = require("../middlewares/errorHandler");
 const { StatusCode, Message } = require("../utils/response");
