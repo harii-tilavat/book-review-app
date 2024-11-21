@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const authRoutes = require("./auth");
+const ConfigController = require("../controllers/configController");
+// const ConfigController = new 
 
-router.use("/auth", authRoutes);
+// Routes for config (Auth section)
+const configController = new ConfigController();
+configController.register(router);
+
 
 module.exports = router;

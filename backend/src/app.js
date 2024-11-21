@@ -3,7 +3,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const routes = require("./routes");
-const authRoutes = require("./routes/auth");
+const {errorHandler} = require("./middlewares/errorHandler");
 
 const app = express();
 
@@ -17,11 +17,7 @@ app.use(morgan("dev"));
 // Centralized routes under /api
 app.use("/api", routes); // Prefix API routes with '/api'
 
-// Handle 404 errors
-app.use((err, req, res, next) => {
-  res.status(404).json({ message: "Resource not found" });
-});
-
+app.use(errorHandler);
 // Global Error Handler
 app.use((err, req, res, next) => {
   console.log("ERROR STACK : ", err.stack);

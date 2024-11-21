@@ -1,21 +1,25 @@
-const express = require("express");
-const router = express.Router();
-const { userLoginValidationSchema, userRegisterValidationSchema } = require("../middlewares/validation/userValidation");
-const { validationResult } = require("express-validator");
-const validationHandler = require("../middlewares/validation/validationHandler");
-// Route: Register a new user
-router.post("/login", (req, res) => {
-    res.send({ message: "User login endpoint." });
-});
+// const express = require("express");
+// const router = express.Router();
+// const { userLoginValidationSchema, userRegisterValidationSchema } = require("../middlewares/validation/userValidation");
+// const { PrismaClient } = require("@prisma/client");
+// const validationHandler = require("../middlewares/validation/validationHandler");
+// const { badRequestResponse } = require("../utils/response");
+// const { AppError } = require("../middlewares/errorHandler");
 
-// Route: Login a user
-router.post("/register", userRegisterValidationSchema, validationHandler, (req, res) => {
+// const prisma = new PrismaClient();
+// // Route: Register a new user
+// router.post("/login", (req, res) => {
+//     res.send({ message: "User login endpoint." });
+// });
 
-    res.send({ message: "User registration" });
-});
+// // Route: Login a user
+// router.post("/register", userRegisterValidationSchema, validationHandler, (req, res, next) => {
+//     try {
+//         res.send({ message: "User registration" });
+//         // next();
+//     } catch (error) {
+//         next(error);
+//     }
+// });
 
-function test(req, res, next) {
-    console.log("MIDDLE WARE : ");
-    next();
-}
-module.exports = router;
+// module.exports = router;
