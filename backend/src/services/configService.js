@@ -1,5 +1,4 @@
 const ConfigRepo = require("../repositories/configRepository");
-const { v4 } = require('uuid');
 const CryptoUtils = require("../utils/cryptoUtils");
 const { AppError } = require("../middlewares/errorHandler");
 const { StatusCode, Message } = require("../utils/response");
@@ -18,9 +17,8 @@ class ConfigService {
             if (isExists) {
                 throw new AppError(StatusCode.BAD_REQUEST, Message.EMAIL_ALREADY_EXISTS);
             }
-            const id = v4();
             const hashPassword = await CryptoUtils.hashPassword(user.password);
-            const currentUser = { ...user, password: hashPassword, id };
+            const currentUser = { ...user, password: hashPassword };
 
             // Register the user in the database.
             return await this.configRepo.register(currentUser);
