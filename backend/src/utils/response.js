@@ -1,8 +1,9 @@
-const sendResponse = (res, statusCode, message, data = null) => {
+const sendResponse = (res, statusCode, message, data = null, errors = []) => {
   return res.status(statusCode).send({
     statusCode,
     message,
-    data,
+    data: data || undefined,
+    errors: errors.length ? errors : undefined
   });
 };
 
@@ -15,8 +16,8 @@ const createdResponse = (res, message, data = null) => {
   return sendResponse(res, 201, message, data);
 };
 
-const badRequestResponse = (res, message) => {
-  return sendResponse(res, 400, message);
+const badRequestResponse = (res, message, errors = []) => {
+  return sendResponse(res, 400, message, null, errors);
 };
 
 const unauthorizedResponse = (res, message = "Unauthorized user!") => {
