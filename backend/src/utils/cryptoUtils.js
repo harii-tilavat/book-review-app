@@ -11,7 +11,7 @@ class CryptoUtils {
     }
     static async compareHash(password, hashPassword) {
         try {
-            resolve(await bcrypt.compare(password, hashPassword));
+            return await bcrypt.compare(password, hashPassword);
         } catch (error) {
             console.log(error);
         }
