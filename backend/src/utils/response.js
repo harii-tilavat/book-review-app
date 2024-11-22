@@ -58,6 +58,7 @@ const Message = Object.freeze({
   // Validation
   INVALID_EMAIL: "Invalid email format.",
   INVALID_PASSWORD: "Invalid password.",
+  INVALID_PARAMS: "Invalid params.",
   PASSWORD_TOO_SHORT: "Password must be at least 6 characters long.",
   REQUIRED_FIELDS_MISSING: "Required fields are missing.",
   FILE_MISSING: 'File is missing',
@@ -83,6 +84,7 @@ const Message = Object.freeze({
   BOOK_CREATED: 'Book created successfully.',
   BOOK_UPDATED: 'Book updated successfully.',
   BOOK_DELETED: 'Book deleted successfully.',
+  BOOK_NOT_FOUND: 'Book not found.',
   // Server
   INTERNAL_SERVER_ERROR: "Something went wrong. Please try again later.",
 });

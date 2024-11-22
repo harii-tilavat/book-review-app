@@ -12,7 +12,7 @@ class AppError extends Error {
 const errorHandlerMiddleware = (err, req, res, next) => {
     const { statusCode, message, errors } = err;
     res.status(statusCode || 500).json({
-        statusCode,
+        statusCode: statusCode || 500,
         message: message || 'Internal server error!',
         errors: errors || [],
     });
