@@ -119,5 +119,30 @@ class BookReviewService {
             throw error;
         }
     }
+    // Update review
+    async updateReviewById(userId, bookId, review) {
+        const { id, text, rating } = review;
+        const currentReview = await this.bookReviewRepo.getReviewById(id);
+        if (!currentReview || currentReview.userId !== userId) {
+            throw new AppError(StatusCode.NOT_FOUND, Message.REVIEW_NOT_FOUND);
+        }
+        const updatedReview = await this.bookReviewRepo.updateReviewById(id, { text, rating });
+
+        const avgRating = await this.bookReviewRepo.calculateAvgRating(bookId);
+        await this.bookReviewRepo.updateBookById(bookId, { avgRating });
+
+        return updatedReview;
+    }
+    async deleteReviewById(userId, id) {
+        const currentReview = await this.bookReviewRepo.getReviewById(id);
+        if (!currentReview || currentReview.userId !== userId) {
+            throw new AppError(StatusCode.UNAUTHORIZED, Message.REVIEW_NOT_FOUND);
+        }
+        await this.bookReviewRepo.deleteReviewById(id);
+
+        const avgRating = await this.bookReviewRepo.calculateAvgRating(currentReview.bookId);
+        await this.bookReviewRepo.updateBookById(currentReview.bookId, { avgRating });
+        return;
+    }
 }
 module.exports = BookReviewService;

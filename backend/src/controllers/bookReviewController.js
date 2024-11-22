@@ -97,9 +97,25 @@ class BookReviewController {
                     next(error);
                 }
             })
-            .put(async (req, res, next) => {
+            .put(authMiddleware, reviewValidSchema, validationHandler, async (req, res, next) => {
                 try {
-
+                    const { userId } = req.user;
+                    const { bookId, ...updatedReview } = req.body;
+                    const review = await this.bookReviewService.updateReviewById(userId, bookId, updatedReview);
+                    return Response.success(res, Message.REVIEW_UPDATED, review);
+                } catch (error) {
+                    next(error);
+                }
+            })
+            .delete(authMiddleware, async (req, res, next) => {
+                try {
+                    const { id } = req.body;
+                    const { userId } = req.user;
+                    if (!id) {
+                        throw new AppError(StatusCode.BAD_GATEWAY, Message.INVALID_PARAMS);
+                    }
+                    await this.bookReviewService.deleteReviewById(userId, id);
+                    return Response.success(res, Message.REVIEW_DELETED, data);
                 } catch (error) {
                     next(error);
                 }
