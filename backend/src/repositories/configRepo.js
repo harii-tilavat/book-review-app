@@ -3,7 +3,6 @@ class ConfigRepo {
     async register(user) {
         try {
             const { id, username, email, password } = user;
-
             // Create a new user record in the database.
             const newUser = await prisma.user.create({
                 data: {

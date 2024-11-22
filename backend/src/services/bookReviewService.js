@@ -57,7 +57,8 @@ class BookReviewService {
                 throw new AppError(StatusCode.NOT_FOUND, Message.BOOK_NOT_FOUND);
             }
             // const reviews = await this.bookReviewRepo.getAllReviewsById(id) || [];
-            return new BookModel(book);
+            // return new BookModel(book);
+            return book;
         } catch (error) {
             throw error;
         }
@@ -77,6 +78,31 @@ class BookReviewService {
             const newBook = await this.bookReviewRepo.updateBookById(id, updatedBook);
             return new BookModel(newBook);
             // const book = await this.bookReviewRepo.
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // ------------------- Review Related REPO --------------------------
+
+    // Get review by userId
+    async getReviewsByUserId(userId) {
+        try {
+            const reviews = await this.bookReviewRepo.getAllReviewsByUserId(userId);
+            if (!reviews.length) {
+                throw new AppError(StatusCode.NOT_FOUND, Message.REVIEWS_NOT_FOUND);
+            }
+            return reviews;
+        } catch (error) {
+            throw error;
+        }
+    }
+    async createReview(userId, bookId, review) {
+        try {
+            // Here first check if book exits or not. pending...
+            const { text, rating } = review;
+
+            return await this.bookReviewRepo.createReview(userId, bookId, { text, rating });
         } catch (error) {
             throw error;
         }

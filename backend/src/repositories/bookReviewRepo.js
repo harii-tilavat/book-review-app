@@ -11,7 +11,7 @@ class BookReviewRepo {
             throw new Error(`Error fetching paginated books: ${error.message}`);
         }
     }
-    
+
     // Count total books
     async getTotalBooksCount() {
         try {
@@ -20,6 +20,8 @@ class BookReviewRepo {
             throw error;
         }
     }
+
+    // Create book by userId
     async createBook(userId, book) {
         try {
             const newBook = await prisma.book.create({
@@ -35,7 +37,7 @@ class BookReviewRepo {
     }
     async getBookById(id) {
         try {
-            const book = await prisma.book.findUnique({ where: { id }, include: { Review: true } });
+            const book = await prisma.book.findUnique({ where: { id }, include: { reviews: true } });
             return book;
         } catch (error) {
             throw new Error(`Failed to fetch book by ID ${id}: ${error.message}`);
@@ -58,6 +60,32 @@ class BookReviewRepo {
             return reviews;
         } catch (error) {
             throw new Error(`Failed to fetch reviews. ${id}: ${error.message}`);
+        }
+    }
+
+    // Review related 
+
+    // Get al
+    async getAllReviewsByUserId(userId) {
+        try {
+            return await prisma.review.findMany({ where: { userId } });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Create review
+    async createReview(userId, bookId, review) {
+        try {
+            return await prisma.review.create({
+                data: {
+                    bookId,
+                    userId,
+                    ...review
+                }
+            })
+        } catch (error) {
+            throw error;
         }
     }
 }

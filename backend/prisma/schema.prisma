@@ -25,7 +25,7 @@ model User {
 
 model Book {
   id        String   @id @unique @default(cuid())
-  userId     String
+  userId    String
   title     String
   author    String
   genre     String
@@ -34,15 +34,17 @@ model Book {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id])
-  Review    Review[]
+  reviews    Review[]
 }
 
 model Review {
-  id     String @id @default(cuid())
-  userId String
-  bookId String
-  text   String
-  rating Int    @default(1)
-  user   User   @relation(fields: [userId], references: [id])
-  book   Book   @relation(fields: [bookId], references: [id])
+  id        String   @id @default(cuid())
+  userId    String
+  bookId    String
+  text      String
+  rating    Int      @default(1)
+  user      User     @relation(fields: [userId], references: [id])
+  book      Book     @relation(fields: [bookId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

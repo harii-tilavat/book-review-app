@@ -16,4 +16,17 @@ const bookValidSchema = [
         .withMessage("Genre is required."),
 ];
 
-module.exports = { bookValidSchema }
+const reviewValidSchema = [
+    body("bookId")
+        .trim()
+        .notEmpty()
+        .withMessage("BookId is required."),
+    body("text")
+        .trim()
+        .notEmpty()
+        .withMessage("Text is required."),
+    body("rating")
+        .notEmpty()
+        .withMessage("Rating is required."),
+]
+module.exports = { bookValidSchema, reviewValidSchema }

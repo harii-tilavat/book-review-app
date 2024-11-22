@@ -2,7 +2,7 @@ const { authMiddleware } = require("../middlewares/authMiddlerware");
 const { AppError } = require("../middlewares/errorHandlerMiddleware");
 const upload = require("../middlewares/uploadMiddlerware");
 const { validationHandler } = require("../middlewares/validation");
-const { bookValidSchema } = require("../middlewares/validation/bookReviewValidation");
+const { bookValidSchema, reviewValidSchema } = require("../middlewares/validation/bookReviewValidation");
 const BookReviewService = require("../services/bookReviewService");
 const { Response, Message, StatusCode } = require("../utils/response");
 
@@ -72,6 +72,34 @@ class BookReviewController {
                     const { userId } = req.user;
                     const book = await this.bookReviewService.updatedBookById(userId, { ...req.body, file: req.file });
                     return Response.success(res, Message.BOOK_UPDATED, book);
+                } catch (error) {
+                    next(error);
+                }
+            })
+        app.route("/reviews")
+            .get(authMiddleware, async (req, res, next) => {
+                try {
+                    const { userId } = req.user;
+                    const reviews = await this.bookReviewService.getReviewsByUserId(userId);
+                    return Response.success(res, Message.SUCCESS, reviews);
+                } catch (error) {
+                    next(error);
+                }
+            })
+        app.route("/review")
+            .post(authMiddleware, reviewValidSchema, validationHandler, async (req, res, next) => {
+                try {
+                    const { userId } = req.user;
+                    const { bookId, ...updatedReview } = req.body;
+                    const review = await this.bookReviewService.createReview(userId, bookId, updatedReview);
+                    return Response.success(res, Message.REVIEW_CREATED, review);
+                } catch (error) {
+                    next(error);
+                }
+            })
+            .put(async (req, res, next) => {
+                try {
+
                 } catch (error) {
                     next(error);
                 }
