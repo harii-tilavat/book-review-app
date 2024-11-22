@@ -85,6 +85,7 @@ const Message = Object.freeze({
   BOOK_UPDATED: 'Book updated successfully.',
   BOOK_DELETED: 'Book deleted successfully.',
   BOOK_NOT_FOUND: 'Book not found.',
+  BOOKS_NOT_FOUND: 'Books not found.',
   // Server
   INTERNAL_SERVER_ERROR: "Something went wrong. Please try again later.",
 });

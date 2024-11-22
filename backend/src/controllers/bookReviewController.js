@@ -14,8 +14,32 @@ class BookReviewController {
         app.route("/books")
             .get(async (req, res, next) => {
                 try {
-                    // Pending task
-                    return Response.success(res, 'Book list', ['book1', 'book2']);
+                    const { itemsPerPage, page } = req.query;
+
+                    const limit = parseInt(itemsPerPage);
+                    const currentPage = parseInt(page);
+                    // Validate query parameters
+
+                    if (!limit || !currentPage) {
+                        throw new AppError(StatusCode.BAD_REQUEST, Message.INVALID_PARAMS);
+                    }
+                    const offset = (parseInt(page) - 1) * limit;
+
+                    // Fetch paginated books
+                    const books = await this.bookReviewService.getPaginatedBooks(limit, offset);
+                    const totalBooks = await this.bookReviewService.getTotalBooksCount();
+
+                    // Construct the grid response
+                    const gridResponse = {
+                        books,
+                        currentPage,
+                        itemsPerPage: limit,
+                        totalPages: Math.ceil(totalBooks / limit),
+                        total: totalBooks,
+                    }
+
+                    // Return the success response
+                    return Response.success(res, Message.SUCCESS, gridResponse);
                 } catch (error) {
                     next(error);
                 }

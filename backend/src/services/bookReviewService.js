@@ -8,6 +8,27 @@ class BookReviewService {
     constructor() {
         this.bookReviewRepo = new BookReviewRepo();
     }
+
+    // Fetch paginated books
+    async getPaginatedBooks(limit, offset) {
+        try {
+            const books = await this.bookReviewRepo.getPaginatedBooks(limit, offset);
+            if (!books.length) {
+                throw new AppError(StatusCode.NOT_FOUND, Message.BOOKS_NOT_FOUND);
+            }
+            return books.map(book => new BookModel(book));
+        } catch (error) {
+            throw error;
+        }
+    }
+    // Count total books
+    async getTotalBooksCount() {
+        try {
+            return await this.bookReviewRepo.getTotalBooksCount();
+        } catch (error) {
+            throw error;
+        }
+    }
     async createBook(userId, book) {
         try {
             const { title, author, genre, file } = book;

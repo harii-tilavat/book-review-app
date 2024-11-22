@@ -1,5 +1,25 @@
 const prisma = require("../config/prismaClient");
 class BookReviewRepo {
+    // Fetch paginated books
+    async getPaginatedBooks(limit, offset) {
+        try {
+            return await prisma.book.findMany({
+                skip: offset,
+                take: limit
+            });
+        } catch (error) {
+            throw new Error(`Error fetching paginated books: ${error.message}`);
+        }
+    }
+    
+    // Count total books
+    async getTotalBooksCount() {
+        try {
+            return await prisma.book.count();
+        } catch (error) {
+            throw error;
+        }
+    }
     async createBook(userId, book) {
         try {
             const newBook = await prisma.book.create({
