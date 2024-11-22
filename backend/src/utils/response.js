@@ -60,6 +60,7 @@ const Message = Object.freeze({
   INVALID_PASSWORD: "Invalid password.",
   PASSWORD_TOO_SHORT: "Password must be at least 6 characters long.",
   REQUIRED_FIELDS_MISSING: "Required fields are missing.",
+  FILE_MISSING: 'File is missing',
 
   // User
   USER_NOT_FOUND: "User not found.",
@@ -78,6 +79,10 @@ const Message = Object.freeze({
   SIGNUP_SUCCESS: "Signup successfully.",
   LOGIN_SUCCESS: "Login successfully.",
 
+  // Book related
+  BOOK_CREATED: 'Book created successfully.',
+  BOOK_UPDATED: 'Book updated successfully.',
+  BOOK_DELETED: 'Book deleted successfully.',
   // Server
   INTERNAL_SERVER_ERROR: "Something went wrong. Please try again later.",
 });

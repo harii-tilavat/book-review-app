@@ -3,7 +3,7 @@ const upload = require("../middlewares/uploadMiddlerware");
 const { validationHandler } = require("../middlewares/validation");
 const { bookValidSchema } = require("../middlewares/validation/bookReviewValidation");
 const BookReviewService = require("../services/bookReviewService");
-const { Response } = require("../utils/response");
+const { Response, Message } = require("../utils/response");
 
 class BookReviewController {
     constructor() {
@@ -20,9 +20,10 @@ class BookReviewController {
                 }
             })
             .post(authMiddleware, upload.single('file'), bookValidSchema, validationHandler, async (req, res, next) => {
+                const { userId } = req.user;
                 try {
-                    const { userId } = req.user;
-                    const book = await this.bookReviewService.createBook({ userId, ...req.body,file:req.file });
+                    const book = await this.bookReviewService.createBook({ userId, ...req.body, file: req.file });
+                    return Response.success(res, Message.BOOK_CREATED, book);
                 } catch (error) {
                     console.log("FILE : ", req.file);
                     next(error);
