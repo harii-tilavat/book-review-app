@@ -99,10 +99,22 @@ class BookReviewService {
     }
     async createReview(userId, bookId, review) {
         try {
-            // Here first check if book exits or not. pending...
             const { text, rating } = review;
+            const currentBook = await this.bookReviewRepo.getBookById(bookId);
 
-            return await this.bookReviewRepo.createReview(userId, bookId, { text, rating });
+            // Check if the book exists
+            if (!currentBook) {
+                throw new AppError(StatusCode.BAD_REQUEST, Message.BOOK_NOT_FOUND);
+            }
+            // Create a review
+            const currentReview = await this.bookReviewRepo.createReview(userId, bookId, { text, rating });
+
+            // Calculate the new average rating
+            const avgRating = await this.bookReviewRepo.calculateAvgRating(bookId);
+
+            // Update the book with the new average rating
+            await this.bookReviewRepo.updateBookById(bookId, { avgRating });
+            return currentReview;
         } catch (error) {
             throw error;
         }

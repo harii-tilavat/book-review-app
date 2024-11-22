@@ -65,7 +65,7 @@ class BookReviewRepo {
 
     // Review related 
 
-    // Get al
+    // Get all
     async getAllReviewsByUserId(userId) {
         try {
             return await prisma.review.findMany({ where: { userId } });
@@ -84,6 +84,14 @@ class BookReviewRepo {
                     ...review
                 }
             })
+        } catch (error) {
+            throw error;
+        }
+    }
+    async calculateAvgRating(bookId) {
+        try {
+            const result = await prisma.review.aggregate({ where: { bookId }, _avg: { rating: true } });
+            return result._avg.rating || 0;
         } catch (error) {
             throw error;
         }
