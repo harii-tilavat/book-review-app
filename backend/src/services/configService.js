@@ -1,6 +1,6 @@
 const ConfigRepo = require("../repositories/configRepo");
 const CryptoUtils = require("../utils/cryptoUtils");
-const { AppError } = require("../middlewares/errorHandler");
+const { AppError } = require("../middlewares/errorHandlerMiddleware");
 const { StatusCode, Message } = require("../utils/response");
 const { UserModel } = require("../models/userModel");
 const JwtHelpwer = require("../utils/jwtHelper");

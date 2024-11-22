@@ -9,7 +9,7 @@ class AppError extends Error {
 }
 
 
-const errorHandler = (err, req, res, next) => {
+const errorHandlerMiddleware = (err, req, res, next) => {
     const { statusCode, message, errors } = err;
     res.status(statusCode || 500).json({
         statusCode,
@@ -17,4 +17,4 @@ const errorHandler = (err, req, res, next) => {
         errors: errors || [],
     });
 };
-module.exports = { AppError, errorHandler };
+module.exports = { AppError, errorHandlerMiddleware };

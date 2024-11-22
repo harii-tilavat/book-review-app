@@ -69,6 +69,10 @@ const Message = Object.freeze({
   // Authentication
   UNAUTHORIZED: "Unauthorized user.",
   INVALID_CREDENTIALS: "Invalid credentials.",
+  TOKEN_MISSING: "Authorization token missing.",
+  TOKEN_EXPIRED: "Session expired.",
+  INVALID_TOKEN: "Invalid token.",
+
 
   // User-specific messages
   SIGNUP_SUCCESS: "Signup successfully.",
