@@ -1,18 +1,23 @@
 const prisma = require("../config/prismaClient");
 class BookReviewRepo {
     // Fetch paginated books
-    async getPaginatedBooks(limit, offset) {
+    async getPaginatedBooks(limit, offset, userId) {
         try {
-            return await prisma.book.findMany({
-                skip: offset,
-                take: limit,
-                // include:{reviews:true}
-            });
+            const where = userId ? { userId } : {};
+
+            const [books, totalBooks] = await prisma.$transaction([
+                prisma.book.findMany({
+                    skip: offset,
+                    take: limit,
+                    where
+                }),
+                prisma.book.count({ where })
+            ]);
+            return { books, totalBooks };
         } catch (error) {
             throw new Error(`Error fetching paginated books: ${error.message}`);
         }
     }
-
     // Count total books
     async getTotalBooksCount() {
         try {
@@ -21,7 +26,13 @@ class BookReviewRepo {
             throw error;
         }
     }
-
+    async getTotalBooksCountById(userId) {
+        try {
+            return await prisma.book.count({ where: { userId } });
+        } catch (error) {
+            throw error;
+        }
+    }
     // Create book by userId
     async createBook(userId, book) {
         try {
@@ -53,6 +64,13 @@ class BookReviewRepo {
             return newBook;
         } catch (error) {
             throw new Error(`Failed to update book by ID ${id}: ${error.message}`);
+        }
+    }
+    async deleteBookById(id) {
+        try {
+            return await prisma.book.delete({ where: { id } });
+        } catch (error) {
+            throw new Error(`Failed to delete book by ID ${id}: ${error.message}`);
         }
     }
     async getAllReviewsById(id) {
@@ -113,7 +131,7 @@ class BookReviewRepo {
     async calculateAvgRating(bookId) {
         try {
             const result = await prisma.review.aggregate({ where: { bookId }, _avg: { rating: true } });
-            return result._avg.rating || 0;
+            return Math.round((result._avg.rating || 0));
         } catch (error) {
             throw error;
         }

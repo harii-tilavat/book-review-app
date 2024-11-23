@@ -10,21 +10,14 @@ class BookReviewService {
     }
 
     // Fetch paginated books
-    async getPaginatedBooks(limit, offset) {
+    async getPaginatedBooks(limit, offset, userId = null) {
         try {
-            const books = await this.bookReviewRepo.getPaginatedBooks(limit, offset);
-            if (!books.length) {
-                throw new AppError(StatusCode.NOT_FOUND, Message.BOOKS_NOT_FOUND);
-            }
-            return books.map(book => new BookModel(book));
-        } catch (error) {
-            throw error;
-        }
-    }
-    // Count total books
-    async getTotalBooksCount() {
-        try {
-            return await this.bookReviewRepo.getTotalBooksCount();
+            // Fetch books and total count
+            const { books, totalBooks } = await this.bookReviewRepo.getPaginatedBooks(limit, offset, userId);
+            return {
+                books: books.map(book => new BookModel(book)),
+                totalBooks
+            };
         } catch (error) {
             throw error;
         }
@@ -82,7 +75,22 @@ class BookReviewService {
             throw error;
         }
     }
+    async deleteBookById(userId, id) {
+        try {
+            // Delete book
+            const currentBook = await this.bookReviewRepo.getBookById(id);
+            if (!currentBook) {
+                throw new AppError(StatusCode.NOT_FOUND, Message.BOOK_NOT_FOUND);
+            }
+            if (currentBook.userId !== userId) {
+                throw new AppError(StatusCode.FORBIDDEN, Message.UNAUTHORIZED);
+            }
 
+            return await this.bookReviewRepo.deleteBookById(id);;
+        } catch (error) {
+            throw error;
+        }
+    }
     // ------------------- Review Related REPO --------------------------
 
     // Get review by userId
@@ -122,27 +130,44 @@ class BookReviewService {
     // Update review
     async updateReviewById(userId, bookId, review) {
         const { id, text, rating } = review;
+
+        // Step 1: Fetch the review and check if it exists and belongs to the user
         const currentReview = await this.bookReviewRepo.getReviewById(id);
-        if (!currentReview || currentReview.userId !== userId) {
+        if (!currentReview) {
             throw new AppError(StatusCode.NOT_FOUND, Message.REVIEW_NOT_FOUND);
         }
+        if (currentReview.userId !== userId) {
+            throw new AppError(StatusCode.FORBIDDEN, Message.UNAUTHORIZED);
+        }
+
+        // Step 2: Delete the review
         const updatedReview = await this.bookReviewRepo.updateReviewById(id, { text, rating });
 
+        // Step 3: Recalculate and update the average rating for the associated book
         const avgRating = await this.bookReviewRepo.calculateAvgRating(bookId);
         await this.bookReviewRepo.updateBookById(bookId, { avgRating });
 
         return updatedReview;
     }
     async deleteReviewById(userId, id) {
+
+        // Step 1: Fetch the review and check if it exists and belongs to the user
         const currentReview = await this.bookReviewRepo.getReviewById(id);
-        if (!currentReview || currentReview.userId !== userId) {
-            throw new AppError(StatusCode.UNAUTHORIZED, Message.REVIEW_NOT_FOUND);
+        if (!currentReview) {
+            throw new AppError(StatusCode.NOT_FOUND, Message.REVIEW_NOT_FOUND);
         }
+        if (currentReview.userId !== userId) {
+            throw new AppError(StatusCode.FORBIDDEN, Message.UNAUTHORIZED);
+        }
+
+        // Step 2: Delete the review
         await this.bookReviewRepo.deleteReviewById(id);
 
+        // Step 3: Recalculate and update the average rating for the associated book
         const avgRating = await this.bookReviewRepo.calculateAvgRating(currentReview.bookId);
         await this.bookReviewRepo.updateBookById(currentReview.bookId, { avgRating });
         return;
     }
 }
 module.exports = BookReviewService;
+

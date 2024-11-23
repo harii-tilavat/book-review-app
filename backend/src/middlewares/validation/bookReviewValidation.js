@@ -27,6 +27,9 @@ const reviewValidSchema = [
         .withMessage("Text is required."),
     body("rating")
         .notEmpty()
-        .withMessage("Rating is required."),
+        .withMessage("Rating is required.")
+        .isFloat({ min: 1, max: 5 })
+        .withMessage("Rating should in between 1 to 5.")
+
 ]
 module.exports = { bookValidSchema, reviewValidSchema }
