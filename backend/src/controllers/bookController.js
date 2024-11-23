@@ -1,15 +1,15 @@
 const { authMiddleware } = require("../middlewares/authMiddlerware");
-const { AppError } = require("../middlewares/errorHandlerMiddleware");
 const upload = require("../middlewares/uploadMiddlerware");
-const { validationHandler } = require("../middlewares/validation");
-const { bookValidSchema, reviewValidSchema } = require("../middlewares/validation/bookReviewValidation");
-const BookReviewService = require("../services/bookReviewService");
+const { bookValidSchema } = require("../validation/bookReviewValidation");
+const { validationHandler } = require("../validation");
+const { AppError } = require("../middlewares/errorHandlerMiddleware");
+const BookService = require("../services/bookService");
 const PaginatioHelper = require("../utils/paginationHelper");
 const { Response, Message, StatusCode } = require("../utils/response");
 
-class BookReviewController {
+class BookController {
     constructor() {
-        this.bookReviewService = new BookReviewService();
+        this.bookService = new BookService();
     }
     register(app) {
         app.route("/books")
@@ -20,7 +20,7 @@ class BookReviewController {
                     const { limit, offset, currentPage } = PaginatioHelper.validatePagination(itemsPerPage, page);
 
                     // Fetch paginated books
-                    const { books, totalBooks } = await this.bookReviewService.getPaginatedBooks(limit, offset, filters);
+                    const { books, totalBooks } = await this.bookService.getPaginatedBooks(limit, offset, filters);
 
                     // Construct the grid response
                     const gridResponse = PaginatioHelper.generatePaginatedResponse(books, currentPage, itemsPerPage, totalBooks);
@@ -39,7 +39,7 @@ class BookReviewController {
                     const { limit, offset, currentPage } = PaginatioHelper.validatePagination(itemsPerPage, page);
 
                     // Fetch paginated books
-                    const { books, totalBooks } = await this.bookReviewService.getPaginatedBooks(limit, offset, filters, userId);
+                    const { books, totalBooks } = await this.bookService.getPaginatedBooks(limit, offset, filters, userId);
 
                     // Construct the grid response
                     const gridResponse = PaginatioHelper.generatePaginatedResponse(books, currentPage, itemsPerPage, totalBooks);
@@ -57,7 +57,7 @@ class BookReviewController {
                     if (!id) {
                         throw new AppError(StatusCode.BAD_REQUEST, Message.INVALID_PARAMS)
                     }
-                    const book = await this.bookReviewService.getBookById(id);
+                    const book = await this.bookService.getBookById(id);
                     return Response.success(res, Message.SUCCESS, book);
 
                 } catch (error) {
@@ -67,7 +67,7 @@ class BookReviewController {
             .post(authMiddleware, upload.single('file'), bookValidSchema, validationHandler, async (req, res, next) => {
                 const { userId } = req.user;
                 try {
-                    const book = await this.bookReviewService.createBook(userId, { ...req.body, file: req.file });
+                    const book = await this.bookService.createBook(userId, { ...req.body, file: req.file });
                     return Response.created(res, Message.BOOK_CREATED, book);
                 } catch (error) {
                     next(error);
@@ -76,7 +76,7 @@ class BookReviewController {
             .put(authMiddleware, upload.single("file"), bookValidSchema, validationHandler, async (req, res, next) => {
                 try {
                     const { userId } = req.user;
-                    const book = await this.bookReviewService.updatedBookById(userId, { ...req.body, file: req.file });
+                    const book = await this.bookService.updatedBookById(userId, { ...req.body, file: req.file });
                     return Response.success(res, Message.BOOK_UPDATED, book);
                 } catch (error) {
                     next(error);
@@ -90,52 +90,8 @@ class BookReviewController {
                         throw new AppError(StatusCode.BAD_REQUEST, Message.INVALID_PARAMS);
                     }
 
-                    await this.bookReviewService.deleteBookById(userId, id);
+                    await this.bookService.deleteBookById(userId, id);
                     return Response.success(res, Message.BOOK_DELETED);
-                } catch (error) {
-                    next(error);
-                }
-            })
-        app.route("/reviews")
-            .get(authMiddleware, async (req, res, next) => {
-                try {
-                    const { userId } = req.user;
-                    const reviews = await this.bookReviewService.getReviewsByUserId(userId);
-                    return Response.success(res, Message.SUCCESS, reviews);
-                } catch (error) {
-                    next(error);
-                }
-            })
-        app.route("/review")
-            .post(authMiddleware, reviewValidSchema, validationHandler, async (req, res, next) => {
-                try {
-                    const { userId } = req.user;
-                    const { bookId, ...updatedReview } = req.body;
-                    const review = await this.bookReviewService.createReview(userId, bookId, updatedReview);
-                    return Response.success(res, Message.REVIEW_CREATED, review);
-                } catch (error) {
-                    next(error);
-                }
-            })
-            .put(authMiddleware, reviewValidSchema, validationHandler, async (req, res, next) => {
-                try {
-                    const { userId } = req.user;
-                    const { bookId, ...updatedReview } = req.body;
-                    const review = await this.bookReviewService.updateReviewById(userId, bookId, updatedReview);
-                    return Response.success(res, Message.REVIEW_UPDATED, review);
-                } catch (error) {
-                    next(error);
-                }
-            })
-            .delete(authMiddleware, async (req, res, next) => {
-                try {
-                    const { id } = req.body;
-                    const { userId } = req.user;
-                    if (!id) {
-                        throw new AppError(StatusCode.BAD_GATEWAY, Message.INVALID_PARAMS);
-                    }
-                    await this.bookReviewService.deleteReviewById(userId, id);
-                    return Response.success(res, Message.REVIEW_DELETED);
                 } catch (error) {
                     next(error);
                 }
@@ -143,7 +99,7 @@ class BookReviewController {
         app.route("/categories")
             .get(async (req, res, next) => {
                 try {
-                    const categories = await this.bookReviewService.getAllCategory();
+                    const categories = await this.bookService.getAllCategory();
                     return Response.success(res, Message.SUCCESS, categories);
                 } catch (error) {
                     next(error);
@@ -151,4 +107,4 @@ class BookReviewController {
             })
     }
 }
-module.exports = BookReviewController;
+module.exports = BookController;
