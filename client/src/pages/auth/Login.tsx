@@ -7,6 +7,7 @@ import { LockClosedIcon } from "@heroicons/react/16/solid";
 import { UserLoginModel } from "../../models/UserModel";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect } from "react";
+import authApi from "../../api/authApi";
 
 // const toastOptions: ToastOptions = {
 //   position: "top-right",
@@ -33,12 +34,17 @@ const Login = () => {
     }
   }, [isAuthenticated]);
 
-  const onSubmit = (user: UserLoginModel) => {
+  const onSubmit = async (userData: UserLoginModel) => {
     try {
-      loginUser(user);
+      const { data } = await authApi.login(userData);
+      const { user, token } = data;
+      // console.log("RESPONSE : ", response);
+      loginUser(user, token);
+
       toast.success("Login successful!");
       navigate("/");
     } catch (error: any) {
+      console.log(error);
       toast.error((error && error.message) || "Authentication failed! Please try again.");
     }
   };

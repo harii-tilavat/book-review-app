@@ -7,7 +7,7 @@ class ConfigController {
         this.configService = new ConfigService();
     }
     register(app) {
-        app.route('/auth/login')
+        app.route('/login')
             .post(userLoginValidationSchema, validationHandler, async (req, res, next) => {
                 try {
                     const { email, password } = req.body;
@@ -17,7 +17,7 @@ class ConfigController {
                     next(error);
                 }
             })
-        app.route("/auth/register")
+        app.route("/register")
             .post(userRegisterValidationSchema, validationHandler, async (req, res, next) => {
                 try {
                     await this.configService.registerUser(req.body);

@@ -5,7 +5,7 @@ import { Navigate } from "react-router-dom";
 export class AuthModel {
   isAuthenticated!: boolean;
   currentUser?: UserModel | null;
-  loginUser!: (user: UserLoginModel) => void;
+  loginUser!: (user: UserModel, token: string) => void;
   logoutUser!: () => void;
   registerUser!: (user: UserModel) => void;
   checkAuthStatus!: () => boolean;
@@ -24,18 +24,11 @@ export const AuthContextProvider: React.FC<BaseProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
   const [currentUser, setCurrentUser] = useState<UserModel | null>(JSON.parse(localStorage.getItem("user") as string));
 
-  function loginUser(user: UserLoginModel) {
-    const users: Array<UserModel> = JSON.parse(localStorage.getItem("users") || "[]");
-    const validateUser = users.find((u) => u.email === user.email && u.password === user.password);
-
-    if (!validateUser) {
-      throw new Error("Invalid user!");
-    }
-
-    localStorage.setItem("token", btoa(JSON.stringify(user)));
-    localStorage.setItem("user", JSON.stringify(validateUser));
+  function loginUser(user: UserModel, token: string) {
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
     setIsAuthenticated(true);
-    setCurrentUser(validateUser);
+    setCurrentUser(user);
   }
   function logoutUser() {
     localStorage.removeItem("token");
@@ -45,13 +38,13 @@ export const AuthContextProvider: React.FC<BaseProps> = ({ children }) => {
     <Navigate to={"/login"} />;
   }
   function registerUser(user: UserModel) {
-    const users: Array<UserModel> = JSON.parse(localStorage.getItem("users") || "[]");
-    const isExists = users.some((i) => i.email === user.email && i.password === user.password);
-    if (isExists) {
-      throw new Error("User already exits");
-    }
-    users.push(user);
-    localStorage.setItem("users", JSON.stringify(users));
+    // const users: Array<UserModel> = JSON.parse(localStorage.getItem("users") || "[]");
+    // const isExists = users.some((i) => i.email === user.email && i.password === user.password);
+    // if (isExists) {
+    //   throw new Error("User already exits");
+    // }
+    // users.push(user);
+    // localStorage.setItem("users", JSON.stringify(users));
   }
   function checkAuthStatus() {
     const user: UserModel = JSON.parse(localStorage.getItem("user") || "null");

@@ -5,7 +5,8 @@ import TextBox from "../../components/comman/TextBox";
 import Button from "../../components/comman/Button";
 import { UserGroupIcon } from "@heroicons/react/16/solid";
 import { UserModel } from "../../models/UserModel";
-import { useAuth } from "../../context/AuthContext";
+// import { useAuth } from "../../context/AuthContext";
+import authApi from "../../api/authApi";
 
 const SignUp = () => {
   // Initialize the form with useForm hook and TypeScript types
@@ -16,12 +17,12 @@ const SignUp = () => {
   } = useForm<UserModel>();
 
   const navigate = useNavigate();
-  const { registerUser } = useAuth();
+  // const { registerUser } = useAuth();
   // Handle form submission
-  const onSubmit: SubmitHandler<UserModel> = (user: UserModel) => {
+  const onSubmit: SubmitHandler<UserModel> = async (user: UserModel) => {
     try {
-      registerUser(user);
-      toast.success("Signup successfull!");
+      const data = await authApi.register(user);
+      toast.success((data && data.message) || "Signup successfull!");
       navigate("/login");
     } catch (error: any) {
       toast.error((error && error.message) || "Signup failed! Please try again.");
