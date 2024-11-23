@@ -1,4 +1,4 @@
-const { validationHandler, userRegisterValidationSchema, userLoginValidationSchema } = require("../middlewares/validation");
+const { validationHandler, userRegisterValidationSchema, userLoginValidationSchema } = require("../validation");
 const ConfigService = require("../services/configService");
 const { Response, Message } = require("../utils/response");
 
