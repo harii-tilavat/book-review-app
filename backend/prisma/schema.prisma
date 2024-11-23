@@ -19,8 +19,8 @@ model User {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
-  Book      Book[]
-  Review    Review[]
+  Book      Book[] // One-to-many relation to Book
+  Review    Review[] // One-to-many relation to Review
 }
 
 model Book {
@@ -28,13 +28,14 @@ model Book {
   userId    String
   title     String
   author    String
-  genre     String
+  genreId   String 
+  genre     Genre    @relation(fields: [genreId], references: [id])
   cover     String?
   avgRating Float    @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id])
-  reviews    Review[]
+  reviews   Review[] // One-to-many relation with Review
 }
 
 model Review {
@@ -47,4 +48,12 @@ model Review {
   book      Book     @relation(fields: [bookId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Genre {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Book      Book[] // One-to-many relation with Book
 }

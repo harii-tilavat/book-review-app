@@ -1,15 +1,26 @@
 const prisma = require("../config/prismaClient");
 class BookReviewRepo {
     // Fetch paginated books
-    async getPaginatedBooks(limit, offset, userId) {
+    async getPaginatedBooks(limit, offset, filters = {}, userId = null) {
         try {
-            const where = userId ? { userId } : {};
+            // Build the where clause dynamically
+            const { genreId, sortField, sortOrder } = filters;
+            const where = {
+                ...(userId ? { userId } : {}),
+                ...(genreId ? { genreId } : {})
+            }
 
+            // Build the orderBy clause dynamically
+            const orderBy = sortField ? { [sortField]: sortOrder || 'asc' } : undefined;
+
+            // Use a Prisma transaction for parallel execution
             const [books, totalBooks] = await prisma.$transaction([
                 prisma.book.findMany({
                     skip: offset,
                     take: limit,
-                    where
+                    where,
+                    orderBy,
+                    include: { genre: true }
                 }),
                 prisma.book.count({ where })
             ]);
@@ -18,38 +29,24 @@ class BookReviewRepo {
             throw new Error(`Error fetching paginated books: ${error.message}`);
         }
     }
-    // Count total books
-    async getTotalBooksCount() {
-        try {
-            return await prisma.book.count();
-        } catch (error) {
-            throw error;
-        }
-    }
-    async getTotalBooksCountById(userId) {
-        try {
-            return await prisma.book.count({ where: { userId } });
-        } catch (error) {
-            throw error;
-        }
-    }
     // Create book by userId
     async createBook(userId, book) {
         try {
             const newBook = await prisma.book.create({
                 data: {
                     userId,
-                    ...book
-                }
+                    ...book,
+                },
+                include: { genre: true }
             });
             return newBook;
         } catch (error) {
-            throw new Error(`Failed to create book. ${error.message}`);
+            throw error;
         }
     }
     async getBookById(id) {
         try {
-            const book = await prisma.book.findUnique({ where: { id }, include: { reviews: true } });
+            const book = await prisma.book.findUnique({ where: { id }, include: { reviews: true, genre: true } });
             return book;
         } catch (error) {
             throw new Error(`Failed to fetch book by ID ${id}: ${error.message}`);
@@ -81,7 +78,15 @@ class BookReviewRepo {
             throw new Error(`Failed to fetch reviews. ${id}: ${error.message}`);
         }
     }
+    // Cetegory
 
+    async getAllCategory() {
+        try {
+            return await prisma.genre.findMany();
+        } catch (error) {
+            throw error;
+        }
+    }
     // Review related 
 
     // Get all

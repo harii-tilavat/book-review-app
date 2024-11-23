@@ -10,10 +10,10 @@ class BookReviewService {
     }
 
     // Fetch paginated books
-    async getPaginatedBooks(limit, offset, userId = null) {
+    async getPaginatedBooks(limit, offset, filters = {}, userId = null) {
         try {
             // Fetch books and total count
-            const { books, totalBooks } = await this.bookReviewRepo.getPaginatedBooks(limit, offset, userId);
+            const { books, totalBooks } = await this.bookReviewRepo.getPaginatedBooks(limit, offset, filters, userId);
             return {
                 books: books.map(book => new BookModel(book)),
                 totalBooks
@@ -24,7 +24,7 @@ class BookReviewService {
     }
     async createBook(userId, book) {
         try {
-            const { title, author, genre, file } = book;
+            const { title, author, genreId, file } = book;
             if (!file) {
                 throw new AppError(StatusCode.BAD_REQUEST, Message.FILE_MISSING);
             }
@@ -32,7 +32,7 @@ class BookReviewService {
             // Upload the file buffer to Cloudinary and get the uploaded file's details
             const uploadedFile = await FileUploader.uploadStream(file.buffer);
 
-            const upadatedBook = { title, author, genre, cover: uploadedFile.secure_url };
+            const upadatedBook = { title, author, genreId, cover: uploadedFile.secure_url };
 
             // Save the book details in the database and associate it with the user
             const newBook = await this.bookReviewRepo.createBook(userId, upadatedBook);
@@ -40,6 +40,8 @@ class BookReviewService {
             // Return the newly created book record without userId
             return new BookModel(newBook);
         } catch (error) {
+            // If it's any other error, throw a generic one
+            // throw new AppError(StatusCode.INTERNAL_SERVER_ERROR);
             throw error;
         }
     }
@@ -87,6 +89,16 @@ class BookReviewService {
             }
 
             return await this.bookReviewRepo.deleteBookById(id);;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Category
+
+    async getAllCategory() {
+        try {
+            return await this.bookReviewRepo.getAllCategory();
         } catch (error) {
             throw error;
         }

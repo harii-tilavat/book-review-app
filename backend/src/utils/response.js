@@ -75,7 +75,6 @@ const Message = Object.freeze({
   TOKEN_EXPIRED: "Session expired.",
   INVALID_TOKEN: "Invalid token.",
 
-
   // User-specific messages
   SIGNUP_SUCCESS: "Signup successfully.",
   LOGIN_SUCCESS: "Login successfully.",
@@ -86,6 +85,7 @@ const Message = Object.freeze({
   BOOK_DELETED: 'Book deleted successfully.',
   BOOK_NOT_FOUND: 'Book not found.',
   BOOKS_NOT_FOUND: 'Books not found.',
+  BOOK_FAILED: 'Books not found.',
 
   // Review related
   REVIEW_CREATED: 'Review created successfully.',

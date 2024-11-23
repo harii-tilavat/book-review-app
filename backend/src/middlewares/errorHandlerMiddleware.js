@@ -15,6 +15,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
         statusCode: statusCode || 500,
         message: message || 'Internal server error!',
         errors: errors || [],
+        errorCode: err.code || undefined
     });
 };
 module.exports = { AppError, errorHandlerMiddleware };

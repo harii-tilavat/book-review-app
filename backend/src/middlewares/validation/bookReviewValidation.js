@@ -10,10 +10,10 @@ const bookValidSchema = [
         .notEmpty()
         .withMessage("Author is required."),
 
-    body("genre")
+    body("genreId")
         .trim()
         .notEmpty()
-        .withMessage("Genre is required."),
+        .withMessage("GenreId is required."),
 ];
 
 const reviewValidSchema = [

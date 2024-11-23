@@ -15,12 +15,12 @@ class BookReviewController {
         app.route("/books")
             .get(async (req, res, next) => {
                 try {
-                    const { itemsPerPage, page } = req.query;
+                    const { itemsPerPage, page, ...filters } = req.query;
 
                     const { limit, offset, currentPage } = PaginatioHelper.validatePagination(itemsPerPage, page);
 
                     // Fetch paginated books
-                    const { books, totalBooks } = await this.bookReviewService.getPaginatedBooks(limit, offset);
+                    const { books, totalBooks } = await this.bookReviewService.getPaginatedBooks(limit, offset, filters);
 
                     // Construct the grid response
                     const gridResponse = PaginatioHelper.generatePaginatedResponse(books, currentPage, itemsPerPage, totalBooks);
@@ -33,13 +33,13 @@ class BookReviewController {
         app.route("/my-books")
             .get(authMiddleware, async (req, res, next) => {
                 try {
+                    const { itemsPerPage, page, ...filters } = req.query;
                     const { userId } = req.user;
-                    const { itemsPerPage, page } = req.query;
 
                     const { limit, offset, currentPage } = PaginatioHelper.validatePagination(itemsPerPage, page);
 
                     // Fetch paginated books
-                    const { books, totalBooks } = await this.bookReviewService.getPaginatedBooks(limit, offset, userId);
+                    const { books, totalBooks } = await this.bookReviewService.getPaginatedBooks(limit, offset, filters, userId);
 
                     // Construct the grid response
                     const gridResponse = PaginatioHelper.generatePaginatedResponse(books, currentPage, itemsPerPage, totalBooks);
@@ -136,6 +136,15 @@ class BookReviewController {
                     }
                     await this.bookReviewService.deleteReviewById(userId, id);
                     return Response.success(res, Message.REVIEW_DELETED);
+                } catch (error) {
+                    next(error);
+                }
+            })
+        app.route("/categories")
+            .get(async (req, res, next) => {
+                try {
+                    const categories = await this.bookReviewService.getAllCategory();
+                    return Response.success(res, Message.SUCCESS, categories);
                 } catch (error) {
                     next(error);
                 }
