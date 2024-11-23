@@ -29,6 +29,32 @@ class BookReviewRepo {
             throw new Error(`Error fetching paginated books: ${error.message}`);
         }
     }
+    // Recommandation
+    async getRecommendations(genreId, author, bookId, limit = 5) {
+        try {
+            return await prisma.book.findMany({
+                where: {
+                    AND: [
+                        { id: { not: bookId } },
+                        {
+                            OR: [
+                                { author },
+                                { genreId }
+                            ]
+                        }
+                    ]
+                },
+                take: limit,
+                orderBy: [
+                    { avgRating: 'desc' },
+                    { createdAt: 'asc' }
+                ],
+                include: { genre: true }
+            })
+        } catch (error) {
+            throw error;
+        }
+    }
     // Create book by userId
     async createBook(userId, book) {
         try {

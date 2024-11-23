@@ -51,9 +51,12 @@ class BookReviewService {
             if (!book) {
                 throw new AppError(StatusCode.NOT_FOUND, Message.BOOK_NOT_FOUND);
             }
+            
+            // Fetch recommended books (same genreId or author)
+            const recommendations = await this.bookReviewRepo.getRecommendations(book.genreId, book.author, book.id);
             // const reviews = await this.bookReviewRepo.getAllReviewsById(id) || [];
             // return new BookModel(book);
-            return book;
+            return { book, recommendations };
         } catch (error) {
             throw error;
         }
