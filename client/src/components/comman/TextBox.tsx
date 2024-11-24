@@ -19,8 +19,8 @@ const TextBox: React.FC<InputProps> = ({ id, error, register, label, type = "tex
       <label htmlFor={id} className="block text-gray-700 dark:text-gray-100 font-semibold text-sm">
         {label}
       </label>
-      {isTextArea && <input id={id} type={type} className="mt-1 p-2 w-full border rounded-md border-blue-300 dark:border-gray-400 dark:bg-gray-800 dark:text-gray-100" {...register} placeholder={placeholder} />}
-      {!isTextArea && <textarea id={id} className="mt-1 p-2 w-full border rounded-md border-blue-300 dark:border-gray-400 dark:bg-gray-800 dark:text-gray-100" {...register} placeholder={placeholder} />}
+      {!isTextArea && <input id={id} type={type} className="mt-1 p-2 w-full border rounded-md border-blue-300 dark:border-gray-400 dark:bg-gray-800 dark:text-gray-100" {...register} placeholder={placeholder} />}
+      {isTextArea && <textarea id={id} className="mt-1 p-2 w-full border rounded-md border-blue-300 dark:border-gray-400 dark:bg-gray-800 dark:text-gray-100" {...register} placeholder={placeholder} />}
 
       {error && <p className="text-red-500 text-sm">{error.message}</p>}
     </div>

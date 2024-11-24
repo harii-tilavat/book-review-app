@@ -25,7 +25,7 @@ class BookService {
     // Create a new book
     async createBook(userId, book) {
         try {
-            const { title, author, genreId, file, description } = book;
+            const { title, author, genreId, file, isbn, description } = book;
             if (!file) {
                 throw new AppError(StatusCode.BAD_REQUEST, Message.FILE_MISSING);
             }
@@ -33,7 +33,7 @@ class BookService {
             // Upload the file buffer to Cloudinary and get the uploaded file's details
             const uploadedFile = await FileUploader.uploadStream(file.buffer);
 
-            const upadatedBook = { title, author, genreId, cover: uploadedFile.secure_url, description };
+            const upadatedBook = { title, author, genreId, cover: uploadedFile.secure_url, description, isbn };
 
             // Save the book details in the database and associate it with the user
             const newBook = await this.bookRepo.createBook(userId, upadatedBook);

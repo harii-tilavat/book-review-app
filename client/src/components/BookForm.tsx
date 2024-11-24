@@ -20,9 +20,10 @@ export interface BookFormValues {
 interface BookFormProps {
   bookDetail?: BookModel;
   onSubmit: (book: FormData) => void;
+  isLoading: boolean;
 }
 
-const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit }) => {
+const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) => {
   const [genre, setGenre] = useState<Array<GenreModel>>([]);
   const {
     control,
@@ -90,24 +91,24 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit }) => {
     }
   };
   // Prepare FormData object
-  const prepareFormData = (data: BookFormValues) => {
+  const prepareFormData = (data: BookFormValues): FormData => {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("author", data.author);
     formData.append("genreId", data.genreId);
     formData.append("description", data.description || "");
     if (data.cover) {
-      if(typeof data.cover !== 'string'){
+      if (typeof data.cover !== "string") {
         formData.append("file", data.cover);
-      }else{
-        formData.append("cover",data.cover);
+      } else {
+        formData.append("cover", data.cover);
       }
     }
+    return formData;
   };
   const handleSubmitForm: SubmitHandler<BookFormValues> = (book: BookFormValues) => {
-    // Working on formData.
-    // onSubmit(formData);
-    // Logic to save the book
+    const formData = prepareFormData(book);
+    onSubmit(formData);
   };
   const handleResetForm = () => {
     reset({ author: bookDetail?.author || "", title: bookDetail?.title || "", isbn: bookDetail?.isbn || "", genreId: bookDetail?.genre.id || "", cover: bookDetail?.cover || null });
@@ -179,14 +180,22 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit }) => {
               {errors.genreId && <p className="text-red-500 text-sm">{errors.genreId.message}</p>}
             </div>
             {/* ISBN */}
-            <TextBox id="description" label="Description" placeholder="Enter description" error={errors.isbn} register={register("description")} />
+            <TextBox id="description" label="Description" placeholder="Enter description" error={errors.isbn} register={register("description")} isTextArea />
 
             {/* Submit Button */}
             <div className="flex justify-end space-x-4">
               <button type="button" className="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg shadow-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 font-semibold" onClick={handleResetForm}>
                 Reset
               </button>
-              <Button type="submit">{bookDetail ? "Update Book" : "Add Book"}</Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading && (
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 2.42.88 4.63 2.343 6.343l1.414-1.415z"></path>
+                  </svg>
+                )}
+                <span className="ms-2">{isLoading ? (bookDetail ? "Upading book..." : "Adding book...") : bookDetail ? "Update Book" : "Add Book"}</span>
+              </Button>
             </div>
           </form>
         </div>

@@ -1,3 +1,4 @@
+import { GenricReponseModel } from '../_models';
 import { BookModel, BookResponseModel } from '../_models/BookModel';
 import GenreModel from '../_models/GenreModel';
 import { PaginationModel, PaginationResponseModel } from '../_models/PaginationModel';
@@ -20,6 +21,17 @@ const bookApi = {
         try {
             const { data } = await axiosInstance.get("/book" + createQueryParams({ id }));
             return data && data.data;
+        } catch (error) {
+            handleApiError(error);
+            throw error;
+        }
+    },
+    createBook: async (formData: FormData): Promise<GenricReponseModel> => {
+        try {
+            const { data } = await axiosInstance.post("/book", formData, {
+                headers: { "Content-Type": "multipart/form-data" }
+            });
+            return data;
         } catch (error) {
             handleApiError(error);
             throw error;

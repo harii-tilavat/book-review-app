@@ -67,8 +67,10 @@ class BookController {
             .post(authMiddleware, upload.single('file'), bookValidSchema, validationHandler, async (req, res, next) => {
                 const { userId } = req.user;
                 try {
-                    const book = await this.bookService.createBook(userId, { ...req.body, file: req.file });
-                    return Response.created(res, Message.BOOK_CREATED, book);
+                    // const book = await this.bookService.createBook(userId, { ...req.body, file: req.file });
+                    setTimeout(() => {
+                        return Response.created(res, Message.BOOK_CREATED, 'book');
+                    }, 2000);
                 } catch (error) {
                     next(error);
                 }
