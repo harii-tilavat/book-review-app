@@ -7,7 +7,7 @@ export const DUMMY_BOOKS = [
         isbn: "9780743273565",
         genre: "Classic",
         cover: "https://m.media-amazon.com/images/I/71UypkUjStL._AC_UF894,1000_QL80_.jpg",
-        rating: 4.2,
+        avgRating: 4.2,
         reviews: [
             {
                 id: '13456',
@@ -31,7 +31,7 @@ export const DUMMY_BOOKS = [
         isbn: "9780061120084",
         genre: "Historical Fiction",
         cover: "https://m.media-amazon.com/images/I/81A-mvlo+QL._AC_UF1000,1000_QL80_.jpg",
-        rating: 4.8,
+        avgRating: 4.8,
         reviews: [
             {
                 id: '341',
@@ -55,7 +55,7 @@ export const DUMMY_BOOKS = [
         isbn: "9780451524935",
         genre: "Dystopian",
         cover: "https://m.media-amazon.com/images/I/71kxa1-0mfL._AC_UF1000,1000_QL80_.jpg",
-        rating: 4.6,
+        avgRating: 4.6,
         reviews: [
             {
                 id: '145',
@@ -79,7 +79,7 @@ export const DUMMY_BOOKS = [
         isbn: "9780141439518",
         genre: "Romance",
         cover: "https://m.media-amazon.com/images/I/81WojUxbbFL._AC_UF894,1000_QL80_.jpg",
-        rating: 4.4,
+        avgRating: 4.4,
         reviews: [
             {
                 id: '112',
@@ -103,7 +103,7 @@ export const DUMMY_BOOKS = [
         isbn: "9780316769488",
         genre: "Coming-of-Age",
         cover: "https://m.media-amazon.com/images/I/81OthjkJBuL._AC_UF1000,1000_QL80_.jpg",
-        rating: 3.9,
+        avgRating: 3.9,
         reviews: [
             {
                 id: '534',
@@ -121,7 +121,7 @@ export const DUMMY_BOOKS = [
         isbn: "9780142437247",
         genre: "Adventure",
         cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?crop=entropy&cs=tinysrgb&fit=max&w=400&h=400",
-        rating: 4.0,
+        avgRating: 4.0,
         reviews: [
         ],
     },
@@ -133,7 +133,7 @@ export const DUMMY_BOOKS = [
         isbn: "9780547928227",
         genre: "Fantasy",
         cover: "https://m.media-amazon.com/images/I/91b0C2YNSrL._AC_UF1000,1000_QL80_.jpg",
-        rating: 4.7,
+        avgRating: 4.7,
         reviews: [
             {
                 id: '234',

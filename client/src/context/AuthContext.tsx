@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { UserLoginModel, UserModel } from "../models/UserModel";
+import { UserLoginModel, UserModel } from "../_models/UserModel";
 import BaseProps from "../utils/types/BaseProps";
 import { Navigate } from "react-router-dom";
 export class AuthModel {

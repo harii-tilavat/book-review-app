@@ -1,5 +1,5 @@
 import React from "react";
-import { ReviewModel } from "../models/BookModel";
+import { ReviewModel } from "../_models/BookModel";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/16/solid";
 
@@ -15,13 +15,13 @@ const ReviewItem: React.FC<ReviewProps> = ({ review, onDelete, onEdit }) => {
     <div className="bg-gray-50 dark:bg-gray-700 p-5 rounded-lg shadow-md flex items-start space-x-4">
       {/* Avatar Placeholder */}
       <div className="flex-shrink-0">
-        <div className="w-12 h-12 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-300 font-bold">{review.user[0].toUpperCase()}</div>
+        <div className="w-12 h-12 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-300 font-bold">{review.user.username[0].toUpperCase()}</div>
       </div>
 
       {/* Review Content */}
       <div className="flex-grow">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{review.user}</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{review.user.username}</h3>
           <div className="flex items-center">
             {[...Array(5)].map((_, idx) => (
               <StarIcon key={idx} className={`h-5 w-5 ${idx < review.rating ? "text-yellow-500" : "text-gray-300 dark:text-gray-600"}`} />

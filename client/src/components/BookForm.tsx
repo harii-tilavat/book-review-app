@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import TextBox from "../components/comman/TextBox";
 import Button from "../components/comman/Button";
-import { BookModel } from "../models/BookModel";
+import { BookModel } from "../_models/BookModel";
 import { ArrowLeftIcon } from "@heroicons/react/16/solid";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
@@ -20,6 +20,7 @@ interface BookFormProps {
 }
 
 const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit }) => {
+  const [formData, setFormData] = useState<FormData>();
   const {
     control,
     register,
@@ -34,7 +35,7 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit }) => {
       author: bookDetail?.author || "",
       cover: null,
       isbn: bookDetail?.isbn || "",
-      genre: bookDetail?.genre || "",
+      genre: bookDetail?.genre.name || "",
     },
   });
 
@@ -76,7 +77,7 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit }) => {
     }
   };
   const handleResetForm = () => {
-    reset({ author: bookDetail?.author || "", title: bookDetail?.title || "", isbn: bookDetail?.isbn || "", genre: bookDetail?.genre || "", cover: bookDetail?.cover || null });
+    reset({ author: bookDetail?.author || "", title: bookDetail?.title || "", isbn: bookDetail?.isbn || "", genre: bookDetail?.genre.name || "", cover: bookDetail?.cover || null });
     if (bookDetail) {
       setImagePreview(bookDetail.cover);
       return;
@@ -88,8 +89,7 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit }) => {
       <div className="max-w-6xl mx-auto py-4">
         <button
           onClick={() => navigate("/")} // Replace with your route or navigation logic
-          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm"
-        >
+          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm">
           <ArrowLeftIcon className="h-5 w-5 mr-2" /> {/* Icon with margin */}
           Back to Book List
         </button>

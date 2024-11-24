@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import TextBox from "../../components/comman/TextBox";
 import Button from "../../components/comman/Button";
 import { UserGroupIcon } from "@heroicons/react/16/solid";
-import { UserModel } from "../../models/UserModel";
+import { UserModel } from "../../_models/UserModel";
 // import { useAuth } from "../../context/AuthContext";
 import authApi from "../../api/authApi";
 

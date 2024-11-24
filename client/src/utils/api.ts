@@ -10,3 +10,13 @@ export const handleApiError = (error: any) => {
     // Throw a new error with the message
     throw new Error(message);
 };
+export const createQueryParams = (params: any) => {
+    if (!params) {
+        throw new Error("Params required!");
+    };
+    const queryString = Object.keys(params).map((key) => {
+        const value = params[key];
+        return value !== undefined && value !== null ? `${encodeURIComponent(key)}=${encodeURIComponent(value)}` : null
+    }).filter(Boolean).join('&'); // Remove nulls for undefined or null values
+    return queryString ? `?${queryString}` : '';
+};

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ReviewModel } from "../models/BookModel";
+import { ReviewModel } from "../_models/BookModel";
 import { Dialog, DialogTitle } from "@headlessui/react";
 import { DUMMY_BOOKS } from "../utils/constants";
 

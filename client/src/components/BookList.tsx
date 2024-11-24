@@ -1,14 +1,15 @@
 import BookCard from "./BookCard";
-import { BookModel } from "../models/BookModel";
-import { DUMMY_BOOKS } from "../utils/constants";
+import { BookModel } from "../_models/BookModel";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Button from "./comman/Button";
+import LoadingCard from "./comman/LoadingCard";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import Pagination from "./comman/Pagination";
 
-const BookList = () => {
+const BookList = ({ books = [], isLoading }: { books: Array<BookModel>; isLoading: boolean }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [bookId, setBookId] = useState("");
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -48,51 +49,9 @@ const BookList = () => {
       {/* Book List */}
       <div className="book-card-list">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6  py-2">
-          {DUMMY_BOOKS.map((book: BookModel) => (
-            <BookCard key={book.id} book={book} onDelete={openDeleteModal} />
-          ))}
+          {isLoading && [1, 2, 3, 4].map((i) => <LoadingCard key={i} />)}
+          {!isLoading && books.map((book: BookModel) => <BookCard key={book.id} book={book} onDelete={openDeleteModal} />)}
         </div>
-      </div>
-
-      {/* Pagination */}
-      <div className="mt-8 flex justify-center">
-        <nav className="inline-flex shadow-sm" aria-label="Pagination">
-          {/* Previous Button */}
-          <button
-            className={`relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 ${currentPage === 1 ? "cursor-not-allowed opacity-50" : ""}`}
-            disabled={currentPage === 1}
-            onClick={() => handlePageChange(currentPage - 1)}
-          >
-            <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
-            <span className="sr-only">Previous</span>
-          </button>
-
-          {/* Page Numbers */}
-          {[...Array(totalPages)].map((_, index) => {
-            const page = index + 1;
-            return (
-              <button
-                key={page}
-                className={`relative inline-flex items-center px-4 py-2 text-sm font-medium ${currentPage === page ? "text-white bg-blue-600" : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"} border border-gray-300 dark:border-gray-600`}
-                onClick={() => handlePageChange(page)}
-              >
-                {page}
-              </button>
-            );
-          })}
-
-          {/* Next Button */}
-          <button
-            className={`relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 ${
-              currentPage === totalPages ? "cursor-not-allowed opacity-50" : ""
-            }`}
-            disabled={currentPage === totalPages}
-            onClick={() => handlePageChange(currentPage + 1)}
-          >
-            <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
-            <span className="sr-only">Next</span>
-          </button>
-        </nav>
       </div>
 
       {/* Delete Confirmation Modal */}

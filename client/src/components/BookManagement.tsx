@@ -1,12 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import BookList from "../components/BookList";
 import { DUMMY_BOOKS } from "../utils/constants";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import bookApi from "../api/bookApi";
 import { PaginationModel } from "../_models/PaginationModel";
 import Pagination from "../components/comman/Pagination";
 import { BookModel } from "../_models/BookModel";
-const Home = () => {
+
+interface BookManagementProps {
+  isMyBooks: boolean;
+}
+
+const BookManagement: React.FC<BookManagementProps> = ({ isMyBooks = false }) => {
   const navigate = useNavigate();
   const [books, setBooks] = useState<Array<BookModel>>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -40,11 +45,13 @@ const Home = () => {
         <p className="mt-2 text-lg text-gray-600 dark:text-gray-400">Your one-stop platform for managing and discovering books. Add, edit, and explore books, and share your reviews with the community.</p>
         <div className="mt-4 flex justify-center gap-4">
           <button className="bg-blue-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-600 font-semibold" onClick={() => navigate("/add-book")}>
-            Add New Book
+          Average Rating
           </button>
-          <button className="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg shadow-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 font-semibold" onClick={() => navigate("/my-reviews")}>
-            Explore Reviews
-          </button>
+          {isMyBooks && (
+            <button className="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg shadow-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 font-semibold" onClick={() => navigate("/my-reviews")}>
+              Explore Reviews
+            </button>
+          )}
         </div>
       </div>
 
@@ -56,4 +63,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default BookManagement;

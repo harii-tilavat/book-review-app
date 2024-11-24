@@ -1,4 +1,4 @@
-import { UserLoginModel, UserModel } from '../models/UserModel';
+import { UserLoginModel, UserModel } from '../_models/UserModel';
 import { handleApiError } from '../utils/api';
 import axiosInstance from './axiosInstance';
 

@@ -1,14 +1,15 @@
 import React from "react";
-import { BookModel } from "../models/BookModel";
+import { BookModel } from "../_models/BookModel";
 import { Link, useNavigate } from "react-router-dom";
 
 interface BookCardProps {
-  onDelete: (id: string) => void;
+  onDelete?: (id: string) => void;
+  showActions?: boolean;
   book: BookModel;
 }
-const BookCard: React.FC<BookCardProps> = ({ book, onDelete }) => {
+const BookCard: React.FC<BookCardProps> = ({ book, onDelete, showActions = false }) => {
   const navigate = useNavigate();
-  
+  const { reviews } = book;
   function editBook(id: string) {
     // EDIT BOOK
     navigate("/edit-book/" + id);
@@ -33,29 +34,34 @@ const BookCard: React.FC<BookCardProps> = ({ book, onDelete }) => {
             <span className="font-semibold">ISBN:</span> {book.isbn}
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-300">
-            <span className="font-semibold">Genre:</span> {book.genre}
+            <span className="font-semibold">Genre:</span> {book.genre.name}
           </p>
         </div>
 
         {/* Rating Section */}
-        <div className="mt-3 flex items-center">
-          <div className="flex">
-            {Array.from({ length: 5 }).map((_, index) => (
-              <svg key={index} xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${index < Math.round(book.rating) ? "text-yellow-500" : "text-gray-300 dark:text-gray-600"}`} fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-              </svg>
-            ))}
-          </div>
-          <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">{book.rating.toFixed(1)} / 5</span>
-          {/* Reviews Section */}
-          {book.reviews.length > 0 && (
-            <div className="ms-auto text-sm text-blue-500">
-              <Link to={`/book-detail/${book.id}`} className="hover:underline">
-                {book.reviews.length} Reviews (See all)
-              </Link>
+        {book.reviews && book.reviews.length > 0 ? (
+          <div className="mt-3 flex items-center">
+            <div className="flex">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <svg key={index} xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${index < Math.round(book.avgRating) ? "text-yellow-500" : "text-gray-300 dark:text-gray-600"}`} fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                </svg>
+              ))}
             </div>
-          )}
-        </div>
+            <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">{book.avgRating.toFixed(1)} / 5</span>
+            {/* Reviews Section */}
+            {reviews && reviews.length > 0 && (
+              <div className="ms-auto text-sm text-blue-500">
+                <Link to={`/book-detail/${book.id}`} className="hover:underline">
+                  {reviews.length} Reviews (See all)
+                </Link>
+              </div>
+            )}
+          </div>
+        ) : (
+          // No Reviews Found Message
+          <div className="mt-3 text-gray-500 dark:text-gray-400 text-sm">No reviews found for this book.</div>
+        )}
       </div>
 
       {/* Actions */}
@@ -63,14 +69,16 @@ const BookCard: React.FC<BookCardProps> = ({ book, onDelete }) => {
         <button className="text-blue-600 dark:text-blue-400 hover:underline text-sm" onClick={() => navigateToBookDetail(book.id)}>
           View Details
         </button>
-        <div className="flex space-x-2">
-          <button className="bg-yellow-500 text-white px-3 py-1 rounded-md text-sm hover:bg-yellow-600" onClick={() => editBook(book.id)}>
-            Edit
-          </button>
-          <button className="bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600" onClick={() => onDelete(book.id)}>
-            Delete
-          </button>
-        </div>
+        {showActions && (
+          <div className="flex space-x-2">
+            <button className="bg-yellow-500 text-white px-3 py-1 rounded-md text-sm hover:bg-yellow-600" onClick={() => editBook(book.id)}>
+              Edit
+            </button>
+            <button className="bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600" onClick={() => onDelete && onDelete(book.id)}>
+              Delete
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

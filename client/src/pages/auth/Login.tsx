@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import TextBox from "../../components/comman/TextBox";
 import Button from "../../components/comman/Button";
 import { LockClosedIcon } from "@heroicons/react/16/solid";
-import { UserLoginModel } from "../../models/UserModel";
+import { UserLoginModel } from "../../_models/UserModel";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect } from "react";
 import authApi from "../../api/authApi";
