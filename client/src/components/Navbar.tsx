@@ -17,6 +17,7 @@ const navigation: Array<NavigationModel> = [
   // { name: "Dashboard", href: "/", current: true, isProtected: false },
   { name: "Add book", href: "/add-book", current: false, isProtected: true },
   { name: "My reviews", href: "/my-reviews", current: false, isProtected: true },
+  { name: "My books", href: "/my-books", current: false, isProtected: true },
   // { name: "Calendar", href: "#", current: false },
 ];
 
@@ -40,7 +41,7 @@ export default function Example() {
     }
   }
   return (
-    <Disclosure as="nav" className="bg-white dark:bg-gray-800 fixed top-0 left-0 right-0 shadow-lg">
+    <Disclosure as="nav" className="bg-white dark:bg-gray-800 fixed top-0 left-0 right-0 shadow-lg z-10">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">

@@ -6,14 +6,11 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import Button from "./comman/Button";
 import LoadingCard from "./comman/LoadingCard";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import Pagination from "./comman/Pagination";
+import bookApi from "../api/bookApi";
 
-const BookList = ({ books = [], isLoading }: { books: Array<BookModel>; isLoading: boolean }) => {
+const BookList = ({ books = [], isLoading, isMyBooks }: { books: Array<BookModel>; isLoading: boolean; isMyBooks: boolean }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [bookId, setBookId] = useState("");
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const totalPages = 10;
   const navigate = useNavigate();
 
   function openDeleteModal(id: string) {
@@ -24,16 +21,10 @@ const BookList = ({ books = [], isLoading }: { books: Array<BookModel>; isLoadin
     setIsDeleteModalOpen(false);
     setBookId("");
   }
-  function deleteBook() {
-    toast.success(bookId + "Book deleted successfully");
+  async function deleteBook() {
+    const { message } = await bookApi.deleteBook(bookId);
+    toast.success(message || "Book deleted successfully");
     closeDeleteModal();
-  }
-  function handlePageChange(newPage: number) {
-    if (newPage >= 1 && newPage <= totalPages) {
-      setCurrentPage(newPage);
-      // Fetch books for the new page from the server
-      console.log(`Fetching page ${newPage}`);
-    }
   }
   return (
     <>
@@ -50,7 +41,7 @@ const BookList = ({ books = [], isLoading }: { books: Array<BookModel>; isLoadin
       <div className="book-card-list">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6  py-2">
           {isLoading && [1, 2, 3, 4].map((i) => <LoadingCard key={i} />)}
-          {!isLoading && books.map((book: BookModel) => <BookCard key={book.id} book={book} onDelete={openDeleteModal} />)}
+          {!isLoading && books.map((book: BookModel) => <BookCard key={book.id} book={book} onDelete={openDeleteModal} showActions={isMyBooks} />)}
         </div>
       </div>
 

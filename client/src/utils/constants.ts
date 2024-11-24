@@ -6,6 +6,7 @@ export const DUMMY_BOOKS = [
         author: "F. Scott Fitzgerald",
         isbn: "9780743273565",
         genre: "Classic",
+        genre:{}
         cover: "https://m.media-amazon.com/images/I/71UypkUjStL._AC_UF894,1000_QL80_.jpg",
         avgRating: 4.2,
         reviews: [

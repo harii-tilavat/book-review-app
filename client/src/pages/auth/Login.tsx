@@ -6,8 +6,9 @@ import Button from "../../components/comman/Button";
 import { LockClosedIcon } from "@heroicons/react/16/solid";
 import { UserLoginModel } from "../../_models/UserModel";
 import { useAuth } from "../../context/AuthContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import authApi from "../../api/authApi";
+import LoaderSpinner from "../../components/comman/LoaderSpinner";
 
 // const toastOptions: ToastOptions = {
 //   position: "top-right",
@@ -22,6 +23,7 @@ import authApi from "../../api/authApi";
 const Login = () => {
   const navigate = useNavigate();
   const { loginUser, isAuthenticated } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -36,18 +38,23 @@ const Login = () => {
 
   const onSubmit = async (userData: UserLoginModel) => {
     try {
+      setIsLoading(true);
       const { data } = await authApi.login(userData);
       const { user, token } = data;
       // console.log("RESPONSE : ", response);
       loginUser(user, token);
-
+      setIsLoading(false);
       toast.success("Login successful!");
       navigate("/");
     } catch (error: any) {
       console.log(error);
       toast.error((error && error.message) || "Authentication failed! Please try again.");
+      setIsLoading(false);
     }
   };
+  if (isLoading) {
+    return <LoaderSpinner/>;
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
       <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 shadow-lg rounded-lg">

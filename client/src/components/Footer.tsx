@@ -1,10 +1,9 @@
 import { BookOpenIcon } from "@heroicons/react/16/solid";
-import React from "react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="bg-white rounded-lg shadow dark:bg-gray-800 mt-10">
+    <footer className="bg-white rounded-lg shadow dark:bg-gray-800 mt-10 sticky" style={{top:"100vh"}}>
       <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
         <div className="sm:flex sm:items-center sm:justify-between">
           <Link className="flex shrink-0 items-center gap-1" to={"/"}>

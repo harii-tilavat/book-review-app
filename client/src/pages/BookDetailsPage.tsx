@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Dialog, DialogTitle } from "@headlessui/react";
 import { StarIcon } from "@heroicons/react/24/solid";
-import { DUMMY_BOOKS } from "../utils/constants";
 import { useNavigate, useParams } from "react-router-dom";
 import { BookModel, ReviewModel } from "../_models/BookModel";
 import Button from "../components/comman/Button";
@@ -11,9 +10,9 @@ import bookApi from "../api/bookApi";
 import { toast } from "react-toastify";
 import LoadingCard from "../components/comman/LoadingCard";
 import BookCard from "../components/BookCard";
-
+import LoaderSpinner from "../components/comman/LoaderSpinner";
 const BookDetailsPage = ({}) => {
-  const [currentBook, setBook] = useState<BookModel>();
+  const [currentBook, setCurrentBook] = useState<BookModel>();
   const [bookList, setBookList] = useState<Array<BookModel>>([]); // It is Recommendation book list
   const [isLoading, setIsLoading] = useState(false); // It is Recommendation book list
   const [isReviewOpen, setIsReviewOpen] = useState(false);
@@ -27,7 +26,7 @@ const BookDetailsPage = ({}) => {
       if (id) {
         setIsLoading(true);
         const { book, recommendations } = await bookApi.getBookById(id);
-        setBook(book);
+        setCurrentBook(book);
         setBookList(recommendations);
         setIsLoading(false);
       }
@@ -40,6 +39,9 @@ const BookDetailsPage = ({}) => {
       fetchBook(params["id"]);
     }
   }, [params["id"]]);
+  if (isLoading) {
+    return <LoaderSpinner />;
+  }
   if (!currentBook) {
     return (
       <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 shadow-lg rounded-lg p-8 mt-5">

@@ -7,6 +7,8 @@ import { UserGroupIcon } from "@heroicons/react/16/solid";
 import { UserModel } from "../../_models/UserModel";
 // import { useAuth } from "../../context/AuthContext";
 import authApi from "../../api/authApi";
+import { useState } from "react";
+import LoaderSpinner from "../../components/comman/LoaderSpinner";
 
 const SignUp = () => {
   // Initialize the form with useForm hook and TypeScript types
@@ -17,18 +19,26 @@ const SignUp = () => {
   } = useForm<UserModel>();
 
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   // const { registerUser } = useAuth();
   // Handle form submission
   const onSubmit: SubmitHandler<UserModel> = async (user: UserModel) => {
     try {
+      setIsLoading(true);
       const data = await authApi.register(user);
+
+      setIsLoading(false);
+
       toast.success((data && data.message) || "Signup successfull!");
       navigate("/login");
     } catch (error: any) {
       toast.error((error && error.message) || "Signup failed! Please try again.");
+      setIsLoading(false);
     }
   };
-
+  if (isLoading) {
+    return <LoaderSpinner />;
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
       <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 shadow-lg rounded-lg">

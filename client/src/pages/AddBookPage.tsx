@@ -12,7 +12,7 @@ const AddBookPage: React.FC = () => {
       const { message } = await bookApi.createBook(formData);
       toast.success(message);
       setIsLoading(false);
-      // naviagate("/");
+      naviagate("/");
     } catch (error: any) {
       toast.error((error && error.message) || "Book not created. Try again.");
       console.log(error);

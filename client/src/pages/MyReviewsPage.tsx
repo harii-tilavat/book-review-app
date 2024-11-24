@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { ReviewModel } from "../_models/BookModel";
 import { Dialog, DialogTitle } from "@headlessui/react";
-import { DUMMY_BOOKS } from "../utils/constants";
 
 interface ReviewItemProps {
   review: ReviewModel;
@@ -34,7 +33,8 @@ const ReviewItem: React.FC<ReviewItemProps> = ({ review, onEdit, onDelete }) => 
   );
 };
 
-const MyReviews: React.FC<{ reviews: ReviewModel[] }> = ({ reviews = DUMMY_BOOKS[0].reviews }) => {
+const MyReviewsPage: React.FC = () => {
+  const [reviews, setReviews] = useState<Array<ReviewModel>>([]);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [selectedReview, setSelectedReview] = useState<ReviewModel | null>(null);
 
@@ -82,13 +82,7 @@ const MyReviews: React.FC<{ reviews: ReviewModel[] }> = ({ reviews = DUMMY_BOOKS
                   <label htmlFor="review" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     Review
                   </label>
-                  <textarea
-                    id="review"
-                    rows={4}
-                    placeholder="Write your review here..."
-                    defaultValue={selectedReview?.text || ""}
-                    className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm resize-none px-2 py-2"
-                  />
+                  <textarea id="review" rows={4} placeholder="Write your review here..." defaultValue={selectedReview?.text || ""} className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm resize-none px-2 py-2" />
                 </div>
 
                 <div className="flex justify-end space-x-3">
@@ -108,4 +102,4 @@ const MyReviews: React.FC<{ reviews: ReviewModel[] }> = ({ reviews = DUMMY_BOOKS
   );
 };
 
-export default MyReviews;
+export default MyReviewsPage;

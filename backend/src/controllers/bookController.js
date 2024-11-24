@@ -67,10 +67,8 @@ class BookController {
             .post(authMiddleware, upload.single('file'), bookValidSchema, validationHandler, async (req, res, next) => {
                 const { userId } = req.user;
                 try {
-                    // const book = await this.bookService.createBook(userId, { ...req.body, file: req.file });
-                    setTimeout(() => {
-                        return Response.created(res, Message.BOOK_CREATED, 'book');
-                    }, 2000);
+                    const book = await this.bookService.createBook(userId, { ...req.body, file: req.file });
+                    return Response.created(res, Message.BOOK_CREATED, book);
                 } catch (error) {
                     next(error);
                 }
@@ -78,6 +76,10 @@ class BookController {
             .put(authMiddleware, upload.single("file"), bookValidSchema, validationHandler, async (req, res, next) => {
                 try {
                     const { userId } = req.user;
+                    const { id } = req.body;
+                    if (!id) {
+                        throw new AppError(StatusCode.BAD_REQUEST, Message.INVALID_PARAMS);
+                    }
                     const book = await this.bookService.updatedBookById(userId, { ...req.body, file: req.file });
                     return Response.success(res, Message.BOOK_UPDATED, book);
                 } catch (error) {
