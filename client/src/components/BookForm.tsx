@@ -6,21 +6,24 @@ import { BookModel } from "../_models/BookModel";
 import { ArrowLeftIcon } from "@heroicons/react/16/solid";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
+import bookApi from "../api/bookApi";
+import GenreModel from "../_models/GenreModel";
 
 export interface BookFormValues {
   title: string;
   author: string;
   cover: File | null | string;
   isbn: string;
-  genre: string;
+  genreId: string;
+  description?: string;
 }
 interface BookFormProps {
   bookDetail?: BookModel;
-  onSubmit: (book: BookFormValues) => void;
+  onSubmit: (book: FormData) => void;
 }
 
 const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit }) => {
-  const [formData, setFormData] = useState<FormData>();
+  const [genre, setGenre] = useState<Array<GenreModel>>([]);
   const {
     control,
     register,
@@ -35,12 +38,22 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit }) => {
       author: bookDetail?.author || "",
       cover: null,
       isbn: bookDetail?.isbn || "",
-      genre: bookDetail?.genre.name || "",
+      genreId: bookDetail?.genre.id || "",
+      description: bookDetail?.description || "",
     },
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  const fetchGenre = async () => {
+    try {
+      const genreList = await bookApi.getAllGenre();
+      setGenre(genreList);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     if (bookDetail?.cover) {
       // If cover available means it is edit form.
@@ -48,10 +61,10 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit }) => {
       setValue("cover", bookDetail.cover); // Set the value for cover if it's an edit
     }
   }, [bookDetail, setValue]);
-  const handleSubmitForm: SubmitHandler<BookFormValues> = (book: BookFormValues) => {
-    onSubmit(book);
-    // Logic to save the book
-  };
+
+  useEffect(() => {
+    fetchGenre();
+  }, []);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -76,8 +89,28 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit }) => {
       fileInput.value = "";
     }
   };
+  // Prepare FormData object
+  const prepareFormData = (data: BookFormValues) => {
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("author", data.author);
+    formData.append("genreId", data.genreId);
+    formData.append("description", data.description || "");
+    if (data.cover) {
+      if(typeof data.cover !== 'string'){
+        formData.append("file", data.cover);
+      }else{
+        formData.append("cover",data.cover);
+      }
+    }
+  };
+  const handleSubmitForm: SubmitHandler<BookFormValues> = (book: BookFormValues) => {
+    // Working on formData.
+    // onSubmit(formData);
+    // Logic to save the book
+  };
   const handleResetForm = () => {
-    reset({ author: bookDetail?.author || "", title: bookDetail?.title || "", isbn: bookDetail?.isbn || "", genre: bookDetail?.genre.name || "", cover: bookDetail?.cover || null });
+    reset({ author: bookDetail?.author || "", title: bookDetail?.title || "", isbn: bookDetail?.isbn || "", genreId: bookDetail?.genre.id || "", cover: bookDetail?.cover || null });
     if (bookDetail) {
       setImagePreview(bookDetail.cover);
       return;
@@ -131,7 +164,22 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit }) => {
             <TextBox id="isbn" label="ISBN" placeholder="Enter ISBN number" error={errors.isbn} register={register("isbn", { required: "ISBN is required" })} />
 
             {/* Genre */}
-            <TextBox id="genre" label="Genre" placeholder="Enter book genre" error={errors.genre} register={register("genre", { required: "Genre is required" })} />
+            <div className="mb-4">
+              <label htmlFor={"genre"} className="block text-gray-700 dark:text-gray-100 font-semibold text-sm">
+                Genre
+              </label>
+              <select id={"genre"} className="mt-1 p-2 w-full border rounded-md border-blue-300 dark:border-gray-400 dark:bg-gray-800 dark:text-gray-100" {...register("genreId", { required: "Genre is required" })}>
+                <option value="">Select...</option>
+                {genre.map((option) => (
+                  <option value={option.id} key={option.id}>
+                    {option.name}
+                  </option>
+                ))}
+              </select>
+              {errors.genreId && <p className="text-red-500 text-sm">{errors.genreId.message}</p>}
+            </div>
+            {/* ISBN */}
+            <TextBox id="description" label="Description" placeholder="Enter description" error={errors.isbn} register={register("description")} />
 
             {/* Submit Button */}
             <div className="flex justify-end space-x-4">

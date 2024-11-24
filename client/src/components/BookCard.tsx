@@ -60,7 +60,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, onDelete, showActions = false
           </div>
         ) : (
           // No Reviews Found Message
-          <div className="mt-3 text-gray-500 dark:text-gray-400 text-sm">No reviews found for this book.</div>
+          <div className="mt-3 text-gray-500 dark:text-gray-400 text-sm">No reviews available.</div>
         )}
       </div>
 

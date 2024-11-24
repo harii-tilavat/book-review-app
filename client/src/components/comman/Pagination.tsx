@@ -7,8 +7,6 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
-  console.log("TOTAL : ", totalPages);
-  console.log("CURRENT page in pagination : ", currentPage);
   if (totalPages <= 1) return null; // Don't render pagination if there's only one page
 
   return (
