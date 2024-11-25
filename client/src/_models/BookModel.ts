@@ -17,6 +17,7 @@ export interface BookModel {
 }
 
 export interface ReviewModel {
+    bookId:string;
     rating: number;
     text: string;
     user: { username: string };

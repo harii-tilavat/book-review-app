@@ -1,5 +1,5 @@
 class BookModel {
-    constructor({ id, userId, title, isbn, author, cover, avgRating, createdAt, updatedAt, reviews, genreId, genre, user }) {
+    constructor({ id, userId, title, isbn, author, cover, avgRating, createdAt, updatedAt, reviews, genreId, genre, user, description }) {
         this.id = id;
         // this.userId = userId;  // ID of the user who created the book
         this.title = title;  // Title of the book
@@ -7,7 +7,8 @@ class BookModel {
         this.genreId = genreId;  // Genre of the book
         this.genre = genre;
         this.cover = cover;  // Cover image URL or data of the book
-        this.isbn = isbn;  // Cover image URL or data of the book
+        this.description = description;  // Cover image URL or data of the book
+        this.isbn = isbn;  // ISBN the book
         this.avgRating = avgRating;
         this.reviews = reviews;
         this.createdAt = createdAt;  // Timestamp when the book was created

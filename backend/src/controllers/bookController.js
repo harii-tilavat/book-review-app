@@ -57,8 +57,8 @@ class BookController {
                     if (!id) {
                         throw new AppError(StatusCode.BAD_REQUEST, Message.INVALID_PARAMS)
                     }
-                    const book = await this.bookService.getBookById(id);
-                    return Response.success(res, Message.SUCCESS, book);
+                    const data = await this.bookService.getBookById(id);
+                    return Response.success(res, Message.SUCCESS, data);
 
                 } catch (error) {
                     next(error);

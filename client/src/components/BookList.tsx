@@ -25,6 +25,7 @@ const BookList = ({ books = [], isLoading, isMyBooks }: { books: Array<BookModel
     const { message } = await bookApi.deleteBook(bookId);
     toast.success(message || "Book deleted successfully");
     closeDeleteModal();
+    navigate("/"); // Redirect to book list or home
   }
   return (
     <>

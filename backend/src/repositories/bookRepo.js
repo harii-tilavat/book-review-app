@@ -96,7 +96,7 @@ class BookRepo {
         try {
             const newBook = await prisma.book.update({
                 where: { id },
-                data: book
+                data: book, include: { genre: true }
             });
             return newBook;
         } catch (error) {

@@ -24,7 +24,6 @@ interface BookFormProps {
 }
 
 const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) => {
-  console.log("BOOK DETAIL : ", bookDetail);
   const [genre, setGenre] = useState<Array<GenreModel>>([]);
   const {
     control,
@@ -40,7 +39,7 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
       author: bookDetail?.author || "",
       cover: null,
       isbn: bookDetail?.isbn || "",
-      genreId: bookDetail?.genre.id || "",
+      genreId: bookDetail?.genreId || "",
       description: bookDetail?.description || "",
     },
   });
@@ -48,14 +47,6 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const fetchGenre = async () => {
-    try {
-      const genreList = await bookApi.getAllGenre();
-      setGenre(genreList);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   useEffect(() => {
     if (bookDetail?.cover) {
       // If cover available means it is edit form.
@@ -65,6 +56,15 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
   }, [bookDetail, setValue]);
 
   useEffect(() => {
+    const fetchGenre = async () => {
+      try {
+        const genreList = await bookApi.getAllGenre();
+        setGenre(genreList);
+        setValue("genreId", bookDetail?.genreId || "");
+      } catch (error) {
+        console.log(error);
+      }
+    };
     fetchGenre();
   }, []);
 
@@ -98,6 +98,7 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
     formData.append("author", data.author);
     formData.append("genreId", data.genreId);
     formData.append("description", data.description || "");
+    formData.append("isbn", data.isbn || "");
     if (data.cover) {
       if (typeof data.cover !== "string") {
         formData.append("file", data.cover);
@@ -126,8 +127,9 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
     <>
       <div className="max-w-6xl mx-auto py-4">
         <button
-          onClick={() => navigate("/")} // Replace with your route or navigation logic
-          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm">
+          onClick={() => history && history.back()} // Replace with your route or navigation logic
+          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm"
+        >
           <ArrowLeftIcon className="h-5 w-5 mr-2" /> {/* Icon with margin */}
           Back to Book List
         </button>
@@ -173,7 +175,7 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
               <label htmlFor={"genre"} className="block text-gray-700 dark:text-gray-100 font-semibold text-sm">
                 Genre
               </label>
-              <select id={"genre"} className="mt-1 p-2 w-full border rounded-md border-blue-300 dark:border-gray-400 dark:bg-gray-800 dark:text-gray-100" {...register("genreId", { required: "Genre is required" })}>
+              <select id={"genre"} className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-2 py-2" {...register("genreId", { required: "Genre is required" })}>
                 <option value="">Select...</option>
                 {genre.map((option) => (
                   <option value={option.id} key={option.id}>
@@ -183,7 +185,7 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
               </select>
               {errors.genreId && <p className="text-red-500 text-sm">{errors.genreId.message}</p>}
             </div>
-            {/* ISBN */}
+            {/* Description */}
             <TextBox id="description" label="Description" placeholder="Enter description" error={errors.isbn} register={register("description")} isTextArea />
 
             {/* Submit Button */}

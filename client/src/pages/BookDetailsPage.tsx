@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import LoadingCard from "../components/comman/LoadingCard";
 import BookCard from "../components/BookCard";
 import LoaderSpinner from "../components/comman/LoaderSpinner";
+import ReviewFormModal from "../components/comman/ReviewFormModal";
 const BookDetailsPage = ({}) => {
   const [currentBook, setCurrentBook] = useState<BookModel>();
   const [bookList, setBookList] = useState<Array<BookModel>>([]); // It is Recommendation book list
@@ -39,6 +40,14 @@ const BookDetailsPage = ({}) => {
       fetchBook(params["id"]);
     }
   }, [params["id"]]);
+
+  function handleDeleteBook(id: string) {
+    //
+  }
+  function handleSubmitReview(data: any) {
+    
+    console.log(data);
+  }
   if (isLoading) {
     return <LoaderSpinner />;
   }
@@ -48,8 +57,9 @@ const BookDetailsPage = ({}) => {
         <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6">Book Not Found</h1>
         <p className="text-lg text-gray-600 dark:text-gray-300">Sorry, we couldn't find the book you were looking for. Please check the ID or try again later.</p>
         <button
-          onClick={() => navigate("/")} // Replace with your route or navigation logic
-          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm mt-4">
+          onClick={() => history && history.back()} // Replace with your route or navigation logic
+          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm mt-4"
+        >
           <ArrowLeftIcon className="h-5 w-5 mr-2" /> {/* Icon with margin */}
           Back to Book List
         </button>
@@ -61,7 +71,8 @@ const BookDetailsPage = ({}) => {
       <div className="navigate-back my-3">
         <button
           onClick={() => navigate("/")} // Replace with your route or navigation logic
-          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm">
+          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm"
+        >
           <ArrowLeftIcon className="h-5 w-5 mr-2" /> {/* Icon with margin */}
           Back to Book List
         </button>
@@ -100,6 +111,22 @@ const BookDetailsPage = ({}) => {
             )}
           </div>
 
+          {/* Buttons Section */}
+          <div className="mt-6 flex space-x-4">
+            <Button onClick={() => navigate(`/edit-book/${currentBook.id}`)} className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-4 py-2 rounded-md shadow">
+              Edit Book
+            </Button>
+            <Button
+              onClick={() => {
+                if (window.confirm("Are you sure you want to delete this book?")) {
+                  handleDeleteBook(currentBook.id); // Replace with your delete logic
+                }
+              }}
+              className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-md shadow"
+            >
+              Delete Book
+            </Button>
+          </div>
           {/* Add Review Button */}
           <Button onClick={handleOpenReview} className="mt-4">
             Add Your Review
@@ -132,7 +159,7 @@ const BookDetailsPage = ({}) => {
         )}
       </div>
       {/* Add Review Modal */}
-      {isReviewOpen && (
+      {false && (
         <Dialog open={isReviewOpen} onClose={handleCloseReview} className="fixed z-10 inset-0 overflow-y-auto">
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-lg">
@@ -177,6 +204,7 @@ const BookDetailsPage = ({}) => {
           </div>
         </Dialog>
       )}
+      {isReviewOpen && <ReviewFormModal isReviewOpen={isReviewOpen} onCloseReview={handleCloseReview} onSubmitReview={handleSubmitReview} />}
     </div>
   );
 };
