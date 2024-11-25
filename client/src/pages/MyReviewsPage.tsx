@@ -4,6 +4,10 @@ import { Dialog, DialogTitle } from "@headlessui/react";
 import { useReviewApi } from "../hooks/useReviewApi";
 import { useNavigate } from "react-router-dom";
 import ReviewFormModal, { ReviewFormValues } from "../components/comman/ReviewFormModal";
+import ConfirmationModal from "../components/comman/ConfirmationModal";
+import { useModal } from "../context/ModalContext";
+import LoaderSpinner from "../components/comman/LoaderSpinner";
+import Rating from "../components/comman/Rating";
 // import ReviewItem from "../components/ReviewItem";
 
 interface ReviewItemProps {
@@ -42,9 +46,7 @@ const MyReviewItem: React.FC<ReviewItemProps> = ({ review, onEdit, onDelete }) =
 
         {/* Rating */}
         <div className="flex items-center space-x-2 mt-2">
-          <div className="text-yellow-400">
-            {"★".repeat(review.rating)} {"☆".repeat(5 - review.rating)} {/* Remaining stars */}
-          </div>
+          <Rating rating={review.rating} />
           <div className="text-gray-500 dark:text-gray-300">({review.rating} stars)</div>
         </div>
 
@@ -65,22 +67,41 @@ const MyReviewItem: React.FC<ReviewItemProps> = ({ review, onEdit, onDelete }) =
 
 const MyReviewsPage: React.FC = () => {
   const [reviews, setReviews] = useState<Array<ReviewModel>>([]);
-  const { getMyReviews, isLoading, updateReview } = useReviewApi();
+  const { getMyReviews, isLoading, updateReview, deleteReview } = useReviewApi();
+  const { showModal } = useModal();
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [selectedReview, setSelectedReview] = useState<ReviewModel | null>(null);
 
   const handleCloseReview = () => setIsReviewOpen(false);
-
   const handleEditReview = (reviewId: string) => {
     const reviewToEdit = reviews.find((review) => review.id === reviewId);
     setSelectedReview(reviewToEdit || null);
     setIsReviewOpen(true);
   };
-
-  const handleDeleteReview = (reviewId: string) => {
-    // Add your logic to delete the review
-    console.log(`Delete review with ID: ${reviewId}`);
+  const openDeleteModal = (reviewId: string) => {
+    // showModal
+    showModal({
+      title: "Delete Review",
+      description: "Are you sure you want to delete this review? This action cannot be undone.",
+      confirmLabel: "Yes, Delete",
+      isLoading,
+      loadingText: "Deleting...",
+      cancelLabel: "Cancel",
+      confirmType: "danger",
+      onConfirm: () => handleDeleteReview(reviewId),
+    });
   };
+  const handleDeleteReview = async (reviewId: string) => {
+    // Add your logic to delete the review
+    if (reviewId) {
+      await deleteReview(reviewId);
+      setReviews((prevReviews) => {
+        return [...prevReviews.filter((r) => r.id !== reviewId)];
+      });
+    }
+    console.log(`Delete not success review with ID: ${reviewId}`);
+  };
+
   const handleSubmitReview = async (reviewData: ReviewFormValues) => {
     if (selectedReview) {
       const updatedReview = await updateReview({ ...reviewData, bookId: selectedReview.bookId, id: selectedReview.id } as ReviewModel);
@@ -100,11 +121,14 @@ const MyReviewsPage: React.FC = () => {
     }
     fethcReviews();
   }, []);
+  if (isLoading) {
+    return <LoaderSpinner />;
+  }
   return (
     <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 rounded-lg p-8 mt-5">
       <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6">My Reviews</h1>
 
-      <div>{reviews.length === 0 ? <div className="text-lg text-gray-600 dark:text-gray-300">You haven't reviewed any books yet.</div> : reviews.map((review) => <MyReviewItem key={review.id} review={review} onEdit={handleEditReview} onDelete={handleDeleteReview} />)}</div>
+      <div>{reviews.length === 0 ? <div className="text-lg text-gray-600 dark:text-gray-300">You haven't reviewed any books yet.</div> : reviews.map((review) => <MyReviewItem key={review.id} review={review} onEdit={handleEditReview} onDelete={openDeleteModal} />)}</div>
 
       {/* Add or Edit Review Modal */}
       {false && selectedReview && (

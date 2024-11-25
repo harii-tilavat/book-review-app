@@ -3,6 +3,7 @@ import { ReviewModel } from "../_models/BookModel";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/16/solid";
 import { useAuth } from "../context/AuthContext";
+import Rating from "./comman/Rating";
 
 interface ReviewProps {
   review: ReviewModel;
@@ -24,11 +25,7 @@ const ReviewItem: React.FC<ReviewProps> = ({ review, onDelete, onEdit }) => {
       <div className="flex-grow">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{review.user?.username}</h3>
-          <div className="flex items-center">
-            {[...Array(5)].map((_, idx) => (
-              <StarIcon key={idx} className={`h-5 w-5 ${idx < review.rating ? "text-yellow-500" : "text-gray-300 dark:text-gray-600"}`} />
-            ))}
-          </div>
+          <Rating rating={review.rating}/>
         </div>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{review.text}</p>
       </div>

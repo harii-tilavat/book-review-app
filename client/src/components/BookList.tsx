@@ -1,12 +1,12 @@
 import BookCard from "./BookCard";
 import { BookModel } from "../_models/BookModel";
-import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Button from "./comman/Button";
 import LoadingCard from "./comman/LoadingCard";
 import bookApi from "../api/bookApi";
+import ConfirmationModal from "./comman/ConfirmationModal";
 
 const BookList = ({ books = [], isLoading, isMyBooks }: { books: Array<BookModel>; isLoading: boolean; isMyBooks: boolean }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -21,7 +21,7 @@ const BookList = ({ books = [], isLoading, isMyBooks }: { books: Array<BookModel
     setIsDeleteModalOpen(false);
     setBookId("");
   }
-  async function deleteBook() {
+  async function handleDeleteBook() {
     const { message } = await bookApi.deleteBook(bookId);
     toast.success(message || "Book deleted successfully");
     closeDeleteModal();
@@ -47,21 +47,7 @@ const BookList = ({ books = [], isLoading, isMyBooks }: { books: Array<BookModel
       </div>
 
       {/* Delete Confirmation Modal */}
-      <Dialog open={isDeleteModalOpen} onClose={closeDeleteModal}>
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <DialogPanel className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-            <DialogTitle className="text-xl font-semibold mb-4">Are you sure you want to delete this book?</DialogTitle>
-            <div className="flex space-x-4">
-              <button className="bg-red-500 text-white px-4 py-2 rounded-md" onClick={deleteBook}>
-                Yes, Delete
-              </button>
-              <button className="bg-gray-500 text-white px-4 py-2 rounded-md" onClick={closeDeleteModal}>
-                Cancel
-              </button>
-            </div>
-          </DialogPanel>
-        </div>
-      </Dialog>
+      <ConfirmationModal isOpen={isDeleteModalOpen} onCancel={closeDeleteModal} onConfirm={handleDeleteBook} description="This action cannot be undone. Do you really want to delete this book?" confirmLabel="Yes, Delete" cancelLabel="Cancle" />
     </>
   );
 };

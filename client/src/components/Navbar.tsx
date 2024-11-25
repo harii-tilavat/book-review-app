@@ -5,6 +5,7 @@ import Button from "./comman/Button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { useAuth } from "../context/AuthContext";
+import { useModal } from "../context/ModalContext";
 
 interface NavigationModel {
   name: string;
@@ -23,6 +24,7 @@ const navigation: Array<NavigationModel> = [
 
 export default function Example() {
   const { theme, toggleTheme } = useTheme();
+  const { showModal } = useModal();
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, currentUser, logoutUser } = useAuth();
@@ -35,10 +37,11 @@ export default function Example() {
     return location.pathname === href;
   }
   function handleLogout() {
-    if (confirm("Are you sure to logout?")) {
-      logoutUser();
-      navigate("/login");
-    }
+    showModal({
+      title: "Are you sure to logout?",
+      confirmLabel: "Yes, Logout.",
+      onConfirm: logoutUser,
+    });
   }
   return (
     <Disclosure as="nav" className="bg-white dark:bg-gray-800 fixed top-0 left-0 right-0 shadow-lg z-10">
@@ -101,7 +104,9 @@ export default function Example() {
                   className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-gray-25 dark:bg-gray-900 py-1 shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                 >
                   <MenuItem>
-                    <span className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-gray-100 data-[focus]:bg-gray-100 dark:data-[focus]:bg-gray-700 data-[focus]:outline-none" onClick={()=>navigate('/my-reviews')}>My reviews</span>
+                    <span className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-gray-100 data-[focus]:bg-gray-100 dark:data-[focus]:bg-gray-700 data-[focus]:outline-none" onClick={() => navigate("/my-reviews")}>
+                      My reviews
+                    </span>
                   </MenuItem>
                   <MenuItem>
                     <span className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-gray-100 data-[focus]:bg-gray-100 dark:data-[focus]:bg-gray-700 data-[focus]:outline-none">Settings</span>

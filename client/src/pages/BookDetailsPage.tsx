@@ -14,13 +14,14 @@ import LoaderSpinner from "../components/comman/LoaderSpinner";
 import ReviewFormModal, { ReviewFormValues } from "../components/comman/ReviewFormModal";
 import { useAuth } from "../context/AuthContext";
 import { useReviewApi } from "../hooks/useReviewApi";
+import Rating from "../components/comman/Rating";
 const BookDetailsPage = () => {
   const [currentBook, setCurrentBook] = useState<BookModel>();
   const { currentUser } = useAuth();
   const [bookList, setBookList] = useState<Array<BookModel>>([]); // It is Recommendation book list
   const [isLoading, setIsLoading] = useState(false); // It is Recommendation book list
 
-  const { createReview, deleteReview, isLoading: isReviewLoading } = useReviewApi();
+  const { createReview, isLoading: isReviewLoading } = useReviewApi();
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const params = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ const BookDetailsPage = () => {
           reviews: [...prevBook.reviews, createdReview],
         };
       });
-      console.log(data);
+      handleCloseReview();
     }
   }
   if (isLoading) {
@@ -116,9 +117,7 @@ const BookDetailsPage = () => {
               <>
                 <h2 className="text-xl font-semibold ">Average Rating</h2>
                 <div className="flex items-center mt-2">
-                  {[...Array(5)].map((_, index) => (
-                    <StarIcon key={index} className={`h-6 w-6 ${index < currentBook.avgRating ? "text-yellow-500" : "text-gray-300"}`} />
-                  ))}
+                  <Rating rating={currentBook.avgRating} />
                   <span className="ml-2 text-sm text-gray-600 dark:text-gray-100">
                     {currentBook.avgRating}/5 ({currentBook.reviews.length} Reviews)
                   </span>
@@ -182,52 +181,7 @@ const BookDetailsPage = () => {
         )}
       </div>
       {/* Add Review Modal */}
-      {false && (
-        <Dialog open={isReviewOpen} onClose={handleCloseReview} className="fixed z-10 inset-0 overflow-y-auto">
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-lg">
-              {/* Title */}
-              <DialogTitle className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Add Your Review</DialogTitle>
-
-              {/* Form */}
-              <form className="mt-6 space-y-6">
-                {/* Rating Field */}
-                <div>
-                  <label htmlFor="rating" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                    Rating
-                  </label>
-                  <select id="rating" className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-1 py-2">
-                    <option value="1">1 Star</option>
-                    <option value="2">2 Stars</option>
-                    <option value="3">3 Stars</option>
-                    <option value="4">4 Stars</option>
-                    <option value="5">5 Stars</option>
-                  </select>
-                </div>
-
-                {/* Review Field */}
-                <div>
-                  <label htmlFor="review" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                    Review
-                  </label>
-                  <textarea id="review" rows={4} placeholder="Write your review here..." className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm resize-none px-2 py-2"></textarea>
-                </div>
-
-                {/* Buttons */}
-                <div className="flex justify-end space-x-3">
-                  <button type="button" className="bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-md shadow hover:bg-gray-400 dark:hover:bg-gray-500 focus:outline-none focus:ring focus:ring-gray-300" onClick={handleCloseReview}>
-                    Cancel
-                  </button>
-                  <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300">
-                    Submit
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </Dialog>
-      )}
-      {isReviewOpen && <ReviewFormModal isReviewOpen={isReviewOpen} onCloseReview={handleCloseReview} onSubmitReview={handleSubmitReview} isLoading/>}
+      {isReviewOpen && <ReviewFormModal isReviewOpen={isReviewOpen} onCloseReview={handleCloseReview} onSubmitReview={handleSubmitReview} isLoading={isReviewLoading} />}
     </div>
   );
 };

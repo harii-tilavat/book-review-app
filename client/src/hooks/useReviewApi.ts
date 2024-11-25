@@ -50,11 +50,11 @@ export const useReviewApi = () => {
         }
     }, []);
 
-    // Update Review Handler
-    const deleteReview = useCallback(async (reviewData: ReviewModel) => {
+    // Delete Review Handler
+    const deleteReview = useCallback(async (id: string) => {
         setIsLoading(true);
         try {
-            const { message } = await reviewApi.updateReview(reviewData);
+            const { message } = await reviewApi.deleteReview(id);
             toast.success(message || "Review deleted successfully!");
         } catch (error: any) {
             toast.error("Failed to update review: " + error?.message || "Unknown error");
