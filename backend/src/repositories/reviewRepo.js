@@ -5,7 +5,16 @@ class ReviewRepo {
     // Get all
     async getAllReviewsByUserId(userId) {
         try {
-            return await prisma.review.findMany({ where: { userId }, include: { book: true } });
+            return await prisma.review.findMany({
+                where: { userId }, include: {
+                    book: true,
+                    user: {
+                        select: {
+                            username: true
+                        }
+                    }
+                }
+            });
         } catch (error) {
             throw error;
         }
@@ -18,6 +27,13 @@ class ReviewRepo {
                     bookId,
                     userId,
                     ...review
+                },
+                include: {
+                    user: {
+                        select: {
+                            username: true
+                        }
+                    }
                 }
             })
         } catch (error) {
@@ -26,14 +42,24 @@ class ReviewRepo {
     }
     async updateReviewById(id, review) {
         try {
-            return prisma.review.update({ where: { id }, data: review });
+            return prisma.review.update({
+                where: { id }, data: review, include: {
+                    user: { select: { username: true } },
+                    book: true
+                }
+            });
         } catch (error) {
             throw error;
         }
     }
     async getReviewById(id) {
         try {
-            return await prisma.review.findUnique({ where: { id } });
+            return await prisma.review.findUnique({
+                where: { id }, include: {
+                    user: { select: { username: true } },
+                    book: true
+                }
+            });
         } catch (error) {
             throw error;
         }

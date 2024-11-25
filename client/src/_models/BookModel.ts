@@ -12,17 +12,20 @@ export interface BookModel {
     genreId: string
     avgRating: number;
     reviews: Array<ReviewModel>;
-    createdAt:string;
-    updatedAt:string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface ReviewModel {
-    bookId:string;
+    bookId: string;
+    book?:BookModel;
+    createdAt?:string;
     rating: number;
     text: string;
-    user: { username: string };
+    user?: { username: string };
     id: string;
 }
+
 export interface BookResponseModel {
     book: BookModel;
     recommendations: Array<BookModel>;

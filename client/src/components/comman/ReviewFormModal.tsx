@@ -3,10 +3,12 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import TextBox from "./TextBox";
 import { ReviewModel } from "../../_models/BookModel";
+import Button from "./Button";
 
 interface ReviewModelProps {
   isReviewOpen: boolean;
-  currentReview?: ReviewModel;
+  selectedReview?: ReviewModel;
+  isLoading: boolean;
   onCloseReview: () => void;
   onSubmitReview: (data: ReviewFormValues) => void;
 }
@@ -14,13 +16,13 @@ export interface ReviewFormValues {
   rating: number;
   text: string;
 }
-const ReviewFormModal: React.FC<ReviewModelProps> = ({ currentReview, isReviewOpen, onCloseReview, onSubmitReview }) => {
+const ReviewFormModal: React.FC<ReviewModelProps> = ({ selectedReview, isReviewOpen, onCloseReview, onSubmitReview, isLoading = false }) => {
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm<ReviewFormValues>({
-    defaultValues: { rating: currentReview?.rating || 1, text: currentReview?.text || "" },
+    defaultValues: { rating: selectedReview?.rating || 1, text: selectedReview?.text || "" },
   });
   function handleSubmitReview(data: ReviewFormValues): void {
     onSubmitReview({ ...data, rating: +data.rating });
@@ -58,9 +60,19 @@ const ReviewFormModal: React.FC<ReviewModelProps> = ({ currentReview, isReviewOp
                   <button type="button" className="bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-md shadow hover:bg-gray-400 dark:hover:bg-gray-500 focus:outline-none focus:ring focus:ring-gray-300" onClick={onCloseReview}>
                     Cancel
                   </button>
-                  <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300">
-                    Submit
-                  </button>
+                  <Button type="submit" disabled={isLoading}>
+                    {isLoading ? (
+                      <div className="flex items-center space-x-2">
+                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                        </svg>
+                        <span>{selectedReview ? "Updating review..." : "Adding review..."}</span>
+                      </div>
+                    ) : (
+                      <span>{selectedReview ? "Update Review" : "Add Review"}</span>
+                    )}
+                  </Button>
                 </div>
               </form>
             </div>

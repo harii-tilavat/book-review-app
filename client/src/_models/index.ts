@@ -1,4 +1,4 @@
-export interface GenricReponseModel<T = any> {
+export interface GenericReponseModel<T = any> {
     statusCode?: number;
     message: string,
     data?: T;

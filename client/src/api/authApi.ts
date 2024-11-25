@@ -1,11 +1,11 @@
-import { GenricReponseModel } from '../_models';
+import { GenericReponseModel } from '../_models';
 import { LoginResponseModel, UserLoginModel, UserModel } from '../_models/UserModel';
 import { handleApiError } from '../utils/api';
 import axiosInstance from './axiosInstance';
 
 const authApi = {
     // Login API
-    login: async (user: UserLoginModel): Promise<GenricReponseModel<LoginResponseModel>> => {
+    login: async (user: UserLoginModel): Promise<GenericReponseModel<LoginResponseModel>> => {
         try {
             const response = await axiosInstance.post("/login", user);
             return response.data;
@@ -14,7 +14,7 @@ const authApi = {
             throw error;
         }
     },
-    register: async (user: UserModel): Promise<GenricReponseModel> => {
+    register: async (user: UserModel): Promise<GenericReponseModel> => {
         try {
             const response = await axiosInstance.post("/register", user);
             return response.data;

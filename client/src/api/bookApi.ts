@@ -1,4 +1,4 @@
-import { GenricReponseModel } from '../_models';
+import { GenericReponseModel } from '../_models';
 import { BookModel, BookResponseModel } from '../_models/BookModel';
 import GenreModel from '../_models/GenreModel';
 import { PaginationModel, PaginationResponseModel } from '../_models/PaginationModel';
@@ -27,7 +27,7 @@ const bookApi = {
             throw error;
         }
     },
-    createBook: async (formData: FormData): Promise<GenricReponseModel> => {
+    createBook: async (formData: FormData): Promise<GenericReponseModel> => {
         try {
             const { data } = await axiosInstance.post("/book", formData, {
                 headers: { "Content-Type": "multipart/form-data" }
@@ -38,7 +38,7 @@ const bookApi = {
             throw error;
         }
     },
-    updateBook: async (formData: FormData): Promise<GenricReponseModel> => {
+    updateBook: async (formData: FormData): Promise<GenericReponseModel> => {
         try {
             const { data } = await axiosInstance.put("/book", formData, {
                 headers: { "Content-Type": "multipart/form-data" }
@@ -50,7 +50,7 @@ const bookApi = {
         }
     },
 
-    deleteBook: async (id: string): Promise<GenricReponseModel> => {
+    deleteBook: async (id: string): Promise<GenericReponseModel> => {
         try {
             const { data } = await axiosInstance.delete("/book", { data: { id } });
             return data;

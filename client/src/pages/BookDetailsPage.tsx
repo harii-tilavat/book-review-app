@@ -11,17 +11,19 @@ import { toast } from "react-toastify";
 import LoadingCard from "../components/comman/LoadingCard";
 import BookCard from "../components/BookCard";
 import LoaderSpinner from "../components/comman/LoaderSpinner";
-import ReviewFormModal from "../components/comman/ReviewFormModal";
+import ReviewFormModal, { ReviewFormValues } from "../components/comman/ReviewFormModal";
 import { useAuth } from "../context/AuthContext";
+import { useReviewApi } from "../hooks/useReviewApi";
 const BookDetailsPage = () => {
   const [currentBook, setCurrentBook] = useState<BookModel>();
   const { currentUser } = useAuth();
   const [bookList, setBookList] = useState<Array<BookModel>>([]); // It is Recommendation book list
   const [isLoading, setIsLoading] = useState(false); // It is Recommendation book list
+
+  const { createReview, deleteReview, isLoading: isReviewLoading } = useReviewApi();
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const params = useParams<{ id: string }>();
   const navigate = useNavigate();
-  // const book: BookModel = DUMMY_BOOKS.find((b) => b.id === params["id"])!;
   const handleOpenReview = () => setIsReviewOpen(true);
   const handleCloseReview = () => setIsReviewOpen(false);
   async function fetchBook(id: string) {
@@ -46,8 +48,21 @@ const BookDetailsPage = () => {
   function handleDeleteBook(id: string) {
     //
   }
-  function handleSubmitReview(data: any) {
-    console.log(data);
+  async function handleSubmitReview(data: ReviewFormValues) {
+    if (currentBook?.id) {
+      const reviewData = { ...data, bookId: currentBook.id };
+      const createdReview = await createReview(reviewData as ReviewModel);
+
+      // Update the current book's reviews
+      setCurrentBook((prevBook) => {
+        if (!prevBook) return prevBook;
+        return {
+          ...prevBook,
+          reviews: [...prevBook.reviews, createdReview],
+        };
+      });
+      console.log(data);
+    }
   }
   if (isLoading) {
     return <LoaderSpinner />;
@@ -212,7 +227,7 @@ const BookDetailsPage = () => {
           </div>
         </Dialog>
       )}
-      {isReviewOpen && <ReviewFormModal isReviewOpen={isReviewOpen} onCloseReview={handleCloseReview} onSubmitReview={handleSubmitReview} />}
+      {isReviewOpen && <ReviewFormModal isReviewOpen={isReviewOpen} onCloseReview={handleCloseReview} onSubmitReview={handleSubmitReview} isLoading/>}
     </div>
   );
 };

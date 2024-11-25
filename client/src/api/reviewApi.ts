@@ -1,73 +1,47 @@
-import { GenricReponseModel } from '../_models';
-import { BookModel, BookResponseModel } from '../_models/BookModel';
-import GenreModel from '../_models/GenreModel';
-import { PaginationModel, PaginationResponseModel } from '../_models/PaginationModel';
-import { createQueryParams, handleApiError } from '../utils/api';
-import { mapToPaginatedResponse } from '../utils/pagination';
+import { GenericReponseModel } from '../_models';
+import { ReviewModel } from '../_models/BookModel';
+import { handleApiError } from '../utils/api';
 import axiosInstance from './axiosInstance';
 
 const reviewApi = {
     // Login API
-    getAllBooks: async <T>(params: PaginationModel, isMyBooks: boolean = false): Promise<PaginationResponseModel<T>> => {
+    getMyReviews: async (): Promise<GenericReponseModel<Array<ReviewModel>>> => {
         try {
-            const url = isMyBooks ? '/my-books' : '/books';
-            const { data } = await axiosInstance.get(url + createQueryParams(params));
-            return mapToPaginatedResponse<T>(data && data.data);
+            const response = await axiosInstance.get("/reviews");
+            return response.data;
         } catch (error) {
             handleApiError(error);
             throw error;
         }
     },
-    getBookById: async (id: string): Promise<BookResponseModel> => {
+    createReview: async (data: ReviewModel): Promise<GenericReponseModel<ReviewModel>> => {
         try {
-            const { data } = await axiosInstance.get("/book" + createQueryParams({ id }));
-            return data && data.data;
+            const { bookId, rating, text } = data;
+            const response = await axiosInstance.post("/review", { bookId, rating, text });
+            return response.data;
         } catch (error) {
             handleApiError(error);
             throw error;
         }
     },
-    createBook: async (formData: FormData): Promise<GenricReponseModel> => {
+    updateReview: async (data: ReviewModel): Promise<GenericReponseModel<ReviewModel>> => {
         try {
-            const { data } = await axiosInstance.post("/book", formData, {
-                headers: { "Content-Type": "multipart/form-data" }
-            });
-            return data;
+            const { bookId, rating, text, id } = data;
+            const response = await axiosInstance.put("/review", { bookId, rating, text, id });
+            return response.data;
         } catch (error) {
             handleApiError(error);
             throw error;
         }
     },
-    updateBook: async (formData: FormData): Promise<GenricReponseModel> => {
+    deleteReview: async (id: string): Promise<GenericReponseModel<ReviewModel>> => {
         try {
-            const { data } = await axiosInstance.put("/book", formData, {
-                headers: { "Content-Type": "multipart/form-data" }
-            });
-            return data;
+            const response = await axiosInstance.delete("/review", { data: { id } });
+            return response.data;
         } catch (error) {
             handleApiError(error);
             throw error;
         }
     },
-
-    deleteBook: async (id: string): Promise<GenricReponseModel> => {
-        try {
-            const { data } = await axiosInstance.delete("/book", { data: { id } });
-            return data;
-        } catch (error) {
-            handleApiError(error);
-            throw error;
-        }
-    },
-
-    getAllGenre: async (): Promise<Array<GenreModel>> => {
-        try {
-            const { data } = await axiosInstance.get("/categories");
-            return data && data.data;
-        } catch (error) {
-            handleApiError(error);
-            throw error;
-        }
-    }
 }
 export default reviewApi;

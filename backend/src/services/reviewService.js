@@ -5,6 +5,7 @@ const FileUploader = require("../utils/uploader");
 const { BookModel } = require("../models/bookModel");
 const ReviewRepo = require("../repositories/reviewRepo");
 const BookRepo = require("../repositories/bookRepo");
+const ReviewModel = require("../models/reviewModel");
 class ReviewService {
     constructor() {
         this.reviewRepo = new ReviewRepo();
@@ -14,7 +15,8 @@ class ReviewService {
     // Fetch all reviews by a user
     async getReviewsByUserId(userId) {
         try {
-            return await this.reviewRepo.getAllReviewsByUserId(userId);;
+            const reviews = await this.reviewRepo.getAllReviewsByUserId(userId);
+            return reviews;
         } catch (error) {
             throw error;
         }

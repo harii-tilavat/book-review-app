@@ -34,8 +34,12 @@ class ReviewController {
             .put(authMiddleware, reviewValidSchema, validationHandler, async (req, res, next) => {
                 try {
                     const { userId } = req.user;
-                    const { bookId, ...updatedReview } = req.body;
-                    const review = await this.reviewService.updateReviewById(userId, bookId, updatedReview);
+                    const { bookId, id, ...updatedReview } = req.body;
+
+                    if (!bookId || !id) {
+                        throw new AppError(StatusCode.BAD_REQUEST, Message.INVALID_PARAMS);
+                    }
+                    const review = await this.reviewService.updateReviewById(userId, bookId, { id, ...updatedReview });
                     return Response.success(res, Message.REVIEW_UPDATED, review);
                 } catch (error) {
                     next(error);
