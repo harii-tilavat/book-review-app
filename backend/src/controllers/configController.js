@@ -12,7 +12,7 @@ class ConfigController {
                 try {
                     const { email, password } = req.body;
                     const data = await this.configService.loginUser(email, password);
-                    return Response.success(res, `Login successful. Welcome back, ${data.user.username}!`, data);
+                    return Response.success(res, `Login success. Welcome back, ${data.user.username}!`, data);
                 } catch (error) {
                     next(error);
                 }

@@ -9,6 +9,7 @@ import { UserModel } from "../../_models/UserModel";
 import authApi from "../../api/authApi";
 import { useState } from "react";
 import LoaderSpinner from "../../components/comman/LoaderSpinner";
+import { useAuthApi } from "../../hooks/useAuthApi";
 
 const SignUp = () => {
   // Initialize the form with useForm hook and TypeScript types
@@ -17,23 +18,14 @@ const SignUp = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<UserModel>();
-
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading, register: registerUser } = useAuthApi();
   // const { registerUser } = useAuth();
   // Handle form submission
   const onSubmit: SubmitHandler<UserModel> = async (user: UserModel) => {
     try {
-      setIsLoading(true);
-      const data = await authApi.register(user);
-
-      setIsLoading(false);
-
-      toast.success((data && data.message) || "Signup successfull!");
-      navigate("/login");
+      registerUser(user);
     } catch (error: any) {
-      toast.error((error && error.message) || "Signup failed! Please try again.");
-      setIsLoading(false);
+      console.log(error);
     }
   };
   if (isLoading) {

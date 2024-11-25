@@ -127,7 +127,7 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
     <>
       <div className="max-w-6xl mx-auto py-4">
         <button
-          onClick={() => history && history.back()} // Replace with your route or navigation logic
+          onClick={() => navigate("/")} // Replace with your route or navigation logic
           className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm"
         >
           <ArrowLeftIcon className="h-5 w-5 mr-2" /> {/* Icon with margin */}
@@ -175,7 +175,7 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
               <label htmlFor={"genre"} className="block text-gray-700 dark:text-gray-100 font-semibold text-sm">
                 Genre
               </label>
-              <select id={"genre"} className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-2 py-2" {...register("genreId", { required: "Genre is required" })}>
+              <select id={"genre"} className="block w-full rounded-md border border-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-2 py-2" {...register("genreId", { required: "Genre is required" })}>
                 <option value="">Select...</option>
                 {genre.map((option) => (
                   <option value={option.id} key={option.id}>

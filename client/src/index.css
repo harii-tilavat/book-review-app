@@ -3,5 +3,9 @@
 @tailwind utilities;
 
 html {
-    padding: 0 !important;
+  padding: 0 !important;
+}
+.Toastify__toast {
+  font-size: 14px; /* Change the font size to your desired size */
+  font-family: inherit;
 }

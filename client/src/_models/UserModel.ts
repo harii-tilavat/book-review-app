@@ -8,3 +8,7 @@ export interface UserLoginModel {
   email: string;
   password: string;
 }
+export interface LoginResponseModel {
+  token: string;
+  user: UserModel;
+}
