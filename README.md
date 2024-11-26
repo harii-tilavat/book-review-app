@@ -29,5 +29,88 @@ A full-stack **Book Review App** built with modern technologies. The app allows 
 - **MySQL**: Relational database for storing book and review data.
 - **Cloudinary**: For image upload and storage.
 
+## 🛠️ Backend Routes
+
+### Authentication
+- **`POST /api/register`**: Register a new user.  
+- **`POST /api/login`**: Login an existing user.  
+
+---
+
+### Books
+- **`GET /api/books`**: Get a paginated list of books.  
+- **`POST /api/books`**: Add a new book.  
+- **`PUT /api/books/:id`**: Update an existing book.  
+- **`DELETE /api/books/:id`**: Delete a book by ID.  
+
+---
+
+### Reviews
+- **`GET /api/reviews`**: Get all reviews for a book.  
+- **`POST /api/reviews`**: Add a review for a book.  
+- **`PUT /api/reviews/:id`**: Update a review by ID.  
+- **`DELETE /api/reviews/:id`**: Delete a review by ID.  
+
+---
+
+### Genres
+- **`GET /api/genres`**: Get all available genres.  
+
+---
+
+### Note
+- Ensure you include the `Authorization` header with your access token for protected routes.
+- Use appropriate HTTP methods (`GET`, `POST`, `PUT`, `DELETE`) for each endpoint.
 
 
+### ⚙️ Setup Instructions
+ 
+---
+### Backend Setup
+
+```bash
+# Navigate to the backend directory
+cd backend
+
+# Install dependencies:
+npm install
+
+# Configure the .env file:
+# Create a .env file in the backend directory with the following content:
+
+PORT=8080
+DATABASE_URL="mysql-db-connection-url"
+JWT_SECRET="your-secret-key"
+
+CLOUD_NAME='cloudinary-cloud-name'
+CLOUD_API_KEY='cloudinary-api-key'
+CLOUD_API_SECRET='cloudinary-api-secret'
+
+# Run database migrations:
+npx prisma migrate dev --name init
+
+# Generates Prisma Client to interact with the database.
+npx prisma generate
+
+# Start the backend server:
+npm start
+# or
+npm run dev
+```
+
+### Frontend Setup
+
+```bash
+# Navigate to the client directory:
+cd client
+
+# Install dependencies:
+npm install
+# or
+npm install -f
+
+# Start the development server:
+npm run dev
+```
+You're now ready to launch the Book Review App! 🚀
+---
