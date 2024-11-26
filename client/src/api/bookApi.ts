@@ -1,5 +1,5 @@
 import { GenericReponseModel } from '../_models';
-import { BookModel, BookResponseModel } from '../_models/BookModel';
+import { BookModel, BookResponseModel, FilterModel } from '../_models/BookModel';
 import GenreModel from '../_models/GenreModel';
 import { PaginationModel, PaginationResponseModel } from '../_models/PaginationModel';
 import { createQueryParams, handleApiError } from '../utils/api';
@@ -8,10 +8,10 @@ import axiosInstance from './axiosInstance';
 
 const bookApi = {
     // Login API
-    getAllBooks: async <T>(params: PaginationModel, isMyBooks: boolean = false): Promise<PaginationResponseModel<T>> => {
+    getAllBooks: async <T>(params: PaginationModel, isMyBooks: boolean = false,filters:FilterModel): Promise<PaginationResponseModel<T>> => {
         try {
             const url = isMyBooks ? '/my-books' : '/books';
-            const { data } = await axiosInstance.get(url + createQueryParams(params));
+            const { data } = await axiosInstance.get(url + createQueryParams({...params,...filters}));
             return mapToPaginatedResponse<T>(data && data.data);
         } catch (error) {
             handleApiError(error);

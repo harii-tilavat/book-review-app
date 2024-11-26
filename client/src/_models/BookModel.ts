@@ -18,8 +18,8 @@ export interface BookModel {
 
 export interface ReviewModel {
     bookId: string;
-    book?:BookModel;
-    createdAt?:string;
+    book?: BookModel;
+    createdAt?: string;
     rating: number;
     text: string;
     user?: { username: string };
@@ -29,4 +29,20 @@ export interface ReviewModel {
 export interface BookResponseModel {
     book: BookModel;
     recommendations: Array<BookModel>;
+}
+export const sortByOptions = [
+    { id: 1, label: "Title", value: "title" },
+    { id: 2, label: "Author", value: "author" },
+    { id: 3, label: "Average Rating", value: "avgRating" },
+    { id: 4, label: "Date Added", value: "createdAt" },
+];
+export class FilterModel {
+    genreId: string;
+    sortField: string;
+    sortOrder: "asc" | "desc" | "";
+    constructor() {
+        this.genreId = "";
+        this.sortField = "";
+        this.sortOrder = "";
+    }
 }

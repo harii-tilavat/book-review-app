@@ -1,6 +1,7 @@
 import React from "react";
 import { BookModel } from "../_models/BookModel";
 import { Link, useNavigate } from "react-router-dom";
+import { formatDate } from "../utils/helpers";
 
 interface BookCardProps {
   onDelete?: (id: string) => void;
@@ -69,6 +70,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, onDelete, showActions = false
         <button className="text-blue-600 dark:text-blue-400 hover:underline text-sm" onClick={() => navigateToBookDetail(book.id)}>
           View Details
         </button>
+        <span className="text-sm text-gray-500 dark:text-gray-300">{formatDate(book.createdAt)}</span>
         {showActions && (
           <div className="flex space-x-2">
             <button className="bg-yellow-500 text-white px-3 py-1 rounded-md text-sm hover:bg-yellow-600" onClick={() => editBook(book.id)}>

@@ -25,7 +25,9 @@ class BookController {
                     // Construct the grid response
                     const gridResponse = PaginatioHelper.generatePaginatedResponse(books, currentPage, itemsPerPage, totalBooks);
                     // Return the success response
-                    return Response.success(res, Message.SUCCESS, gridResponse);
+                    setTimeout(async () => {
+                        return await Response.success(res, Message.SUCCESS, gridResponse);
+                    }, 2000);
                 } catch (error) {
                     next(error);
                 }

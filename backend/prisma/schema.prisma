@@ -32,7 +32,7 @@ model Book {
   genre       Genre    @relation(fields: [genreId], references: [id])
   isbn        String?
   cover       String?
-  description String?
+  description String
   avgRating   Float    @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

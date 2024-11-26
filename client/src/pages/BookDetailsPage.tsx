@@ -15,6 +15,7 @@ import ReviewFormModal, { ReviewFormValues } from "../components/comman/ReviewFo
 import { useAuth } from "../context/AuthContext";
 import { useReviewApi } from "../hooks/useReviewApi";
 import Rating from "../components/comman/Rating";
+import { formatDate } from "../utils/helpers";
 const BookDetailsPage = () => {
   const [currentBook, setCurrentBook] = useState<BookModel>();
   const { currentUser } = useAuth();
@@ -107,7 +108,7 @@ const BookDetailsPage = () => {
             ISBN: <span className="font-medium">{currentBook.isbn}</span>
           </p>
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-200 font-medium">
-            Added On: <span className="font-medium">{new Date(currentBook.createdAt).toLocaleDateString()}</span>
+            Added On: <span className="font-medium">{formatDate(currentBook.createdAt)}</span>
           </p>
           {currentBook.description && <p className="mt-4 text-gray-700 dark:text-gray-100">{currentBook.description}</p>}
 
