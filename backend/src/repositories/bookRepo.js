@@ -83,7 +83,8 @@ class BookRepo {
                                         username: true
                                     }
                                 }
-                            }
+                            },
+                            orderBy: { createdAt: 'desc' }
                         }, genre: true
                     }
                 });

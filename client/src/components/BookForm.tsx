@@ -8,6 +8,9 @@ import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import bookApi from "../api/bookApi";
 import GenreModel from "../_models/GenreModel";
+import { useBook } from "../context/BookContext";
+import { convertToBase64 } from "../utils/helpers";
+import { toast } from "react-toastify";
 
 export interface BookFormValues {
   title: string;
@@ -24,7 +27,8 @@ interface BookFormProps {
 }
 
 const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) => {
-  const [genre, setGenre] = useState<Array<GenreModel>>([]);
+  const { genres } = useBook();
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const {
     control,
     register,
@@ -44,7 +48,6 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
     },
   });
 
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,29 +58,31 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
     }
   }, [bookDetail, setValue]);
 
-  useEffect(() => {
-    const fetchGenre = async () => {
-      try {
-        const genreList = await bookApi.getAllGenre();
-        setGenre(genreList);
-        setValue("genreId", bookDetail?.genreId || "");
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchGenre();
-  }, []);
-
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-        setValue("cover", file);
-        trigger("cover"); // Manually trigger validation for "cover"
-      };
-      reader.readAsDataURL(file);
+      // Validate file type
+      if (!["image/jpeg", "image/png"].includes(file.type)) {
+        toast.error("Only JPEG or PNG files are allowed.");
+        setValue("cover", null); // Reset cover field
+        removeFile();
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("File size must not exceed 5 MB.");
+        setValue("cover", null); // Reset cover field
+        removeFile();
+        return;
+      }
+
+      // If the file is valid, convert to base64 and preview
+      const base64 = await convertToBase64(file); // Assuming you have this utility function
+      setImagePreview(base64); // Update preview
+      setValue("cover", file); // Update form field value
+      trigger("cover"); // Trigger validation for the cover field
     }
   };
   const handleRemoveImage = () => {
@@ -86,10 +91,7 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
     trigger("cover"); // Manually trigger validation for "cover"
 
     // Clear the input file value to allow selecting the same file again
-    const fileInput = document.getElementById("cover") as HTMLInputElement;
-    if (fileInput) {
-      fileInput.value = "";
-    }
+    removeFile();
   };
   // Prepare FormData object
   const prepareFormData = (data: BookFormValues): FormData => {
@@ -123,6 +125,12 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
     }
     handleRemoveImage();
   };
+  function removeFile() {
+    const fileInput = document.getElementById("cover") as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = "";
+    }
+  }
   return (
     <>
       <div className="max-w-6xl mx-auto py-4">
@@ -151,8 +159,16 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
                 <Controller
                   name="cover"
                   control={control}
-                  rules={{ required: "Cover image is required" }} // Validates that the cover image is selected
-                  render={() => <input id="cover" type="file" accept="image/*" onChange={handleImageChange} className="mt-1 p-2 w-full border rounded-md border-blue-300 dark:border-gray-400 dark:bg-gray-800 dark:text-gray-100" />}
+                  rules={{ required: "Cover image is required" }} // Validate that cover is selected
+                  render={() => (
+                    <input
+                      id="cover"
+                      type="file"
+                      accept="image/jpeg,image/png"
+                      className="mt-1 p-2 w-full border rounded-md"
+                      onChange={handleImageChange} // Custom image handling (validation, preview, etc.)
+                    />
+                  )}
                 />
               </div>
               {/* JSX for remove button, shown only if imagePreview exists */}
@@ -177,7 +193,7 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
               </label>
               <select id={"genre"} className="block w-full rounded-md border border-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-2 py-2" {...register("genreId", { required: "Genre is required" })}>
                 <option value="">Select...</option>
-                {genre.map((option) => (
+                {genres.map((option) => (
                   <option value={option.id} key={option.id}>
                     {option.name}
                   </option>

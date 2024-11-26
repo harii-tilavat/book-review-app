@@ -52,7 +52,7 @@ class ReviewController {
                     if (!id) {
                         throw new AppError(StatusCode.BAD_GATEWAY, Message.INVALID_PARAMS);
                     }
-                    // await this.reviewService.deleteReviewById(userId, id);
+                    await this.reviewService.deleteReviewById(userId, id);
                     return Response.success(res, Message.REVIEW_DELETED);
                 } catch (error) {
                     next(error);

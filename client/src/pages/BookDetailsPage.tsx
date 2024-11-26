@@ -1,13 +1,9 @@
 import { useEffect, useState } from "react";
-import { Dialog, DialogTitle } from "@headlessui/react";
-import { StarIcon } from "@heroicons/react/24/solid";
 import { useNavigate, useParams } from "react-router-dom";
 import { BookModel, ReviewModel } from "../_models/BookModel";
 import Button from "../components/comman/Button";
 import ReviewItem from "../components/ReviewItem";
 import { ArrowLeftIcon } from "@heroicons/react/16/solid";
-import bookApi from "../api/bookApi";
-import { toast } from "react-toastify";
 import LoadingCard from "../components/comman/LoadingCard";
 import BookCard from "../components/BookCard";
 import LoaderSpinner from "../components/comman/LoaderSpinner";
@@ -16,29 +12,36 @@ import { useAuth } from "../context/AuthContext";
 import { useReviewApi } from "../hooks/useReviewApi";
 import Rating from "../components/comman/Rating";
 import { formatDate } from "../utils/helpers";
+import useBookApi from "../hooks/useBookApi";
+import { useModal } from "../context/ModalContext";
 const BookDetailsPage = () => {
-  const [currentBook, setCurrentBook] = useState<BookModel>();
-  const { currentUser } = useAuth();
-  const [bookList, setBookList] = useState<Array<BookModel>>([]); // It is Recommendation book list
-  const [isLoading, setIsLoading] = useState(false); // It is Recommendation book list
-
-  const { createReview, isLoading: isReviewLoading } = useReviewApi();
-  const [isReviewOpen, setIsReviewOpen] = useState(false);
   const params = useParams<{ id: string }>();
   const navigate = useNavigate();
+
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
+  const [currentBook, setCurrentBook] = useState<BookModel>();
+  const [bookList, setBookList] = useState<Array<BookModel>>([]); // It is Recommendation book list
+
+  const { currentUser } = useAuth();
+  const { createReview, isLoading: isReviewLoading } = useReviewApi();
+  const { getBookById, isLoading: isBookLoading } = useBookApi();
+  const { deleteBook, isLoading: isDeleteLoading } = useBookApi();
+  const { showModal } = useModal();
+
+  // Methods
   const handleOpenReview = () => setIsReviewOpen(true);
   const handleCloseReview = () => setIsReviewOpen(false);
+
   async function fetchBook(id: string) {
     try {
       if (id) {
-        setIsLoading(true);
-        const { book, recommendations } = await bookApi.getBookById(id);
+        const { book, recommendations } = await getBookById(id);
         setCurrentBook(book);
         setBookList(recommendations);
-        setIsLoading(false);
       }
+      throw new Error("Invalid id.");
     } catch (error: any) {
-      toast.error((error && error.message) || "Book fetching failed!");
+      console.log(error);
     }
   }
   useEffect(() => {
@@ -46,10 +49,31 @@ const BookDetailsPage = () => {
       fetchBook(params["id"]);
     }
   }, [params["id"]]);
-
-  function handleDeleteBook(id: string) {
-    //
+  function openDeleteModal(bookId: string) {
+    // showModal
+    console.log(bookId);
+    showModal({
+      title: "Delete Review",
+      description: "Are you sure you want to delete this book? This action cannot be undone.",
+      confirmLabel: "Yes, Delete",
+      isLoading: isDeleteLoading,
+      loadingText: "Deleting...",
+      cancelLabel: "Cancel",
+      confirmType: "danger",
+      onConfirm: () => handleDeleteBook(bookId),
+    });
   }
+  async function handleDeleteBook(bookId: string) {
+    try {
+      if (bookId) {
+        await deleteBook(bookId);
+      } else {
+      }
+    } catch (error) {
+      console.log(`Delete not success review with ID: ${bookId}`, error);
+    }
+  }
+
   async function handleSubmitReview(data: ReviewFormValues) {
     if (currentBook?.id) {
       const reviewData = { ...data, bookId: currentBook.id };
@@ -58,15 +82,19 @@ const BookDetailsPage = () => {
       // Update the current book's reviews
       setCurrentBook((prevBook) => {
         if (!prevBook) return prevBook;
+        const updatedReviews = [createdReview, ...prevBook.reviews];
+        const newAvgRating = updatedReviews.reduce((total, review) => total + review.rating, 0) / updatedReviews.length;
+        // Add the new review and calculate the new avgRating
         return {
           ...prevBook,
-          reviews: [...prevBook.reviews, createdReview],
+          reviews: [createdReview, ...prevBook.reviews],
+          avgRating: +newAvgRating.toFixed(2),
         };
       });
       handleCloseReview();
     }
   }
-  if (isLoading) {
+  if (isBookLoading || isDeleteLoading) {
     return <LoaderSpinner />;
   }
   if (!currentBook) {
@@ -96,9 +124,9 @@ const BookDetailsPage = () => {
         </button>
       </div>
       {/* Book Details Section */}
-      <div className="flex flex-col lg:flex-row bg-white rounded-lg shadow-md p-6 dark:bg-gray-700">
+      <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-md p-6 dark:bg-gray-700">
         <img src={currentBook.cover} alt={currentBook.title} className="w-full lg:w-1/3 object-cover rounded-lg" />
-        <div className="lg:ml-6 mt-6 lg:mt-0 flex-grow">
+        <div className="md:ml-6 mt-6 md:mt-0 flex-grow">
           <h1 className="text-3xl font-bold ">{currentBook.title}</h1>
           <p className="mt-2 text-lg text-gray-600 dark:text-gray-100 font-semibold">by {currentBook.author}</p>
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-200 font-medium">
@@ -135,14 +163,7 @@ const BookDetailsPage = () => {
                   <Button onClick={() => navigate(`/edit-book/${currentBook.id}`)} className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-4 py-2 rounded-md shadow">
                     Edit Book
                   </Button>
-                  <Button
-                    onClick={() => {
-                      if (window.confirm("Are you sure you want to delete this book?")) {
-                        handleDeleteBook(currentBook.id); // Replace with your delete logic
-                      }
-                    }}
-                    className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-md shadow"
-                  >
+                  <Button onClick={() => openDeleteModal(currentBook.id)} className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-md shadow">
                     Delete Book
                   </Button>
                 </div>
@@ -163,8 +184,8 @@ const BookDetailsPage = () => {
           <h1 className="text-3xl font-bold mb-4">Recommendation</h1>
           <div className="book-card-list">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6  py-2">
-              {isLoading && [1, 2, 3, 4].map((i) => <LoadingCard key={i} />)}
-              {!isLoading && bookList.map((book: BookModel) => <BookCard key={book.id} book={book} />)}
+              {isBookLoading && [1, 2, 3, 4].map((i) => <LoadingCard key={i} />)}
+              {!isBookLoading && bookList.map((book: BookModel) => <BookCard key={book.id} book={book} />)}
             </div>
           </div>
         </div>
@@ -175,7 +196,7 @@ const BookDetailsPage = () => {
         {currentBook.reviews && currentBook.reviews.length > 0 ? (
           <>
             <h2 className="text-2xl font-semibold ">Reviews</h2>
-            <div className="mt-4 space-y-6">{currentBook.reviews && currentBook.reviews.map((review: ReviewModel, index: number) => <ReviewItem review={review} key={index} onDelete={() => {}} onEdit={() => {}} />)}</div>
+            <div className="mt-4 space-y-6">{currentBook.reviews && currentBook.reviews.map((review: ReviewModel, index: number) => <ReviewItem review={review} key={index} />)}</div>
           </>
         ) : (
           <p className="text-center font-semibold">No reviews available for this book.</p>

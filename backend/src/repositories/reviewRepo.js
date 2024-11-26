@@ -6,14 +6,16 @@ class ReviewRepo {
     async getAllReviewsByUserId(userId) {
         try {
             return await prisma.review.findMany({
-                where: { userId }, include: {
+                where: { userId },
+                include: {
                     book: true,
                     user: {
                         select: {
                             username: true
                         }
-                    }
-                }
+                    },
+                },
+                orderBy: { createdAt: "desc" }
             });
         } catch (error) {
             throw error;

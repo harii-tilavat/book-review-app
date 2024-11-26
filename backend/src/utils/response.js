@@ -80,7 +80,7 @@ const Message = Object.freeze({
   LOGIN_SUCCESS: "Login successfully.",
 
   // Book related
-  BOOK_CREATED: 'Book created successfully.',
+  BOOK_CREATED: 'Book added successfully.',
   BOOK_UPDATED: 'Book updated successfully.',
   BOOK_DELETED: 'Book deleted successfully.',
   BOOK_NOT_FOUND: 'Book not found.',
@@ -88,7 +88,7 @@ const Message = Object.freeze({
   BOOK_FAILED: 'Books not found.',
 
   // Review related
-  REVIEW_CREATED: 'Review created successfully.',
+  REVIEW_CREATED: 'Review added successfully.',
   REVIEW_UPDATED: 'Review updated successfully.',
   REVIEW_DELETED: 'Review deleted successfully.',
   REVIEW_NOT_FOUND: 'Review not found.',

@@ -6,6 +6,8 @@ import LoadingCard from "./comman/LoadingCard";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import Pagination from "./comman/Pagination";
 import { PaginationModel } from "../_models/PaginationModel";
+import { useModal } from "../context/ModalContext";
+import useBookApi from "../hooks/useBookApi";
 
 interface BookListProps {
   onPageChange: (newPage: number) => void;
@@ -17,6 +19,32 @@ interface BookListProps {
 
 const BookList: React.FC<BookListProps> = ({ books = [], isLoading, pagination, isMyBooks, onPageChange }) => {
   const navigate = useNavigate();
+  const { showModal } = useModal();
+  const { deleteBook, isLoading: isDeleteLoading } = useBookApi();
+  function openDeleteModal(bookId: string) {
+    // showModal
+    console.log(bookId);
+    showModal({
+      title: "Delete Review",
+      description: "Are you sure you want to delete this book? This action cannot be undone.",
+      confirmLabel: "Yes, Delete",
+      isLoading: isDeleteLoading,
+      loadingText: "Deleting...",
+      cancelLabel: "Cancel",
+      confirmType: "danger",
+      onConfirm: () => handleDeleteBook(bookId),
+    });
+  }
+  async function handleDeleteBook(bookId: string) {
+    try {
+      if (bookId) {
+        await deleteBook(bookId);
+      } else {
+      }
+    } catch (error) {
+      console.log(`Delete not success review with ID: ${bookId}`, error);
+    }
+  }
 
   return (
     <>
@@ -36,9 +64,9 @@ const BookList: React.FC<BookListProps> = ({ books = [], isLoading, pagination, 
 
       {/* Book List */}
       <div className="book-card-list">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6  py-2">
-          {isLoading && [...(new Array(pagination.itemsPerPage))].map((_,i) => <LoadingCard key={i} />)}
-          {!isLoading && books.map((book: BookModel) => <BookCard key={book.id} book={book} showActions={isMyBooks} />)}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6  py-2">
+          {isLoading && [...new Array(pagination.itemsPerPage)].map((_, i) => <LoadingCard key={i} />)}
+          {!isLoading && books.map((book: BookModel) => <BookCard key={book.id} book={book} showActions={isMyBooks} onDelete={openDeleteModal}/>)}
         </div>
       </div>
       {/* Pagination state */}

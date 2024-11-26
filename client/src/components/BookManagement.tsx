@@ -1,14 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import BookList from "../components/BookList";
-import { DUMMY_BOOKS } from "../utils/constants";
 import React, { FormEvent, useEffect, useState } from "react";
-import bookApi from "../api/bookApi";
 import { PaginationModel } from "../_models/PaginationModel";
-import Pagination from "../components/comman/Pagination";
-import { BookModel, FilterModel, sortByOptions } from "../_models/BookModel";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import LoaderSpinner from "./comman/LoaderSpinner";
-import Button from "./comman/Button";
+import { BookModel, FilterModel } from "../_models/BookModel";
+import useBookApi from "../hooks/useBookApi";
+import BookManagementHeader from "./BookManagementHeader";
 
 interface BookManagementProps {
   isMyBooks: boolean;
@@ -17,29 +13,22 @@ interface BookManagementProps {
 const BookManagement: React.FC<BookManagementProps> = ({ isMyBooks = false }) => {
   const navigate = useNavigate();
   const [books, setBooks] = useState<Array<BookModel>>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [filters, setFilters] = useState<FilterModel>(new FilterModel());
-  console.log("FILTER : ", filters);
-  const [paginationState, setPaginationState] = useState<PaginationModel>({
-    itemsPerPage:8,
-    page: 1,
-    totalPages: 1,
-  });
-  const fetchBooks = async () => {
-    try {
-      setIsLoading(true);
-      const response = await bookApi.getAllBooks<BookModel>({ itemsPerPage: paginationState.itemsPerPage, page: paginationState.page }, isMyBooks, filters);
-      setBooks(response.items);
-      setPaginationState((prevState) => ({ ...prevState, totalPages: response.totalPages }));
-      setIsLoading(false);
-    } catch (error) {
-      console.error(error);
-      setIsLoading(false);
-    }
-  };
+  const [paginationState, setPaginationState] = useState<PaginationModel>(new PaginationModel());
+
+  const { isLoading, getAllBooks } = useBookApi();
+  
   useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const { items, totalPages } = await getAllBooks<BookModel>(paginationState, isMyBooks, filters);
+        setBooks(items);
+        setPaginationState((prevState) => ({ ...prevState, totalPages }));
+      } catch (error) {
+        console.log(error);
+      }
+    };
     fetchBooks();
-    console.log("Fetched books : ");
   }, [paginationState.page, paginationState.itemsPerPage, filters]);
 
   function handlePageChange(newPage: number) {
@@ -74,55 +63,8 @@ const BookManagement: React.FC<BookManagementProps> = ({ isMyBooks = false }) =>
 
       <div className="book-list-wrapper">
         {/* Book Management Section */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8 space-y-4 md:space-y-0">
-          <h2 className="text-2xl font-bold">Book Management</h2>
-          <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 items-center">
-            {/* Filter by Genre */}
-            <div>
-              <label htmlFor="filter-genre" className="sr-only">
-                Filter by Genre
-              </label>
-              <select id="filter-genre" className="block rounded-md border border-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-2 py-2 resize-none w-64" onChange={(event) => handleFilterChange(event, "genreId")}>
-                <option value="">All Genres</option>
-                <option value="fiction">Fiction</option>
-                <option value="non-fiction">Non-Fiction</option>
-                <option value="sci-fi">Science Fiction</option>
-                <option value="fantasy">Fantasy</option>
-                {/* Add more genres as needed */}
-              </select>
-            </div>
 
-            {/* Sort by Options */}
-            <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
-              <div>
-                <label htmlFor="sort-books" className="sr-only">
-                  Select Sort By
-                </label>
-                <select id="sort-books" className="block rounded-md border border-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-2 py-2 resize-none w-64" onChange={(event) => handleFilterChange(event, "sortField")}>
-                  <option value="">Select Sort By</option>
-                  {sortByOptions.map((option) => (
-                    <option value={option.value} key={option.id}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="sort-order" className="sr-only">
-                  Select Order
-                </label>
-                <select id="sort-order" className="block rounded-md border border-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-2 py-2 resize-none w-48" onChange={(event) => handleFilterChange(event, "sortOrder")}>
-                  <option value="">Select Order</option>
-                  <option value="asc">Ascending</option>
-                  <option value="desc">Descending</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Add New Book Button */}
-            <Button onClick={() => navigate("/add-book")}>Add New Book</Button>
-          </div>
-        </div>
+        <BookManagementHeader onFilterChange={handleFilterChange} />
 
         <BookList books={books} isLoading={isLoading} isMyBooks={isMyBooks} pagination={paginationState} onPageChange={handlePageChange} />
       </div>

@@ -32,7 +32,7 @@ model Book {
   genre       Genre    @relation(fields: [genreId], references: [id])
   isbn        String?
   cover       String?
-  description String
+  description String? @db.LongText
   avgRating   Float    @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -47,7 +47,7 @@ model Review {
   text      String
   rating    Int      @default(1)
   user      User     @relation(fields: [userId], references: [id])
-  book      Book     @relation(fields: [bookId], references: [id])
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

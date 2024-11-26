@@ -32,6 +32,8 @@ export const useReviewApi = () => {
         } catch (error: any) {
             toast.error("Failed to create review : " + error?.message);
             throw error;
+        } finally {
+            setIsLoading(false);
         }
     }, []);
 
