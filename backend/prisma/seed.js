@@ -14,7 +14,6 @@ async function main() {
         'Adventure',
     ];
 
-    await prisma.genre.deleteMany();
     const createGenres = async () => {
         for (let name of genres) {
             const existingGenre = await prisma.genre.findUnique({ where: { name } });
