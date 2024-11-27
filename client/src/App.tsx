@@ -7,7 +7,6 @@ import { useEffect } from "react";
 
 function App() {
   const { getAllGenres } = useBookApi();
-
   useEffect(() => {
     getAllGenres();
   }, []);

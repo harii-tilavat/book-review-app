@@ -1,71 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { ReviewModel } from "../_models/BookModel";
-import { Dialog, DialogTitle } from "@headlessui/react";
+import { ReviewModel } from "../models/BookModel";
 import { useReviewApi } from "../hooks/useReviewApi";
-import { useNavigate } from "react-router-dom";
 import ReviewFormModal, { ReviewFormValues } from "../components/comman/ReviewFormModal";
-import ConfirmationModal from "../components/comman/ConfirmationModal";
 import { useModal } from "../context/ModalContext";
 import LoaderSpinner from "../components/comman/LoaderSpinner";
-import Rating from "../components/comman/Rating";
 import ReviewItem from "../components/ReviewItem";
-// import ReviewItem from "../components/ReviewItem";
-
-interface ReviewItemProps {
-  review: ReviewModel;
-  onEdit: (reviewId: string) => void;
-  onDelete: (reviewId: string) => void;
-}
-
-// const MyReviewItem: React.FC<ReviewItemProps> = ({ review, onEdit, onDelete }) => {
-//   const navigate = useNavigate();
-
-//   return (
-//     <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md mb-6 flex flex-col sm:flex-row">
-//       {/* Book Cover */}
-//       <img
-//         src={review.book?.cover || "/placeholder-book-cover.jpg"} // Placeholder if no cover image
-//         alt={review.book?.title || "Book Cover"}
-//         className="w-20 h-28 rounded-md object-cover sm:mr-4"
-//       />
-
-//       <div className="flex-grow">
-//         {/* Book Title */}
-//         <div className="flex justify-between items-center">
-//           <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">{review.book?.title || "Unknown Book"}</div>
-
-//           {/* Actions */}
-//           <div className="flex space-x-2">
-//             <button onClick={() => onEdit(review.id)} className="text-blue-600 dark:text-blue-400 hover:underline">
-//               Edit
-//             </button>
-//             <button onClick={() => onDelete(review.id)} className="text-red-600 dark:text-red-400 hover:underline">
-//               Delete
-//             </button>
-//           </div>
-//         </div>
-
-//         {/* Rating */}
-//         <div className="flex items-center space-x-2 mt-2">
-//           <Rating rating={review.rating} />
-//           <div className="text-gray-500 dark:text-gray-300">({review.rating} stars)</div>
-//         </div>
-
-//         {/* Review Text */}
-//         <div className="mt-4 text-gray-700 dark:text-gray-200">{review.text}</div>
-
-//         {/* Date and View Button */}
-//         <div className="flex justify-between items-center mt-4 text-sm text-gray-500 dark:text-gray-300">
-//           <div>Reviewed on: {new Date(review.createdAt!).toLocaleDateString()}</div>
-//           <button onClick={() => navigate(`/book-detail/${review.book?.id}`)} className="text-blue-600 dark:text-blue-400 hover:underline">
-//             View Book
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
 const MyReviewsPage: React.FC = () => {
   const [reviews, setReviews] = useState<Array<ReviewModel>>([]);
   const { getMyReviews, isLoading, updateReview, deleteReview } = useReviewApi();

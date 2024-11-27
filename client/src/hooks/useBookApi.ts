@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react"
-import { BookResponseModel, FilterModel } from "../_models/BookModel";
-import { PaginationModel } from "../_models/PaginationModel";
+import { BookResponseModel, FilterModel } from "../models/BookModel";
+import { PaginationModel } from "../models/PaginationModel";
 import { toast } from "react-toastify";
 import bookApi from "../api/bookApi";
 import { useBook } from "../context/BookContext";
@@ -52,7 +52,7 @@ const useBookApi = () => {
 
     // Fetch all genres
     const getAllGenres = useCallback(async () => {
-        const genres = await handleApiRequest(bookApi.getAllGenre(), "Failed to get genres.");
+        const genres = await handleApiRequest(bookApi.getAllGenre(), "Failed to get genres.") || [];
         setGenres(genres);
         return genres;
     }, []);

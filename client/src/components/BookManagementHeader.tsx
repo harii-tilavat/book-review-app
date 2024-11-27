@@ -1,5 +1,5 @@
 import React, { FormEvent } from "react";
-import { sortByOptions } from "../_models/BookModel";
+import { sortByOptions } from "../models/BookModel";
 import { useBook } from "../context/BookContext";
 import Button from "./comman/Button";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,7 @@ interface BookManagementHeaderProps {
   onFilterChange: (event: FormEvent, identifier: string) => void;
 }
 const BookManagementHeader: React.FC<BookManagementHeaderProps> = ({ onFilterChange }) => {
-  const { genres } = useBook();
+  const { genres=[] } = useBook();
   const navigate = useNavigate();
   return (
     <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 space-y-4 md:space-y-0 gap-3">

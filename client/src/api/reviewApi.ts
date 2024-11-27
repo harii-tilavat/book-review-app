@@ -1,5 +1,5 @@
-import { GenericReponseModel } from '../_models';
-import { ReviewModel } from '../_models/BookModel';
+import { GenericReponseModel } from '../models';
+import { ReviewModel } from '../models/BookModel';
 import { handleApiError } from '../utils/api';
 import axiosInstance from './axiosInstance';
 

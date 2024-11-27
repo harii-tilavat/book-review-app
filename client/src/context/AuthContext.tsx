@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
-import { UserModel } from "../_models/UserModel";
+import { UserModel } from "../models/UserModel";
 import BaseProps from "../utils/types/BaseProps";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 export class AuthModel {
   isAuthenticated!: boolean;
   currentUser?: UserModel | null;

@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import BookList from "../components/BookList";
 import React, { FormEvent, useEffect, useState } from "react";
-import { PaginationModel } from "../_models/PaginationModel";
-import { BookModel, FilterModel } from "../_models/BookModel";
+import { PaginationModel } from "../models/PaginationModel";
+import { BookModel, FilterModel } from "../models/BookModel";
 import useBookApi from "../hooks/useBookApi";
 import BookManagementHeader from "./BookManagementHeader";
 import { toast } from "react-toastify";

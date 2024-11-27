@@ -1,5 +1,5 @@
-import { GenericReponseModel } from '../_models';
-import { LoginResponseModel, UserLoginModel, UserModel } from '../_models/UserModel';
+import { GenericReponseModel } from '../models';
+import { LoginResponseModel, UserLoginModel, UserModel } from '../models/UserModel';
 import { handleApiError } from '../utils/api';
 import axiosInstance from './axiosInstance';
 

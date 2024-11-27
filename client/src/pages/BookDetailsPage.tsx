@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { BookModel, ReviewModel } from "../_models/BookModel";
+import { BookModel, ReviewModel } from "../models/BookModel";
 import Button from "../components/comman/Button";
 import ReviewItem from "../components/ReviewItem";
 import { ArrowLeftIcon } from "@heroicons/react/16/solid";
