@@ -2,6 +2,7 @@
 
 A full-stack **Book Review App** built with modern technologies. The app allows users to add books, upload covers, write reviews, and manage their book collection. The project is divided into two parts: `client` (frontend) and `backend`.
 
+Live URL: https://bookreviewhub.netlify.app/
 ---
 
 ## 🚀 Features
@@ -79,23 +80,19 @@ npm install
 # Create a .env file in the backend directory with the following content:
 
 PORT=8080
-DATABASE_URL="mysql-db-connection-url"
+DATABASE_URL="postgresql-db-connection-url"
 JWT_SECRET="your-secret-key"
 
 CLOUD_NAME='cloudinary-cloud-name'
 CLOUD_API_KEY='cloudinary-api-key'
 CLOUD_API_SECRET='cloudinary-api-secret'
 
-# Run database migrations:
-npx prisma migrate dev --name init
-
-# Generates Prisma Client to interact with the database.
-npx prisma generate
+# Run prisma setup:
+npm run dev:prisma
 
 # Start the backend server:
 npm start
-# or
-npm run dev
+
 ```
 
 ### Frontend Setup
