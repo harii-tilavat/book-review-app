@@ -2,7 +2,7 @@ import { Dialog, DialogTitle } from "@headlessui/react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import TextBox from "./TextBox";
-import { ReviewModel } from "../../_models/BookModel";
+import { ReviewModel } from "../../models/BookModel";
 import Button from "./Button";
 
 interface ReviewModelProps {

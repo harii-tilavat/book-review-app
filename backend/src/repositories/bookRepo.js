@@ -135,5 +135,14 @@ class BookRepo {
             throw error;
         }
     }
+    async createGenres() {
+        try {
+            return await prisma.genre.createMany({ data: [
+                
+            ] })
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 module.exports = BookRepo;

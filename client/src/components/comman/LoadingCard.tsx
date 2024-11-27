@@ -1,5 +1,3 @@
-import React from "react";
-
 const LoadingCard = () => {
   return (
     <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-100 animate-pulse">

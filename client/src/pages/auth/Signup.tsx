@@ -1,13 +1,9 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 import TextBox from "../../components/comman/TextBox";
 import Button from "../../components/comman/Button";
 import { UserGroupIcon } from "@heroicons/react/16/solid";
-import { UserModel } from "../../_models/UserModel";
-// import { useAuth } from "../../context/AuthContext";
-import authApi from "../../api/authApi";
-import { useState } from "react";
+import { UserModel } from "../../models/UserModel";
 import LoaderSpinner from "../../components/comman/LoaderSpinner";
 import { useAuthApi } from "../../hooks/useAuthApi";
 

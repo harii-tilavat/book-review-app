@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { useAuth } from "../context/AuthContext"
 import authApi from "../api/authApi";
-import { UserLoginModel, UserModel } from "../_models/UserModel";
+import { UserLoginModel, UserModel } from "../models/UserModel";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 

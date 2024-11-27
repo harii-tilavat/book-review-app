@@ -1,12 +1,11 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import TextBox from "../../components/comman/TextBox";
 import Button from "../../components/comman/Button";
 import { LockClosedIcon } from "@heroicons/react/16/solid";
-import { UserLoginModel } from "../../_models/UserModel";
+import { UserLoginModel } from "../../models/UserModel";
 import { useAuth } from "../../context/AuthContext";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import LoaderSpinner from "../../components/comman/LoaderSpinner";
 import { useAuthApi } from "../../hooks/useAuthApi";
 

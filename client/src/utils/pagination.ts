@@ -1,4 +1,4 @@
-import { PaginationResponseModel } from "../_models/PaginationModel";
+import { PaginationResponseModel } from "../models/PaginationModel";
 
 export const mapToPaginatedResponse = <T>(data: PaginationResponseModel<T>): PaginationResponseModel<T> => {
     return {

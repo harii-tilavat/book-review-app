@@ -1,5 +1,5 @@
 import React from "react";
-import { ReviewModel } from "../_models/BookModel";
+import { ReviewModel } from "../models/BookModel";
 import Rating from "./comman/Rating";
 import { formatDate } from "../utils/helpers";
 import { useNavigate } from "react-router-dom";

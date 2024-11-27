@@ -1,12 +1,10 @@
 import { useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import reviewApi from "../api/reviewApi";
-import { ReviewModel } from "../_models/BookModel";
+import { ReviewModel } from "../models/BookModel";
 
 export const useReviewApi = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const navigate = useNavigate();
 
     // Fetch My Reviews Handler
     const getMyReviews = useCallback(async (): Promise<Array<ReviewModel>> => {

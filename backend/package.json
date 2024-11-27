@@ -4,8 +4,19 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:migrate": "npx prisma migrate dev",
+    "dev:generate": "npx prisma generate dev",
+    "dev:seed": "npx prisma db seed",
+    "dev:prisma": "npm run dev:migrate && npm run dev:generate && npm run dev:seed",
+    "prod:migrate": "npx prisma migrate deploy",
+    "prod:generate": "npx prisma generate",
+    "prod:seed": "npx prisma db seed",
+    "prod:prisma": "npm run prod:migrate && npm run prod:generate && npm prod:seed",
     "start": "node server.js",
     "dev": "nodemon server.js"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   },
   "keywords": [],
   "author": "",

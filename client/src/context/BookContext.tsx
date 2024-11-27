@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import GenreModel from "../_models/GenreModel";
+import GenreModel from "../models/GenreModel";
 import BaseProps from "../utils/types/BaseProps";
 interface BookContextProps {
   genres: Array<GenreModel>;

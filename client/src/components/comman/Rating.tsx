@@ -1,5 +1,4 @@
 import { StarIcon } from "@heroicons/react/24/solid";
-import React from "react";
 
 const Rating = ({ rating }: { rating: number }) => {
   return (
