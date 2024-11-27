@@ -1,5 +1,5 @@
 export class PaginationModel {
-    itemsPerPage: number = 10;
+    itemsPerPage: number = 8;
     page: number = 1;
     totalPages?: number;
 }
