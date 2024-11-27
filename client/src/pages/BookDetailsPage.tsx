@@ -14,6 +14,7 @@ import Rating from "../components/comman/Rating";
 import { formatDate } from "../utils/helpers";
 import useBookApi from "../hooks/useBookApi";
 import { useModal } from "../context/ModalContext";
+import { toast } from "react-toastify";
 const BookDetailsPage = () => {
   const params = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -66,7 +67,9 @@ const BookDetailsPage = () => {
   async function handleDeleteBook(bookId: string) {
     try {
       if (bookId) {
-        await deleteBook(bookId);
+        const { message } = await deleteBook(bookId);
+        toast.success(message || "Book deleted successfully.");
+        navigate("/");
       } else {
       }
     } catch (error) {

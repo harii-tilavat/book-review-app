@@ -1,23 +1,18 @@
 import { toast } from "react-toastify";
-import bookApi from "../api/bookApi";
-import BookForm, { BookFormValues } from "../components/BookForm";
-import { useState } from "react";
+import BookForm from "../components/BookForm";
 import { useNavigate } from "react-router-dom";
 import LoaderSpinner from "../components/comman/LoaderSpinner";
+import useBookApi from "../hooks/useBookApi";
 const AddBookPage: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const naviagate = useNavigate();
+  const { createBook, isLoading } = useBookApi();
   async function handleSubmit(formData: FormData) {
     try {
-      setIsLoading(true);
-      const { message } = await bookApi.createBook(formData);
+      const { message } = await createBook(formData);
       toast.success(message);
-      setIsLoading(false);
-      naviagate("/");
+      naviagate("/my-books");
     } catch (error: any) {
-      toast.error((error && error.message) || "Book not created. Try again.");
       console.log(error);
-      setIsLoading(false);
     }
   }
   if (isLoading) {

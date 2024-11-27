@@ -5,6 +5,7 @@ import { PaginationModel } from "../_models/PaginationModel";
 import { BookModel, FilterModel } from "../_models/BookModel";
 import useBookApi from "../hooks/useBookApi";
 import BookManagementHeader from "./BookManagementHeader";
+import { toast } from "react-toastify";
 
 interface BookManagementProps {
   isMyBooks: boolean;
@@ -15,9 +16,8 @@ const BookManagement: React.FC<BookManagementProps> = ({ isMyBooks = false }) =>
   const [books, setBooks] = useState<Array<BookModel>>([]);
   const [filters, setFilters] = useState<FilterModel>(new FilterModel());
   const [paginationState, setPaginationState] = useState<PaginationModel>(new PaginationModel());
-
   const { isLoading, getAllBooks } = useBookApi();
-  
+  const { deleteBook, isLoading: isDeleteLoading } = useBookApi();
   useEffect(() => {
     const fetchBooks = async () => {
       try {
@@ -36,6 +36,18 @@ const BookManagement: React.FC<BookManagementProps> = ({ isMyBooks = false }) =>
   }
   function handleFilterChange(event: FormEvent, identifier: string) {
     setFilters((prev) => ({ ...prev, [identifier]: (event.target as any).value }));
+  }
+  async function handleDeleteBook(bookId: string) {
+    try {
+      if (bookId) {
+        const { message } = await deleteBook(bookId);
+        setBooks((prevBooks) => [...prevBooks.filter((book) => book.id !== bookId)]);
+        toast.success(message || "Book deleted successfully.");
+      } else {
+      }
+    } catch (error) {
+      console.log(`Delete not success review with ID: ${bookId}`, error);
+    }
   }
 
   return (
@@ -66,7 +78,7 @@ const BookManagement: React.FC<BookManagementProps> = ({ isMyBooks = false }) =>
 
         <BookManagementHeader onFilterChange={handleFilterChange} />
 
-        <BookList books={books} isLoading={isLoading} isMyBooks={isMyBooks} pagination={paginationState} onPageChange={handlePageChange} />
+        <BookList books={books} isLoading={isLoading} isDeleteLoading={isDeleteLoading} isMyBooks={isMyBooks} pagination={paginationState} onPageChange={handlePageChange} onDeleteBook={handleDeleteBook} />
       </div>
     </div>
   );
