@@ -2,24 +2,33 @@ import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import TextBox from "../components/comman/TextBox";
 import Button from "../components/comman/Button";
-import { BookModel } from "../models/BookModel";
-import { ArrowLeftIcon } from "@heroicons/react/16/solid";
+import { BookModel } from "../_models/BookModel";
+import { ArrowLeftIcon, ArrowPathIcon } from "@heroicons/react/16/solid";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
+import bookApi from "../api/bookApi";
+import GenreModel from "../_models/GenreModel";
+import { useBook } from "../context/BookContext";
+import { convertToBase64 } from "../utils/helpers";
+import { toast } from "react-toastify";
 
 export interface BookFormValues {
   title: string;
   author: string;
   cover: File | null | string;
   isbn: string;
-  genre: string;
+  genreId: string;
+  description?: string;
 }
 interface BookFormProps {
   bookDetail?: BookModel;
-  onSubmit: (book: BookFormValues) => void;
+  onSubmit: (book: FormData) => void;
+  isLoading: boolean;
 }
 
-const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit }) => {
+const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) => {
+  const { genres } = useBook();
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const {
     control,
     register,
@@ -34,12 +43,13 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit }) => {
       author: bookDetail?.author || "",
       cover: null,
       isbn: bookDetail?.isbn || "",
-      genre: bookDetail?.genre || "",
+      genreId: bookDetail?.genreId || "",
+      description: bookDetail?.description || "",
     },
   });
 
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const navigate = useNavigate();
+
   useEffect(() => {
     if (bookDetail?.cover) {
       // If cover available means it is edit form.
@@ -47,21 +57,32 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit }) => {
       setValue("cover", bookDetail.cover); // Set the value for cover if it's an edit
     }
   }, [bookDetail, setValue]);
-  const handleSubmitForm: SubmitHandler<BookFormValues> = (book: BookFormValues) => {
-    onSubmit(book);
-    // Logic to save the book
-  };
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-        setValue("cover", file);
-        trigger("cover"); // Manually trigger validation for "cover"
-      };
-      reader.readAsDataURL(file);
+      // Validate file type
+      if (!["image/jpeg", "image/png"].includes(file.type)) {
+        toast.error("Only JPEG or PNG files are allowed.");
+        setValue("cover", null); // Reset cover field
+        removeFile();
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("File size must not exceed 5 MB.");
+        setValue("cover", null); // Reset cover field
+        removeFile();
+        return;
+      }
+
+      // If the file is valid, convert to base64 and preview
+      const base64 = await convertToBase64(file); // Assuming you have this utility function
+      setImagePreview(base64); // Update preview
+      setValue("cover", file); // Update form field value
+      trigger("cover"); // Trigger validation for the cover field
     }
   };
   const handleRemoveImage = () => {
@@ -70,19 +91,46 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit }) => {
     trigger("cover"); // Manually trigger validation for "cover"
 
     // Clear the input file value to allow selecting the same file again
-    const fileInput = document.getElementById("cover") as HTMLInputElement;
-    if (fileInput) {
-      fileInput.value = "";
+    removeFile();
+  };
+  // Prepare FormData object
+  const prepareFormData = (data: BookFormValues): FormData => {
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("author", data.author);
+    formData.append("genreId", data.genreId);
+    formData.append("description", data.description || "");
+    formData.append("isbn", data.isbn || "");
+    if (data.cover) {
+      if (typeof data.cover !== "string") {
+        formData.append("file", data.cover);
+      } else {
+        formData.append("cover", data.cover);
+      }
     }
+    if (bookDetail?.id) {
+      formData.append("id", bookDetail.id);
+    }
+    return formData;
+  };
+  const handleSubmitForm: SubmitHandler<BookFormValues> = (book: BookFormValues) => {
+    const formData = prepareFormData(book);
+    onSubmit(formData);
   };
   const handleResetForm = () => {
-    reset({ author: bookDetail?.author || "", title: bookDetail?.title || "", isbn: bookDetail?.isbn || "", genre: bookDetail?.genre || "", cover: bookDetail?.cover || null });
+    reset({ author: bookDetail?.author || "", title: bookDetail?.title || "", isbn: bookDetail?.isbn || "", genreId: bookDetail?.genre.id || "", cover: bookDetail?.cover || null });
     if (bookDetail) {
       setImagePreview(bookDetail.cover);
       return;
     }
     handleRemoveImage();
   };
+  function removeFile() {
+    const fileInput = document.getElementById("cover") as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = "";
+    }
+  }
   return (
     <>
       <div className="max-w-6xl mx-auto py-4">
@@ -111,8 +159,16 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit }) => {
                 <Controller
                   name="cover"
                   control={control}
-                  rules={{ required: "Cover image is required" }} // Validates that the cover image is selected
-                  render={() => <input id="cover" type="file" accept="image/*" onChange={handleImageChange} className="mt-1 p-2 w-full border rounded-md border-blue-300 dark:border-gray-400 dark:bg-gray-800 dark:text-gray-100" />}
+                  rules={{ required: "Cover image is required" }} // Validate that cover is selected
+                  render={() => (
+                    <input
+                      id="cover"
+                      type="file"
+                      accept="image/jpeg,image/png"
+                      className="mt-1 p-2 w-full border rounded-md"
+                      onChange={handleImageChange} // Custom image handling (validation, preview, etc.)
+                    />
+                  )}
                 />
               </div>
               {/* JSX for remove button, shown only if imagePreview exists */}
@@ -131,14 +187,40 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit }) => {
             <TextBox id="isbn" label="ISBN" placeholder="Enter ISBN number" error={errors.isbn} register={register("isbn", { required: "ISBN is required" })} />
 
             {/* Genre */}
-            <TextBox id="genre" label="Genre" placeholder="Enter book genre" error={errors.genre} register={register("genre", { required: "Genre is required" })} />
+            <div className="mb-4">
+              <label htmlFor={"genre"} className="block text-gray-700 dark:text-gray-100 font-semibold text-sm">
+                Genre
+              </label>
+              <select id={"genre"} className="block w-full rounded-md border border-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-2 py-2" {...register("genreId", { required: "Genre is required" })}>
+                <option value="">Select...</option>
+                {genres.map((option) => (
+                  <option value={option.id} key={option.id}>
+                    {option.name}
+                  </option>
+                ))}
+              </select>
+              {errors.genreId && <p className="text-red-500 text-sm">{errors.genreId.message}</p>}
+            </div>
+            {/* Description */}
+            <TextBox id="description" label="Description" placeholder="Enter description" error={errors.isbn} register={register("description")} isTextArea />
 
             {/* Submit Button */}
             <div className="flex justify-end space-x-4">
               <button type="button" className="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg shadow-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 font-semibold" onClick={handleResetForm}>
                 Reset
               </button>
-              <Button type="submit">{bookDetail ? "Update Book" : "Add Book"}</Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? (
+                  <div className="flex items-center space-x-2">
+                    <ArrowPathIcon className="h-5 w-5 text-white animate-spin" />
+                    <span>{bookDetail ? "Updating Book..." : "Adding Book..."}</span>
+                  </div>
+                ) : bookDetail ? (
+                  "Update Book"
+                ) : (
+                  "Add Book"
+                )}
+              </Button>
             </div>
           </form>
         </div>

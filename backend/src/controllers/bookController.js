@@ -25,7 +25,9 @@ class BookController {
                     // Construct the grid response
                     const gridResponse = PaginatioHelper.generatePaginatedResponse(books, currentPage, itemsPerPage, totalBooks);
                     // Return the success response
-                    return Response.success(res, Message.SUCCESS, gridResponse);
+                    setTimeout(async () => {
+                        return await Response.success(res, Message.SUCCESS, gridResponse);
+                    }, 200);
                 } catch (error) {
                     next(error);
                 }
@@ -44,7 +46,9 @@ class BookController {
                     // Construct the grid response
                     const gridResponse = PaginatioHelper.generatePaginatedResponse(books, currentPage, itemsPerPage, totalBooks);
                     // Return the success response
-                    return Response.success(res, Message.SUCCESS, gridResponse);
+                    setTimeout(async () => {
+                        return await Response.success(res, Message.SUCCESS, gridResponse);
+                    }, 200);
                     // Fetch paginated books
                 } catch (error) {
                     next(error);
@@ -57,8 +61,10 @@ class BookController {
                     if (!id) {
                         throw new AppError(StatusCode.BAD_REQUEST, Message.INVALID_PARAMS)
                     }
-                    const book = await this.bookService.getBookById(id);
-                    return Response.success(res, Message.SUCCESS, book);
+                    const data = await this.bookService.getBookById(id);
+                    setTimeout(async () => {
+                        return await Response.success(res, Message.SUCCESS, data);
+                    }, 200);
 
                 } catch (error) {
                     next(error);
@@ -76,6 +82,10 @@ class BookController {
             .put(authMiddleware, upload.single("file"), bookValidSchema, validationHandler, async (req, res, next) => {
                 try {
                     const { userId } = req.user;
+                    const { id } = req.body;
+                    if (!id) {
+                        throw new AppError(StatusCode.BAD_REQUEST, Message.INVALID_PARAMS);
+                    }
                     const book = await this.bookService.updatedBookById(userId, { ...req.body, file: req.file });
                     return Response.success(res, Message.BOOK_UPDATED, book);
                 } catch (error) {

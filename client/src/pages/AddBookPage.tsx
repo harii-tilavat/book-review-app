@@ -1,11 +1,26 @@
-import BookForm, { BookFormValues } from "../components/BookForm";
+import { toast } from "react-toastify";
+import BookForm from "../components/BookForm";
+import { useNavigate } from "react-router-dom";
+import LoaderSpinner from "../components/comman/LoaderSpinner";
+import useBookApi from "../hooks/useBookApi";
 const AddBookPage: React.FC = () => {
-  function handleSubmit(book: BookFormValues) {
-    console.log("FORM SUBMITTED : ", book);
+  const naviagate = useNavigate();
+  const { createBook, isLoading } = useBookApi();
+  async function handleSubmit(formData: FormData) {
+    try {
+      const { message } = await createBook(formData);
+      toast.success(message);
+      naviagate("/my-books");
+    } catch (error: any) {
+      console.log(error);
+    }
+  }
+  if (isLoading) {
+    return <LoaderSpinner />;
   }
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-800 pt-2 px-4">
-      <BookForm onSubmit={handleSubmit} />
+      <BookForm onSubmit={handleSubmit} isLoading={isLoading} />
     </div>
   );
 };

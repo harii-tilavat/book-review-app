@@ -5,6 +5,7 @@ import Button from "./comman/Button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { useAuth } from "../context/AuthContext";
+import { useModal } from "../context/ModalContext";
 
 interface NavigationModel {
   name: string;
@@ -17,11 +18,13 @@ const navigation: Array<NavigationModel> = [
   // { name: "Dashboard", href: "/", current: true, isProtected: false },
   { name: "Add book", href: "/add-book", current: false, isProtected: true },
   { name: "My reviews", href: "/my-reviews", current: false, isProtected: true },
+  { name: "My books", href: "/my-books", current: false, isProtected: true },
   // { name: "Calendar", href: "#", current: false },
 ];
 
 export default function Example() {
   const { theme, toggleTheme } = useTheme();
+  const { showModal } = useModal();
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, currentUser, logoutUser } = useAuth();
@@ -34,13 +37,14 @@ export default function Example() {
     return location.pathname === href;
   }
   function handleLogout() {
-    if (confirm("Are you sure to logout?")) {
-      logoutUser();
-      navigate("/login");
-    }
+    showModal({
+      title: "Are you sure to logout?",
+      confirmLabel: "Yes, Logout.",
+      onConfirm: logoutUser,
+    });
   }
   return (
-    <Disclosure as="nav" className="bg-white dark:bg-gray-800 fixed top-0 left-0 right-0 shadow-lg">
+    <Disclosure as="nav" className="bg-white dark:bg-gray-800 fixed top-0 left-0 right-0 shadow-lg z-10">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -63,7 +67,7 @@ export default function Example() {
             <div className="hidden sm:ml-6 sm:flex sm:items-center">
               <div className="flex space-x-4">
                 {navigationList.map((item: NavigationModel) => (
-                  <Link key={item.name} to={item.href} aria-current={item.current ? "page" : undefined} className={clsx(isActive(item.href) ? "bg-gray-700 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white", "rounded-md px-3 py-2 text-sm font-medium")}>
+                  <Link key={item.name} to={item.href} aria-current={item.current ? "page" : undefined} className={clsx(isActive(item.href) ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white" : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white", "rounded-md px-3 py-2 text-sm font-medium")}>
                     {item.name}
                   </Link>
                 ))}
@@ -100,11 +104,13 @@ export default function Example() {
                   className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-gray-25 dark:bg-gray-900 py-1 shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                 >
                   <MenuItem>
-                    <span className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-gray-100 data-[focus]:bg-gray-100 dark:data-[focus]:bg-gray-700 data-[focus]:outline-none" onClick={()=>navigate('/my-reviews')}>My reviews</span>
+                    <span className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-gray-100 data-[focus]:bg-gray-100 dark:data-[focus]:bg-gray-700 data-[focus]:outline-none" onClick={() => navigate("/my-reviews")}>
+                      My reviews
+                    </span>
                   </MenuItem>
-                  <MenuItem>
+                  {/* <MenuItem>
                     <span className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-gray-100 data-[focus]:bg-gray-100 dark:data-[focus]:bg-gray-700 data-[focus]:outline-none">Settings</span>
-                  </MenuItem>
+                  </MenuItem> */}
                   <MenuItem>
                     <span className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-gray-100 data-[focus]:bg-gray-100 dark:data-[focus]:bg-gray-700 data-[focus]:outline-none" onClick={handleLogout}>
                       Sign out
@@ -120,7 +126,7 @@ export default function Example() {
       <DisclosurePanel className="sm:hidden">
         <div className="space-y-1 px-2 pb-3 pt-2">
           {navigationList.map((item) => (
-            <DisclosureButton key={item.name} as="a" href={item.href} aria-current={item.current ? "page" : undefined} className={clsx(item.current ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white", "block rounded-md px-3 py-2 text-base font-medium")}>
+            <DisclosureButton onClick={()=>navigate(item.href)} key={item.name} as="div" aria-current={item.current ? "page" : undefined} className={clsx(item.current ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white", "block rounded-md px-3 py-2 text-base font-medium cursor-pointer")}>
               {item.name}
             </DisclosureButton>
           ))}

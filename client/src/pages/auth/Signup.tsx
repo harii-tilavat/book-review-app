@@ -4,8 +4,12 @@ import { toast } from "react-toastify";
 import TextBox from "../../components/comman/TextBox";
 import Button from "../../components/comman/Button";
 import { UserGroupIcon } from "@heroicons/react/16/solid";
-import { UserModel } from "../../models/UserModel";
-import { useAuth } from "../../context/AuthContext";
+import { UserModel } from "../../_models/UserModel";
+// import { useAuth } from "../../context/AuthContext";
+import authApi from "../../api/authApi";
+import { useState } from "react";
+import LoaderSpinner from "../../components/comman/LoaderSpinner";
+import { useAuthApi } from "../../hooks/useAuthApi";
 
 const SignUp = () => {
   // Initialize the form with useForm hook and TypeScript types
@@ -14,20 +18,19 @@ const SignUp = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<UserModel>();
-
-  const navigate = useNavigate();
-  const { registerUser } = useAuth();
+  const { isLoading, register: registerUser } = useAuthApi();
+  // const { registerUser } = useAuth();
   // Handle form submission
-  const onSubmit: SubmitHandler<UserModel> = (user: UserModel) => {
+  const onSubmit: SubmitHandler<UserModel> = async (user: UserModel) => {
     try {
       registerUser(user);
-      toast.success("Signup successfull!");
-      navigate("/login");
     } catch (error: any) {
-      toast.error((error && error.message) || "Signup failed! Please try again.");
+      console.log(error);
     }
   };
-
+  if (isLoading) {
+    return <LoaderSpinner />;
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
       <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 shadow-lg rounded-lg">

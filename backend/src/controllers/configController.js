@@ -7,17 +7,17 @@ class ConfigController {
         this.configService = new ConfigService();
     }
     register(app) {
-        app.route('/auth/login')
+        app.route('/login')
             .post(userLoginValidationSchema, validationHandler, async (req, res, next) => {
                 try {
                     const { email, password } = req.body;
                     const data = await this.configService.loginUser(email, password);
-                    return Response.success(res, `Login successful. Welcome back, ${data.user.username}!`, data);
+                    return Response.success(res, `Login success. Welcome back, ${data.user.username}!`, data);
                 } catch (error) {
                     next(error);
                 }
             })
-        app.route("/auth/register")
+        app.route("/register")
             .post(userRegisterValidationSchema, validationHandler, async (req, res, next) => {
                 try {
                     await this.configService.registerUser(req.body);

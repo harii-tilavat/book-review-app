@@ -20,7 +20,7 @@ class BookRepo {
                     take: limit,
                     where,
                     orderBy,
-                    include: { genre: true }
+                    include: { genre: true, reviews: true }
                 }),
                 prisma.book.count({ where })
             ]);
@@ -72,7 +72,22 @@ class BookRepo {
     }
     async getBookById(id) {
         try {
-            const book = await prisma.book.findUnique({ where: { id }, include: { reviews: true, genre: true } });
+            const book = await prisma.book.findUnique(
+                {
+                    where: { id },
+                    include: {
+                        reviews: {
+                            include: {
+                                user: {
+                                    select: {
+                                        username: true
+                                    }
+                                }
+                            },
+                            orderBy: { createdAt: 'desc' }
+                        }, genre: true
+                    }
+                });
             return book;
         } catch (error) {
             throw new Error(`Failed to fetch book by ID ${id}: ${error.message}`);
@@ -82,7 +97,7 @@ class BookRepo {
         try {
             const newBook = await prisma.book.update({
                 where: { id },
-                data: book
+                data: book, include: { genre: true }
             });
             return newBook;
         } catch (error) {

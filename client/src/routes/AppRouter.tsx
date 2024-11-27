@@ -6,8 +6,9 @@ import Layout from "../pages/Layout";
 import ProtectedRoute from "./ProtectedRoute";
 import AddBook from "../pages/AddBookPage";
 import BookDetails from "../pages/BookDetailsPage";
-import MyReviews from "../pages/MyReviewsPage";
 import EditBookDetails from "../pages/EditBookPage";
+import MyReviewsPage from "../pages/MyReviewsPage";
+import MyBooksPage from "../pages/MyBooksPage";
 const AppRouter = () => {
   return (
     <Routes>
@@ -34,14 +35,21 @@ const AppRouter = () => {
             <ProtectedRoute>
               <EditBookDetails />
             </ProtectedRoute>
-          }
-        ></Route>
+          }></Route>
 
         <Route
           path="/my-reviews"
           element={
             <ProtectedRoute>
-              <MyReviews />
+              <MyReviewsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-books"
+          element={
+            <ProtectedRoute>
+              <MyBooksPage />
             </ProtectedRoute>
           }
         />
