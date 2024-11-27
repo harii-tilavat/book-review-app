@@ -1,20 +1,29 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// =============================================================================
+// PRISMA SCHEMA CONFIGURATION
+// =============================================================================
+// Depending on the database you're using, set the DATABASE_URL in your .env file:
+// - For MySQL, use: mysql://<user>:<password>@<host>:<port>/<dbname>
+// - For PostgreSQL, use: postgresql://<user>:<password>@<host>:<port>/<dbname>
+// Example for MySQL:
+// DATABASE_URL="mysql://user:password@localhost:3306/mydatabase"
+// Example for PostgreSQL:
+// DATABASE_URL="postgresql://user:password@localhost:5432/mydatabase"
+//
+// Ensure you set the appropriate connection string based on the database you're using.
+// After modifying the DATABASE_URL, run 'npx prisma migrate dev' or just 'npm run dev:prisma' to apply migrations.
+// =============================================================================
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgres"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id        String   @unique @default(cuid())
+  id        String   @unique @default(uuid())
   username  String
   email     String   @unique
   password  String
@@ -24,7 +33,7 @@ model User {
 }
 
 model Book {
-  id          String   @id @unique @default(cuid())
+  id          String   @id @unique @default(uuid())
   userId      String
   title       String
   author      String
@@ -32,7 +41,7 @@ model Book {
   genre       Genre    @relation(fields: [genreId], references: [id])
   isbn        String?
   cover       String?
-  description String? @db.LongText
+  description String?  @db.VarChar(1000)
   avgRating   Float    @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -41,7 +50,7 @@ model Book {
 }
 
 model Review {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   userId    String
   bookId    String
   text      String
