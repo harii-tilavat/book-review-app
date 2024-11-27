@@ -6,7 +6,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { useAuth } from "../context/AuthContext";
 import { useModal } from "../context/ModalContext";
-import LoaderSpinner from "./comman/LoaderSpinner";
 
 interface NavigationModel {
   name: string;
