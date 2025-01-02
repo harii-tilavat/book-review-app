@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// const API_URL = "https://book-review-app-rbcl.onrender.com/api" ; // For testing purpose backend API_URL = "http://localhost:8080/api";
 const API_URL = "https://book-review-app-rbcl.onrender.com/api" ; // For testing purpose backend API_URL = "http://localhost:8080/api";
 // Create an Axios instance
 const axiosInstance = axios.create({
