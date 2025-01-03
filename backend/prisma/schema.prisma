@@ -18,7 +18,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgres"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -30,6 +30,7 @@ model User {
   createdAt DateTime @default(now())
   Book      Book[] // One-to-many relation to Book
   Review    Review[] // One-to-many relation to Review
+  Draft     Draft[]
 }
 
 model Book {
@@ -45,7 +46,9 @@ model Book {
   avgRating   Float    @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  draftId     String?
   user        User     @relation(fields: [userId], references: [id])
+  draft       Draft?   @relation(fields: [draftId], references: [id], onDelete: Cascade)
   reviews     Review[] // One-to-many relation with Review
 }
 
@@ -67,4 +70,38 @@ model Genre {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Book      Book[] // One-to-many relation with Book
+}
+
+// New models
+
+model Draft {
+  id          String   @id @default(uuid())
+  title       String
+  description String   @db.Text
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isPublished Boolean  @default(false)
+  user        User     @relation(fields: [userId], references: [id])
+  Page        Page[]
+  Book        Book[]
+}
+
+model Page {
+  id      String   @id @default(uuid())
+  draftId String
+  type    PageType
+  title   String? // For title page
+  chapter String? // For content page
+  order   Int
+  content String   @db.Text
+  draft   Draft    @relation(fields: [draftId], references: [id])
+
+  @@index([draftId]) // Index on draftId for faster queries
+}
+
+enum PageType {
+  INDEX
+  TITLE
+  CONTENT
 }

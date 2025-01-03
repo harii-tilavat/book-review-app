@@ -11,7 +11,7 @@ class BookRepo {
             }
 
             // Build the orderBy clause dynamically
-            const orderBy = sortField ? { [sortField]: sortOrder || 'asc' } : undefined;
+            const orderBy = sortField ? { [sortField]: sortOrder || 'asc' } : { createdAt: 'desc' };
 
             // Use a Prisma transaction for parallel execution
             const [books, totalBooks] = await prisma.$transaction([
@@ -137,9 +137,11 @@ class BookRepo {
     }
     async createGenres() {
         try {
-            return await prisma.genre.createMany({ data: [
-                
-            ] })
+            return await prisma.genre.createMany({
+                data: [
+
+                ]
+            })
         } catch (error) {
             throw error;
         }
