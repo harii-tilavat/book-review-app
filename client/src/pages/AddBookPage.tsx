@@ -3,7 +3,8 @@ import BookForm from "../components/BookForm";
 import { useNavigate } from "react-router-dom";
 import LoaderSpinner from "../components/comman/LoaderSpinner";
 import useBookApi from "../hooks/useBookApi";
-import AddPageForm, { PageData } from "../components/AddPageForm";
+import AddPageForm from "../components/AddPageForm";
+import DraftList from "../components/DraftList";
 const AddBookPage: React.FC = () => {
   const naviagate = useNavigate();
   const { createBook, isLoading } = useBookApi();
@@ -19,15 +20,14 @@ const AddBookPage: React.FC = () => {
   if (isLoading) {
     return <LoaderSpinner />;
   }
-  function handlePageSubmit(page: PageData) {
-    console.log("PAGE : ", page);
-  }
+  function handlePageSubmit() {}
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-800 pt-2 px-4">
       <BookForm onSubmit={handleSubmit} isLoading={isLoading} />
       <hr />
+      <DraftList />
       <div className="max-w-6xl mx-auto py-4">
-        <AddPageForm onPageSubmit={handlePageSubmit} />
+        <AddPageForm />
       </div>
     </div>
   );

@@ -76,15 +76,13 @@ model Genre {
 
 model Draft {
   id          String   @id @default(uuid())
-  title       String
-  description String   @db.Text
   userId      String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   isPublished Boolean  @default(false)
   user        User     @relation(fields: [userId], references: [id])
-  Page        Page[]
-  Book        Book[]
+  pages       Page[]
+  books        Book[]
 }
 
 model Page {

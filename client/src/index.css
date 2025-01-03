@@ -9,3 +9,6 @@ html {
   font-size: 14px; /* Change the font size to your desired size */
   font-family: inherit;
 }
+.mde-header-item button {
+  color: inherit !important;
+}
