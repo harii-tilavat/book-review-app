@@ -15,15 +15,10 @@ interface DraftListProps {
   isLoading: boolean;
 }
 
-const DraftList: React.FC<DraftListProps> = ({ drafts, pagination, onPageChange, isLoading }) => {
+const DraftList: React.FC<DraftListProps> = ({ drafts, isLoading }) => {
   const navigate = useNavigate();
   const { deleteDraft } = useDraftStore();
   const { showModal } = useModal();
-  const handlePublishToggle = (draftId: string) => {
-    // Logic to toggle publish status
-    console.log(`Toggled publish for draft: ${draftId}`);
-  };
-
   const handleDelete = (draftId: string) => {
     // showModal
     showModal({

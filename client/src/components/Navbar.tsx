@@ -4,8 +4,8 @@ import { useTheme } from "../context/ThemeContext";
 import Button from "./comman/Button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import clsx from "clsx";
-import { useAuth } from "../context/AuthContext";
 import { useModal } from "../context/ModalContext";
+import { useAuthStore } from "../store/useAuthStore";
 
 interface NavigationModel {
   name: string;
@@ -29,7 +29,7 @@ export default function Example() {
   const { showModal } = useModal();
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated, currentUser, logoutUser } = useAuth();
+  const { isAuthenticated, currentUser, logout } = useAuthStore();
   const navigationList = navigation.filter((i) => !i.isProtected || isAuthenticated);
 
   function goToLogin() {
@@ -42,8 +42,12 @@ export default function Example() {
     showModal({
       title: "Are you sure to logout?",
       confirmLabel: "Yes, Logout.",
-      onConfirm: logoutUser,
+      onConfirm: handleLogoutUser,
     });
+  }
+  function handleLogoutUser() {
+    logout();
+    navigate("/login");
   }
   return (
     <Disclosure as="nav" className="bg-white dark:bg-gray-800 fixed top-0 left-0 right-0 shadow-lg z-10">
@@ -101,10 +105,7 @@ export default function Example() {
                     <span>{(currentUser && currentUser.username && currentUser.username[0].toUpperCase()) || "A"}</span> {/* Replace "A" dynamically with the first letter of the username */}
                   </MenuButton>
                 </div>
-                <MenuItems
-                  transition
-                  className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-gray-25 dark:bg-gray-900 py-1 shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-                >
+                <MenuItems transition className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-gray-25 dark:bg-gray-900 py-1 shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in">
                   <MenuItem>
                     <span className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-gray-100 data-[focus]:bg-gray-100 dark:data-[focus]:bg-gray-700 data-[focus]:outline-none" onClick={() => navigate("/my-reviews")}>
                       My reviews
@@ -128,7 +129,7 @@ export default function Example() {
       <DisclosurePanel className="sm:hidden">
         <div className="space-y-1 px-2 pb-3 pt-2">
           {navigationList.map((item) => (
-            <DisclosureButton onClick={()=>navigate(item.href)} key={item.name} as="div" aria-current={item.current ? "page" : undefined} className={clsx(item.current ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white", "block rounded-md px-3 py-2 text-base font-medium cursor-pointer")}>
+            <DisclosureButton onClick={() => navigate(item.href)} key={item.name} as="div" aria-current={item.current ? "page" : undefined} className={clsx(item.current ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white", "block rounded-md px-3 py-2 text-base font-medium cursor-pointer")}>
               {item.name}
             </DisclosureButton>
           ))}

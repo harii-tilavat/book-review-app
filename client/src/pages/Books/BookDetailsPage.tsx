@@ -5,17 +5,18 @@ import Button from "../../components/comman/Button";
 import ReviewItem from "../../components/ReviewItem";
 import { ArrowLeftIcon } from "@heroicons/react/16/solid";
 import LoadingCard from "../../components/comman/LoadingCard";
-import BookCard from "../../components/BookCard";
+import BookCard from "../../components/Books/BookCard";
 import LoaderSpinner from "../../components/comman/LoaderSpinner";
 import ReviewFormModal, { ReviewFormValues } from "../../components/comman/ReviewFormModal";
-import { useAuth } from "../../context/AuthContext";
 import Rating from "../../components/comman/Rating";
 import { formatDate } from "../../utils/helpers";
 import { useModal } from "../../context/ModalContext";
 import { toast } from "react-toastify";
-import DraftViewer from "../../components/DraftViewer";
+import DraftViewer from "../../components/Drafts/DraftViewer";
 import useBookStore from "../../store/useBookStore";
 import { useReviewStore } from "../../store/useReviewStore";
+import { useAuthStore } from "../../store/useAuthStore";
+
 const BookDetailsPage = () => {
   const params = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const BookDetailsPage = () => {
 
   const [isReviewOpen, setIsReviewOpen] = useState(false);
 
-  const { currentUser } = useAuth();
+  const { currentUser } = useAuthStore();
   const { createReview, isLoading: isReviewLoading } = useReviewStore();
 
   const { getBookById, isLoading: isBookLoading, recommendations, currentBook } = useBookStore();
@@ -136,19 +137,21 @@ const BookDetailsPage = () => {
           {currentUser && (
             <>
               {/* Buttons Section - Edit and Delete Book */}
-              {currentBook.userId === currentUser.id && (
-                <div className="mt-6 flex space-x-4 justify-center md:justify-start">
-                  <Button onClick={() => navigate(`/edit-book/${currentBook.id}`)} className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-6 py-3 rounded-md shadow-md transition-all duration-200" aria-label="Edit this book">
-                    Edit Book
-                  </Button>
-                  <Button onClick={() => openDeleteModal(currentBook.id)} className="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-3 rounded-md shadow-md transition-all duration-200" aria-label="Delete this book">
-                    Delete Book
-                  </Button>
-                  <Button onClick={handleOpenReview} className="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-md shadow-md transition-all duration-200" aria-label="Add your review">
-                    Add Your Review
-                  </Button>
-                </div>
-              )}
+              <div className="mt-6 flex space-x-4 justify-center md:justify-start">
+                {currentBook.userId === currentUser.id && (
+                  <>
+                    <Button onClick={() => navigate(`/edit-book/${currentBook.id}`)} className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-6 py-3 rounded-md shadow-md transition-all duration-200" aria-label="Edit this book">
+                      Edit Book
+                    </Button>
+                    <Button onClick={() => openDeleteModal(currentBook.id)} className="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-3 rounded-md shadow-md transition-all duration-200" aria-label="Delete this book">
+                      Delete Book
+                    </Button>
+                  </>
+                )}
+                <Button onClick={handleOpenReview} className="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-md shadow-md transition-all duration-200" aria-label="Add your review">
+                  Add Your Review
+                </Button>
+              </div>
               {/* Show/Hide Pages Button */}
               {currentBook.draft && currentBook.draft.pages.length > 0 && (
                 <div className="mt-4">

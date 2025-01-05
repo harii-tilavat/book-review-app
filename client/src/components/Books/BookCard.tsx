@@ -1,8 +1,8 @@
 import React from "react";
-import { BookModel } from "../models/BookModel";
+import { BookModel } from "../../models/BookModel";
 import { Link, useNavigate } from "react-router-dom";
-import { formatDate } from "../utils/helpers";
-import Rating from "./comman/Rating";
+import { formatDate } from "../../utils/helpers";
+import Rating from "../comman/Rating";
 
 interface BookCardProps {
   onDelete?: (id: string) => void;

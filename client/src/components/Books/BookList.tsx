@@ -1,12 +1,12 @@
 import BookCard from "./BookCard";
-import { BookModel } from "../models/BookModel";
+import { BookModel } from "../../models/BookModel";
 import { useNavigate } from "react-router-dom";
 import React from "react";
-import LoadingCard from "./comman/LoadingCard";
+import LoadingCard from "../comman/LoadingCard";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
-import Pagination from "./comman/Pagination";
-import { PaginationModel } from "../models/PaginationModel";
-import { useModal } from "../context/ModalContext";
+import Pagination from "../comman/Pagination";
+import { PaginationModel } from "../../models/PaginationModel";
+import { useModal } from "../../context/ModalContext";
 
 interface BookListProps {
   onPageChange: (newPage: number) => void;

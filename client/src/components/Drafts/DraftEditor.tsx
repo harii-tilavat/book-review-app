@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { ArrowLeftIcon, } from "@heroicons/react/16/solid";
 import { useNavigate } from "react-router-dom";
 import { useModal } from "../../context/ModalContext";
-import DraftViewer from "../DraftViewer";
+import DraftViewer from "./DraftViewer";
 import MarkdownEditor from "./MarkdownEditor";
 
 interface DraftEditorProps {

@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { PlusCircleIcon } from "@heroicons/react/16/solid";
 import LoaderSpinner from "../../components/comman/LoaderSpinner";
-import BookForm from "../../components/BookForm";
+import BookForm from "../../components/Books/BookForm";
 
 const EditDraftPage = () => {
   const params = useParams();

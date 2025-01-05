@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import BookList from "../components/BookList";
 import React, { FormEvent, useEffect, useState } from "react";
-import { PaginationModel } from "../models/PaginationModel";
-import {  FilterModel } from "../models/BookModel";
+import { PaginationModel } from "../../models/PaginationModel";
+import {  FilterModel } from "../../models/BookModel";
 import BookManagementHeader from "./BookManagementHeader";
-import useBookStore from "../store/useBookStore";
+import useBookStore from "../../store/useBookStore";
+import BookList from "./BookList";
 
 interface BookManagementProps {
   isMyBooks: boolean;

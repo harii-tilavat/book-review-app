@@ -4,10 +4,9 @@ import TextBox from "../../components/comman/TextBox";
 import Button from "../../components/comman/Button";
 import { LockClosedIcon } from "@heroicons/react/16/solid";
 import { UserLoginModel } from "../../models/UserModel";
-import { useAuth } from "../../context/AuthContext";
 import { useEffect } from "react";
 import LoaderSpinner from "../../components/comman/LoaderSpinner";
-import { useAuthApi } from "../../hooks/useAuthApi";
+import { useAuthStore } from "../../store/useAuthStore";
 
 // const toastOptions: ToastOptions = {
 //   position: "top-right",
@@ -21,8 +20,7 @@ import { useAuthApi } from "../../hooks/useAuthApi";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
-  const { isLoading, login } = useAuthApi();
+  const { isAuthenticated, isLoading, login } = useAuthStore();
   const {
     register,
     handleSubmit,
@@ -37,7 +35,7 @@ const Login = () => {
 
   const onSubmit = async (userData: UserLoginModel) => {
     try {
-      login(userData);
+      await login(userData);
     } catch (error: any) {
       console.log(error);
     }

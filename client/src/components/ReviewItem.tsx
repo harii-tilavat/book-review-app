@@ -12,7 +12,6 @@ interface ReviewProps {
 }
 
 const ReviewItem: React.FC<ReviewProps> = ({ isMyReview = false, review, onDelete = () => {}, onEdit = () => {} }) => {
-  // const {} = useAuth
   const navigate = useNavigate();
   return (
     <>

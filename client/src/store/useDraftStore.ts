@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { DraftModel, PageModel } from "../models/DraftModel";
-import { deleteDraftFromLocalStorage, saveDraftToLocalStorage } from "../utils/drafts/draft";
 import axiosInstance from "../api/axiosInstance";
 import { PaginationModel } from "../models/PaginationModel";
 import { mapToPaginatedResponse } from "../utils/pagination";
@@ -20,8 +19,6 @@ interface DraftManagerState {
     createDraft: (draft: DraftModel) => Promise<void>;
     updateDraft: (updatedDraft: DraftModel) => void;
     deleteDraft: (draftId: string) => Promise<void>;
-    saveDraftLocally: (draft: DraftModel) => void;
-    saveDraftToServer: (draft: DraftModel) => Promise<void>;
     publishDraft: (updatedDraft: DraftModel, book: FormData) => Promise<void>;
     setCurrentDraft: (draft: DraftModel | null) => void;
     updateContent: (order: number, content: string, editMode: boolean) => void;
@@ -105,11 +102,6 @@ export const useDraftStore = create<DraftManagerState>((set, get) => ({
             set({ isLoading: false });
         }
     },
-
-    saveDraftLocally: (draft: DraftModel) => {
-        saveDraftToLocalStorage(draft);
-        set({ currentDraft: draft });
-    },
     publishDraft: async (updatedDraft: DraftModel, formData: FormData) => {
         set({ isDraftPublishing: true });
         try {
@@ -131,32 +123,6 @@ export const useDraftStore = create<DraftManagerState>((set, get) => ({
             handleApiError(error, true);
         } finally {
             set({ isDraftPublishing: false });
-        }
-    },
-    saveDraftToServer: async (draft: DraftModel) => {
-        try {
-            const draftId = draft.id || "";
-            const isNewDraft = draftId.startsWith("temp-");
-            const response = await axiosInstance({
-                url: isNewDraft ? "/draft" : `/draft/${draftId}`,
-                method: isNewDraft ? "POST" : "PUT",
-                data: draft,
-            });
-
-            const savedDraft = response.data;
-            if (isNewDraft) {
-                deleteDraftFromLocalStorage(draftId);
-                saveDraftToLocalStorage(savedDraft);
-            } else {
-                saveDraftToLocalStorage(savedDraft);
-            }
-
-            set((state) => ({
-                drafts: state.drafts.map((d) => (d.id === draft.id ? savedDraft : d)),
-                currentDraft: savedDraft,
-            }));
-        } catch (error) {
-            console.error("Failed to save draft:", error);
         }
     },
 

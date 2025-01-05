@@ -1,4 +1,4 @@
-import { DraftModel } from "../../models/DraftModel";
+import { DraftModel } from "../models/DraftModel";
 
 // Save a single draft to localStorage
 const saveDraftToLocalStorage = (draft: DraftModel) => {

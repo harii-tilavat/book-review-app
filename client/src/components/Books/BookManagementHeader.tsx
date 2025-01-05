@@ -1,8 +1,8 @@
 import React, { FormEvent } from "react";
-import { sortByOptions } from "../models/BookModel";
-import Button from "./comman/Button";
+import { sortByOptions } from "../../models/BookModel";
+import Button from "../comman/Button";
 import { useNavigate } from "react-router-dom";
-import useBookStore from "../store/useBookStore";
+import useBookStore from "../../store/useBookStore";
 
 interface BookManagementHeaderProps {
   onFilterChange: (event: FormEvent, identifier: string) => void;

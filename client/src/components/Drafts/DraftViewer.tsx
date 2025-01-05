@@ -1,6 +1,6 @@
 import React from "react";
 import Markdown from "react-markdown";
-import { PageModel } from "../models/DraftModel";
+import { PageModel } from "../../models/DraftModel";
 
 interface DraftViewerProps {
   pages: Array<PageModel>;

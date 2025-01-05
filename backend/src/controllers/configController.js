@@ -20,8 +20,8 @@ class ConfigController {
         app.route("/register")
             .post(userRegisterValidationSchema, validationHandler, async (req, res, next) => {
                 try {
-                    await this.configService.registerUser(req.body);
-                    return Response.created(res, Message.SIGNUP_SUCCESS);
+                    const data = await this.configService.registerUser(req.body);
+                    return Response.success(res, `Signup success. Welcome ${data.user.username}!`, data);
                 } catch (error) {
                     next(error);
                 }
