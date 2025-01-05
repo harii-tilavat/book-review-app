@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import DraftEditor from "../../components/Drafts/DraftEditor";
-import { useDraftManager } from "../../hooks/useDraftManger";
+import { useDraftStore } from "../../store/useDraftStore";
 import { DraftModel } from "../../models/DraftModel";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
@@ -11,12 +11,13 @@ import BookForm from "../../components/BookForm";
 const EditDraftPage = () => {
   const params = useParams();
   const navigate = useNavigate();
-  const { getDraftById, currentDraft, updateDraft, isDraftLoading, isDraftPublishing, publishDraft } = useDraftManager();
+  const { getDraftById, currentDraft, updateDraft, isDraftLoading, isDraftPublishing, publishDraft } = useDraftStore();
   function handleSaveDraft(draft: DraftModel) {
     if (!draft.id) {
       toast.error("Invalid draft!");
       return;
     }
+    // const isExists = localStorage.getItem(draft.id);
     updateDraft(draft);
   }
   async function handlePublishDraft(book: FormData) {
@@ -42,7 +43,7 @@ const EditDraftPage = () => {
   return (
     <>
       {!currentDraft && (
-        <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 shadow-lg rounded-lg p-8 mt-5">
+        <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8 mt-5">
           <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6">Draft Not Found</h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">Sorry, we couldn't find your draft. Please create the draft</p>
           <button
@@ -53,9 +54,12 @@ const EditDraftPage = () => {
           </button>
         </div>
       )}
-
-      <DraftEditor onSaveDraft={handleSaveDraft} editMode={true} />
-      <BookForm btnLabel="Publish book" btnLoadingLabel="Publishing..." headerText="Publish this draft" isLoading={isDraftPublishing} showBookBtn={false} onSubmit={handlePublishDraft} />
+      {currentDraft && (
+        <>
+          <DraftEditor onSaveDraft={handleSaveDraft} editMode={true} />
+          <BookForm btnLabel="Publish draft" btnLoadingLabel="Publishing..." headerText="Publish this draft" isLoading={isDraftPublishing} showBookBtn={false} onSubmit={handlePublishDraft} />
+        </>
+      )}
     </>
   );
 };

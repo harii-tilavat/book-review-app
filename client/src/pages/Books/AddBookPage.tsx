@@ -2,10 +2,10 @@ import { toast } from "react-toastify";
 import BookForm from "../../components/BookForm";
 import { useNavigate } from "react-router-dom";
 import LoaderSpinner from "../../components/comman/LoaderSpinner";
-import useBookApi from "../../hooks/useBookApi";
+import useBookStore from "../../store/useBookStore";
 const AddBookPage: React.FC = () => {
   const naviagate = useNavigate();
-  const { createBook, isLoading } = useBookApi();
+  const { createBook, isLoading } = useBookStore();
   async function handleSubmit(formData: FormData) {
     try {
       const { message } = await createBook(formData);

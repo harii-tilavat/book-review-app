@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import DraftList from "../../components/Drafts/DraftList";
-import { useDraftManager } from "../../hooks/useDraftManger";
+import { useDraftStore } from "../../store/useDraftStore";
 import { PaginationModel } from "../../models/PaginationModel";
 
 const MyDraftsPages = () => {
-  const { drafts, getAllDrafts,isLoading } = useDraftManager();
+  const { drafts, getAllDrafts,isLoading } = useDraftStore();
   const [pagination, setPagination] = useState<PaginationModel>(new PaginationModel());
 
   useEffect(() => {

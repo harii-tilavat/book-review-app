@@ -42,7 +42,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, onDelete, showActions = false
             <span>{book.genre.name}</span>
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-300 flex justify-between">
-            <span className="font-semibold">Created at</span>
+            <span className="font-semibold">Created at:</span>
             <span>{formatDate(book.createdAt)}</span>
           </p>
         </div>

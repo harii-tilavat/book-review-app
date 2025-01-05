@@ -9,48 +9,37 @@ import BookCard from "../../components/BookCard";
 import LoaderSpinner from "../../components/comman/LoaderSpinner";
 import ReviewFormModal, { ReviewFormValues } from "../../components/comman/ReviewFormModal";
 import { useAuth } from "../../context/AuthContext";
-import { useReviewApi } from "../../hooks/useReviewApi";
 import Rating from "../../components/comman/Rating";
 import { formatDate } from "../../utils/helpers";
-import useBookApi from "../../hooks/useBookApi";
 import { useModal } from "../../context/ModalContext";
 import { toast } from "react-toastify";
 import DraftViewer from "../../components/DraftViewer";
+import useBookStore from "../../store/useBookStore";
+import { useReviewStore } from "../../store/useReviewStore";
 const BookDetailsPage = () => {
   const params = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [showBooks, setShowBooks] = useState(true);
 
   const [isReviewOpen, setIsReviewOpen] = useState(false);
-  const [currentBook, setCurrentBook] = useState<BookModel>();
-  const [bookList, setBookList] = useState<Array<BookModel>>([]); // It is Recommendation book list
 
   const { currentUser } = useAuth();
-  const { createReview, isLoading: isReviewLoading } = useReviewApi();
-  const { getBookById, isLoading: isBookLoading } = useBookApi();
-  const { deleteBook, isLoading: isDeleteLoading } = useBookApi();
+  const { createReview, isLoading: isReviewLoading } = useReviewStore();
+
+  const { getBookById, isLoading: isBookLoading, recommendations, currentBook } = useBookStore();
+  const { deleteBook, isLoading: isDeleteLoading } = useBookStore();
   const { showModal } = useModal();
 
   // Methods
   const handleOpenReview = () => setIsReviewOpen(true);
   const handleCloseReview = () => setIsReviewOpen(false);
 
-  async function fetchBook(id: string) {
-    try {
-      if (id) {
-        const { book, recommendations } = await getBookById(id);
-        setCurrentBook(book);
-        setBookList(recommendations);
-      }
-    } catch (error: any) {
-      console.log(error);
-    }
-  }
   useEffect(() => {
     if (params["id"]) {
-      fetchBook(params["id"]);
+      getBookById(params["id"]);
     }
   }, [params["id"]]);
+
   function openDeleteModal(bookId: string) {
     // showModal
     console.log(bookId);
@@ -81,20 +70,7 @@ const BookDetailsPage = () => {
   async function handleSubmitReview(data: ReviewFormValues) {
     if (currentBook?.id) {
       const reviewData = { ...data, bookId: currentBook.id };
-      const createdReview = await createReview(reviewData as ReviewModel);
-
-      // Update the current book's reviews
-      setCurrentBook((prevBook) => {
-        if (!prevBook) return prevBook;
-        const updatedReviews = [createdReview, ...prevBook.reviews];
-        const newAvgRating = updatedReviews.reduce((total, review) => total + review.rating, 0) / updatedReviews.length;
-        // Add the new review and calculate the new avgRating
-        return {
-          ...prevBook,
-          reviews: [createdReview, ...prevBook.reviews],
-          avgRating: +newAvgRating.toFixed(2),
-        };
-      });
+      await createReview(reviewData as ReviewModel);
       handleCloseReview();
     }
   }
@@ -103,7 +79,7 @@ const BookDetailsPage = () => {
   }
   if (!currentBook) {
     return (
-      <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 shadow-lg rounded-lg p-8 mt-5">
+      <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8 mt-5">
         <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6">Book Not Found</h1>
         <p className="text-lg text-gray-600 dark:text-gray-300">Sorry, we couldn't find the book you were looking for. Please check the ID or try again later.</p>
         <button
@@ -189,13 +165,13 @@ const BookDetailsPage = () => {
       {currentBook.draft && currentBook.draft.pages.length > 0 && <div className="draft-view-container my-4 flex flex-col gap-4 items-center">{currentBook.draft && showBooks && <DraftViewer pages={currentBook.draft.pages} label="All pages" />}</div>}
 
       {/* Recommendation Section */}
-      {bookList && bookList.length > 0 && (
+      {recommendations.length > 0 && (
         <div className="mt-10">
           <h1 className="text-3xl font-bold mb-4">Recommendation</h1>
           <div className="book-card-list">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6  py-2">
               {isBookLoading && [1, 2, 3, 4].map((i) => <LoadingCard key={i} />)}
-              {!isBookLoading && bookList.map((book: BookModel) => <BookCard key={book.id} book={book} />)}
+              {!isBookLoading && recommendations.map((book: BookModel) => <BookCard key={book.id} book={book} />)}
             </div>
           </div>
         </div>

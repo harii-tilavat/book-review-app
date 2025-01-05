@@ -5,7 +5,7 @@ import { PlusCircleIcon } from "@heroicons/react/16/solid";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../utils/helpers";
 import LoaderSpinner from "../comman/LoaderSpinner";
-import { useDraftManager } from "../../hooks/useDraftManger";
+import { useDraftStore } from "../../store/useDraftStore";
 import { useModal } from "../../context/ModalContext";
 
 interface DraftListProps {
@@ -17,7 +17,7 @@ interface DraftListProps {
 
 const DraftList: React.FC<DraftListProps> = ({ drafts, pagination, onPageChange, isLoading }) => {
   const navigate = useNavigate();
-  const { deleteDraft } = useDraftManager();
+  const { deleteDraft } = useDraftStore();
   const { showModal } = useModal();
   const handlePublishToggle = (draftId: string) => {
     // Logic to toggle publish status
@@ -49,7 +49,7 @@ const DraftList: React.FC<DraftListProps> = ({ drafts, pagination, onPageChange,
       {/* Landing Section */}
 
       {!drafts.length && !isLoading && (
-        <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 shadow-lg rounded-lg p-8 mt-5">
+        <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8 mt-5">
           <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6">Drafts Not Found</h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">Sorry, we couldn't find your drafts. Please create the draft</p>
           <button

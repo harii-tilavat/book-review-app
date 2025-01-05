@@ -1,15 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
-import ReactMarkdown from "react-markdown";
-import ReactMde from "react-mde";
 import "react-mde/lib/styles/css/react-mde-all.css";
-import { DraftModel, PageModel } from "../../models/DraftModel";
-import { useDraftManager } from "../../hooks/useDraftManger";
+import { DraftModel } from "../../models/DraftModel";
+import { useDraftStore } from "../../store/useDraftStore";
 import { toast } from "react-toastify";
-import { ArrowLeftIcon, XMarkIcon } from "@heroicons/react/16/solid";
+import { ArrowLeftIcon, } from "@heroicons/react/16/solid";
 import { useNavigate } from "react-router-dom";
 import { useModal } from "../../context/ModalContext";
 import DraftViewer from "../DraftViewer";
-import LoaderSpinner from "../comman/LoaderSpinner";
 import MarkdownEditor from "./MarkdownEditor";
 
 interface DraftEditorProps {
@@ -20,7 +17,7 @@ interface DraftEditorProps {
 const DraftEditor: React.FC<DraftEditorProps> = ({ onSaveDraft, editMode = false }) => {
   const [title, setTitle] = useState<string>("");
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const { currentDraft, updateContent, isLoading, addPage, deletePage, setCurrentDraft } = useDraftManager();
+  const { currentDraft, updateContent, isLoading, addPage, deletePage, setCurrentDraft } = useDraftStore();
   const navigate = useNavigate();
   const { showModal } = useModal();
   useEffect(() => {
@@ -62,15 +59,15 @@ const DraftEditor: React.FC<DraftEditorProps> = ({ onSaveDraft, editMode = false
   };
   return (
     <div className="min-h-[38rem] p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="draft-editor-container p-6 bg-white dark:bg-gray-800 rounded-md">
-          <div className="draft-header flex justify-between mb-12">
-            <button
-              onClick={() => navigate("/my-drafts")} // Replace with your route or navigation logic
-              className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm">
-              <ArrowLeftIcon className="h-5 w-5 mr-2" /> {/* Icon with margin */}
-              Back to Drafts
-            </button>
+      <div className="max-w-7xl mx-auto">
+        <button
+          onClick={() => navigate("/my-drafts")} // Replace with your route or navigation logic
+          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm mb-6">
+          <ArrowLeftIcon className="h-5 w-5 mr-2" /> {/* Icon with margin */}
+          Back to Drafts
+        </button>
+        <div className="draft-editor-container px-6 py-12 bg-white dark:bg-gray-800 rounded-md">
+          <div className="draft-header flex justify-between mb-6">
             <h2 className="text-3xl font-bold  text-center text-blue-400">Draft Editor</h2>
           </div>
           <div className="mb-4">

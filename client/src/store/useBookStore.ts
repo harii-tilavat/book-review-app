@@ -7,12 +7,13 @@ import { PaginationModel, PaginationResponseModel } from "../models/PaginationMo
 import { createQueryParams, handleApiError } from "../utils/api";
 import { mapToPaginatedResponse } from "../utils/pagination";
 import axiosInstance from "../api/axiosInstance";
+import { useReviewStore } from "./useReviewStore";
 
 interface BookStore {
     isLoading: boolean;
     booksData: PaginationResponseModel<BookModel>;
     recommendations: Array<BookModel>;
-    selectedBook: BookResponseModel | null;
+    currentBook: BookModel | null;
     genres: GenreModel[];
     setLoading: (value: boolean) => void;
     getAllBooks: (pagination: PaginationModel, isMyBooks: boolean, filters: any) => Promise<void>;
@@ -26,7 +27,7 @@ interface BookStore {
 const useBookStore = create<BookStore>((set, get) => ({
     isLoading: false,
     booksData: new PaginationResponseModel<BookModel>(),
-    selectedBook: null,
+    currentBook: null,
     genres: [],
     recommendations: [],
     pagination: { page: 1, size: 10 },
@@ -53,8 +54,11 @@ const useBookStore = create<BookStore>((set, get) => ({
         const { setLoading } = get();
         setLoading(true);
         try {
-            const { data } = await axiosInstance.get("/book" + createQueryParams({ id }));
-            set({ selectedBook: data?.data });
+            const { data } = await axiosInstance.get<GenericReponseModel<BookResponseModel>>("/book" + createQueryParams({ id }));
+            if (data.data) {
+                set({ currentBook: data?.data?.book, recommendations: data.data.recommendations });
+                useReviewStore.setState({ reviews: data.data.book.reviews });
+            }
         } catch (error) {
             handleApiError(error);
             toast.error("Failed to get book.");

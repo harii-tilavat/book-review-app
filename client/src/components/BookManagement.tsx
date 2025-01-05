@@ -2,10 +2,8 @@ import { useNavigate } from "react-router-dom";
 import BookList from "../components/BookList";
 import React, { FormEvent, useEffect, useState } from "react";
 import { PaginationModel } from "../models/PaginationModel";
-import { BookModel, FilterModel } from "../models/BookModel";
-import useBookApi from "../hooks/useBookApi";
+import {  FilterModel } from "../models/BookModel";
 import BookManagementHeader from "./BookManagementHeader";
-import { toast } from "react-toastify";
 import useBookStore from "../store/useBookStore";
 
 interface BookManagementProps {
@@ -14,24 +12,18 @@ interface BookManagementProps {
 
 const BookManagement: React.FC<BookManagementProps> = ({ isMyBooks = false }) => {
   const navigate = useNavigate();
-  const [books, setBooks] = useState<Array<BookModel>>([]);
   const [filters, setFilters] = useState<FilterModel>(new FilterModel());
   const [paginationState, setPaginationState] = useState<PaginationModel>(new PaginationModel());
-  // const { isLoading, getAllBooks } = useBookApi();
-  const { deleteBook, isLoading: isDeleteLoading } = useBookApi();
+  const { deleteBook, isLoading: isDeleteLoading } = useBookStore(); // Pending...
 
   const { getAllBooks, booksData, isLoading } = useBookStore();
   useEffect(() => {
     const fetchBooks = async () => {
-      try {
-        await getAllBooks(paginationState, isMyBooks, filters);
-        setPaginationState((prevState) => ({ ...prevState, totalPages: booksData.totalPages }));
-      } catch (error) {
-        console.log(error);
-      }
+      await getAllBooks(paginationState, isMyBooks, filters);
+      setPaginationState((prevState) => ({ ...prevState, totalPages: booksData.totalPages }));
     };
     fetchBooks();
-  }, [paginationState.page, paginationState.itemsPerPage, filters]);
+  }, [paginationState.page, paginationState.itemsPerPage, filters, booksData.totalPages]);
 
   function handlePageChange(newPage: number) {
     setPaginationState((prevState) => ({ ...prevState, page: newPage }));
@@ -40,18 +32,10 @@ const BookManagement: React.FC<BookManagementProps> = ({ isMyBooks = false }) =>
     setFilters((prev) => ({ ...prev, [identifier]: (event.target as any).value }));
   }
   async function handleDeleteBook(bookId: string) {
-    try {
-      if (bookId) {
-        const { message } = await deleteBook(bookId);
-        setBooks((prevBooks) => [...prevBooks.filter((book) => book.id !== bookId)]);
-        toast.success(message || "Book deleted successfully.");
-      } else {
-      }
-    } catch (error) {
-      console.log(`Delete not success review with ID: ${bookId}`, error);
+    if (bookId) {
+      await deleteBook(bookId);
     }
   }
-console.log("NEW BOOK DATA : ", booksData);
   return (
     <div className="container mx-auto p-6">
       {/* Landing Section */}

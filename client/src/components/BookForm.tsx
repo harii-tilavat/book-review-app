@@ -9,6 +9,7 @@ import clsx from "clsx";
 import { useBook } from "../context/BookContext";
 import { convertToBase64 } from "../utils/helpers";
 import { toast } from "react-toastify";
+import useBookStore from "../store/useBookStore";
 
 export interface BookFormValues {
   title: string;
@@ -29,7 +30,7 @@ interface BookFormProps {
 }
 
 const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading, btnLabel = "Save", btnLoadingLabel = "Saving...", headerText = "Add a New Book", showBookBtn = true }) => {
-  const { genres } = useBook();
+  const { genres } = useBookStore();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const {
     control,
@@ -177,7 +178,7 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading, bt
               </div>
               {/* JSX for remove button, shown only if imagePreview exists */}
               {imagePreview && (
-                <div className="mt-2 flex items-center space-x-4">
+                <div className="mt-2 flex flex-col md:flex-row items-start md:items-center gap-4 ">
                   <img src={imagePreview} alt="Cover preview" className="max-w-xs rounded-md" />
                   <button type="button" onClick={handleRemoveImage} className="text-red-500 hover:text-red-600 font-semibold">
                     Remove Image

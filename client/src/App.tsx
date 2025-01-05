@@ -2,11 +2,11 @@ import "./App.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.min.css";
 import AppRouter from "./routes/AppRouter";
-import useBookApi from "./hooks/useBookApi";
 import { useEffect } from "react";
+import useBookStore from "./store/useBookStore";
 
 function App() {
-  const { getAllGenres } = useBookApi();
+  const { getAllGenres } = useBookStore();
   useEffect(() => {
     getAllGenres();
   }, []);
@@ -16,7 +16,7 @@ function App() {
       <AppRouter />
 
       {/* Manage notification or messages */}
-      <ToastContainer autoClose={1000}/>
+      <ToastContainer autoClose={1000} />
     </div>
   );
 }

@@ -1,7 +1,10 @@
 export class PaginationModel {
-    itemsPerPage: number = 8;
+    itemsPerPage: number;
     page: number = 1;
     totalPages?: number;
+    constructor(itemPerPage = 8) {
+        this.itemsPerPage = itemPerPage;
+    }
 }
 export class PaginationResponseModel<T> {
     currentPage: number;       // The current page number

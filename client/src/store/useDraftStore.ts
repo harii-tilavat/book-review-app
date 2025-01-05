@@ -7,9 +7,7 @@ import { mapToPaginatedResponse } from "../utils/pagination";
 import { handleApiError } from "../utils/api";
 import { GenericReponseModel } from "../models";
 import { toast } from "react-toastify";
-import useBookApi from "./useBookApi";
-import { BookModel } from "../models/BookModel";
-import useBookStore from "../store/useBookStore";
+import useBookStore from "./useBookStore";
 
 interface DraftManagerState {
     drafts: DraftModel[];
@@ -31,7 +29,7 @@ interface DraftManagerState {
     deletePage: (order: number) => void;
 }
 
-export const useDraftManager = create<DraftManagerState>((set, get) => ({
+export const useDraftStore = create<DraftManagerState>((set, get) => ({
     drafts: [],
     currentDraft: null,
     isLoading: false,
@@ -169,14 +167,14 @@ export const useDraftManager = create<DraftManagerState>((set, get) => ({
     updateContent: (order: number, content: string, editMode = false) => {
         const { currentDraft } = get();
         if (currentDraft) {
-            const updatedPages = [...currentDraft.pages];
+            const updatedPages: Array<PageModel> = [...currentDraft.pages];
             const currentPageIndex = updatedPages.findIndex(page => page.order === order);
             if (currentPageIndex === -1) {
                 console.error("Order not found!");
                 return;
             }
 
-            updatedPages[currentPageIndex] = { ...updatedPages[currentPageIndex], content };
+            updatedPages[currentPageIndex] = { ...updatedPages[currentPageIndex], content, isChanged: true };
             // Update the draft with the new or updated pages
             const updatedDraft: DraftModel = { ...currentDraft, pages: updatedPages };
 
@@ -203,6 +201,7 @@ export const useDraftManager = create<DraftManagerState>((set, get) => ({
         const maxOrder = draftToUpdate.pages.reduce((max, page) => Math.max(max, page.order), 0);
         const newPage: PageModel = {
             order: maxOrder + 1,
+            createdAt: new Date().toDateString(),
             content: "",
             type,
         };

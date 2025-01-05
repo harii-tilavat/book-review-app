@@ -1,14 +1,14 @@
 import React, { FormEvent } from "react";
 import { sortByOptions } from "../models/BookModel";
-import { useBook } from "../context/BookContext";
 import Button from "./comman/Button";
 import { useNavigate } from "react-router-dom";
+import useBookStore from "../store/useBookStore";
 
 interface BookManagementHeaderProps {
   onFilterChange: (event: FormEvent, identifier: string) => void;
 }
 const BookManagementHeader: React.FC<BookManagementHeaderProps> = ({ onFilterChange }) => {
-  const { genres=[] } = useBook();
+  const { genres } = useBookStore();
   const navigate = useNavigate();
   return (
     <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 space-y-4 md:space-y-0 gap-3">
@@ -22,7 +22,9 @@ const BookManagementHeader: React.FC<BookManagementHeaderProps> = ({ onFilterCha
           <select id="filter-genre" className="block rounded-md border border-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-2 py-2 resize-none w-64" onChange={(event) => onFilterChange(event, "genreId")}>
             <option value="">All Genres</option>
             {genres.map((genre) => (
-              <option value={genre.id} key={genre.id}>{genre.name}</option>
+              <option value={genre.id} key={genre.id}>
+                {genre.name}
+              </option>
             ))}
             {/* Add more genres as needed */}
           </select>

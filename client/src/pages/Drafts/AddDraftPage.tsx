@@ -1,11 +1,11 @@
 // import BookForm from "../../components/BookForm";
 import { useNavigate } from "react-router-dom";
 import DraftEditor from "../../components/Drafts/DraftEditor";
-import { useDraftManager } from "../../hooks/useDraftManger";
+import { useDraftStore } from "../../store/useDraftStore";
 import { DraftModel } from "../../models/DraftModel";
 
 const AddDraftPage = () => {
-  const { createDraft } = useDraftManager();
+  const { createDraft } = useDraftStore();
   const navigate = useNavigate();
   async function handleSaveDraft(draft: DraftModel) {
     await createDraft({ title: draft.title!, pages: draft.pages } as DraftModel);
