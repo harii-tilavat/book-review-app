@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import BookForm from "../components/BookForm";
+import BookForm from "../../components/BookForm";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { BookModel } from "../models/BookModel";
-import LoaderSpinner from "../components/comman/LoaderSpinner";
+import { BookModel } from "../../models/BookModel";
+import LoaderSpinner from "../../components/comman/LoaderSpinner";
 import { ArrowLeftIcon } from "@heroicons/react/16/solid";
-import useBookApi from "../hooks/useBookApi";
+import useBookApi from "../../hooks/useBookApi";
 
 const EditBookPage = () => {
   const [currentBook, setCurrentBook] = useState<BookModel>();

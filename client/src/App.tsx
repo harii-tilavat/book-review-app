@@ -16,7 +16,7 @@ function App() {
       <AppRouter />
 
       {/* Manage notification or messages */}
-      <ToastContainer />
+      <ToastContainer autoClose={1000}/>
     </div>
   );
 }

@@ -64,11 +64,10 @@ const BookManagement: React.FC<BookManagementProps> = ({ isMyBooks = false }) =>
               {/* <PlusCircleIcon /> */}
               <span>Create book</span>
             </button>
-            {isMyBooks && (
-              <button className="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg shadow-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 font-semibold" onClick={() => navigate("/my-reviews")}>
-                Explore Reviews
-              </button>
-            )}
+
+            <button className="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg shadow-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 font-semibold" onClick={() => navigate("/add-draft")}>
+              Create draft
+            </button>
           </div>
         </div>
       )}

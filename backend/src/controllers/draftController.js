@@ -12,17 +12,18 @@ class DraftController {
     }
     register(app) {
         app.route("/drafts")
-            .get(async (req, res, next) => {
+            .get(authMiddleware, async (req, res, next) => {
                 try {
-                    const { itemsPerPage, page, ...filters } = req.query;
+                    const { itemsPerPage = 8, page = 1 } = req.query;
+                    const { userId } = req.user;
 
                     const { limit, offset, currentPage } = PaginatioHelper.validatePagination(itemsPerPage, page);
 
                     // Fetch paginated books
-                    const { books, totalBooks } = await this.bookService.getPaginatedBooks(limit, offset, filters);
+                    const { drafts, totalDrafts } = await this.draftService.getPaginatedDrafts(limit, offset, userId);
 
                     // Construct the grid response
-                    const gridResponse = PaginatioHelper.generatePaginatedResponse(books, currentPage, itemsPerPage, totalBooks);
+                    const gridResponse = PaginatioHelper.generatePaginatedResponse(drafts, currentPage, itemsPerPage, totalDrafts);
                     // Return the success response
                     return await Response.success(res, Message.SUCCESS, gridResponse);
                 } catch (error) {
@@ -34,33 +35,29 @@ class DraftController {
                 try {
                     const { id } = req.query;
                     if (!id) {
-                        throw new AppError(StatusCode.BAD_REQUEST, Message.INVALID_PARAMS)
+                        throw new AppError(StatusCode.BAD_REQUEST, Message.INVALID_PARAMS);
                     }
-                    const data = await this.bookService.getBookById(id);
+                    const data = await this.draftService.getDraftById(id);
                     return await Response.success(res, Message.SUCCESS, data);
 
                 } catch (error) {
                     next(error);
                 }
             })
-            .post(authMiddleware, bookValidSchema, validationHandler, async (req, res, next) => {
+            .post(authMiddleware, async (req, res, next) => {
                 const { userId } = req.user;
                 try {
-                    const book = await this.bookService.createBook(userId, { ...req.body, file: req.file });
-                    return Response.created(res, Message.BOOK_CREATED, book);
+                    const draft = await this.draftService.createDraft(userId, req.body);
+                    return Response.created(res, "Draft created successfully!", draft);
                 } catch (error) {
                     next(error);
                 }
             })
-            .put(authMiddleware, bookValidSchema, validationHandler, async (req, res, next) => {
+            .put(authMiddleware, async (req, res, next) => {
+                const { userId } = req.user;
                 try {
-                    const { userId } = req.user;
-                    const { id } = req.body;
-                    if (!id) {
-                        throw new AppError(StatusCode.BAD_REQUEST, Message.INVALID_PARAMS);
-                    }
-                    const book = await this.bookService.updatedBookById(userId, { ...req.body, file: req.file });
-                    return Response.success(res, Message.BOOK_UPDATED, book);
+                    const draft = await this.draftService.updateDraft(userId, req.body);
+                    return Response.created(res, "Draft saved successfully!", draft);
                 } catch (error) {
                     next(error);
                 }
@@ -68,13 +65,28 @@ class DraftController {
             .delete(authMiddleware, async (req, res, next) => {
                 try {
                     const { userId } = req.user;
-                    const { id } = req.body;
-                    if (!id) {
+                    const { draftId } = req.query;
+                    if (!draftId) {
                         throw new AppError(StatusCode.BAD_REQUEST, Message.INVALID_PARAMS);
                     }
 
-                    await this.bookService.deleteBookById(userId, id);
-                    return Response.success(res, Message.BOOK_DELETED);
+                    await this.draftService.deleteDraftById(userId, draftId);
+                    return Response.success(res, "Draft deleted successfully!");
+                } catch (error) {
+                    next(error);
+                }
+            })
+        app.route("/draft/pages")
+            .delete(authMiddleware, async (req, res, next) => {
+                try {
+                    const { userId } = req.user;
+                    const { pageId } = req.query;
+                    if (!pageId) {
+                        throw new AppError(StatusCode.BAD_REQUEST, Message.INVALID_PARAMS);
+                    }
+
+                    await this.draftService.deletePageById(userId, pageId);
+                    return Response.success(res, "Page deleted successfully!");
                 } catch (error) {
                     next(error);
                 }

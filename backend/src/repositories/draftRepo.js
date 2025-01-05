@@ -1,13 +1,44 @@
 const prisma = require("../config/prismaClient");
 class DraftRepo {
+    async getPaginatedDrafts(limit, offset, userId = null) {
+        try {
+            // Build the where clause dynamically
+            // const { isPublished, sortField, sortOrder } = filters;
+            // const where = {
+            //     ...(userId ? { userId } : {}),
+            //     ...(typeof isPublished === 'boolean' ? { isPublished } : {})
+            // };
+
+            // Build the orderBy clause dynamically
+            // const orderBy = sortField ? { [sortField]: sortOrder || 'asc' } : { createdAt: 'desc' };
+
+            // Use Prisma to get paginated drafts
+            const [drafts, totalDrafts] = await prisma.$transaction([
+                prisma.draft.findMany({
+                    where: { userId, isPublished: false },
+                    skip: offset,
+                    take: limit,
+                    include: {
+                        pages: true
+                    },
+                    orderBy: { createdAt: "desc" }
+                }),
+                prisma.draft.count({ where: { userId } })
+            ]);
+            return { drafts, totalDrafts };
+        } catch (error) {
+            throw new Error(`Error fetching paginated drafts: ${error.message}`);
+        }
+    }
+
     // Get draft by id
     async getDraftById(id) {
         try {
             return prisma.draft.findUnique({
-                where: { id },
+                where: { id, isPublished: false },
                 include: {
                     books: true,
-                    pages: true,
+                    pages: { orderBy: { order: "asc" } },
                 }
             })
         } catch (error) {
@@ -84,9 +115,27 @@ class DraftRepo {
         }
     }
     // Update page for draft
+    async getPageById(id) {
+        try {
+            return await prisma.page.findUnique({ where: { id } });
+        } catch (error) {
+            throw new Error(`Error getPageById for draft: ${error.message}`);
+        }
+    }
+    async deletePageById(id) {
+        try {
+            return await prisma.page.delete({
+                where: { id }
+            });
+        } catch (error) {
+            throw new Error(`Error deleting page for draft: ${error.message}`);
+        }
+    }
     async updatePageForDraft(draftId, pageData) {
+        const { id } = pageData;
         try {
             return await prisma.page.update({
+                where: { id },
                 data: {
                     draftId,
                     ...pageData,

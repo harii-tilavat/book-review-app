@@ -77,23 +77,22 @@ model Genre {
 model Draft {
   id          String   @id @default(uuid())
   userId      String
+  title       String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   isPublished Boolean  @default(false)
   user        User     @relation(fields: [userId], references: [id])
   pages       Page[]
-  books        Book[]
+  books       Book[]
 }
 
 model Page {
   id      String   @id @default(uuid())
   draftId String
   type    PageType
-  title   String? // For title page
-  chapter String? // For content page
   order   Int
-  content String   @db.Text
-  draft   Draft    @relation(fields: [draftId], references: [id])
+  content String?  @db.Text
+  draft   Draft    @relation(fields: [draftId], references: [id], onDelete: Cascade)
 
   @@index([draftId]) // Index on draftId for faster queries
 }

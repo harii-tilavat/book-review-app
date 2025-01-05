@@ -1,21 +1,19 @@
 const { AppError } = require("../middlewares/errorHandlerMiddleware");
 const { StatusCode, Message } = require("../utils/response");
-const FileUploader = require("../utils/uploader");
-const { BookModel } = require("../models/bookModel");
 const DraftRepo = require("../repositories/draftRepo");
 class DraftService {
     constructor() {
         this.draftRepo = new DraftRepo();
     }
 
-    // Fetch paginated books
-    async getPaginatedBooks(limit, offset, filters = {}, userId = null) {
+    // Fetch paginated drafts
+    async getPaginatedDrafts(limit, offset, userId = null) {
         try {
-            // Fetch books and total count
-            const { books, totalBooks } = await this.bookRepo.getPaginatedBooks(limit, offset, filters, userId);
+            // Fetch drafts and total count
+            const { drafts, totalDrafts } = await this.draftRepo.getPaginatedDrafts(limit, offset, userId);
             return {
-                books: books.map(book => new BookModel(book)),
-                totalBooks
+                drafts,
+                totalDrafts
             };
         } catch (error) {
             throw error;
@@ -23,23 +21,66 @@ class DraftService {
     }
 
     // Create a new book
-    async createBook(userId, book) {
+    async createDraft(userId, draft) {
         try {
-            const { title, author, genreId, file, isbn, description } = book;
-            if (!file) {
-                throw new AppError(StatusCode.BAD_REQUEST, Message.FILE_MISSING);
+            const { title = null, pages = [] } = draft;
+
+            // Create draft
+            const newDraft = await this.draftRepo.createDraft(userId, { title });
+
+            const { id: draftId } = newDraft;
+
+            // Process pages asynchronously
+            await Promise.all(
+                pages.map(async (page) => {
+                    const { content = null, order, type } = page;
+                    return this.draftRepo.createPageForDraft(draftId, { content, order, type });
+                })
+            )
+            // Fetch the updated draft to return
+            const updatedDraft = await this.draftRepo.getDraftById(draftId);
+
+            // Return new Draft
+            return updatedDraft;
+        } catch (error) {
+            // If it's any other error, throw a generic one
+            // throw new AppError(StatusCode.INTERNAL_SERVER_ERROR);
+            throw error;
+        }
+    }
+
+    // Create a new book
+    async updateDraft(userId, draft) {
+        try {
+            const { title = null, id, pages = [] } = draft;
+            // Check if it's a new draft or an update
+
+            const currentDraft = await this.draftRepo.getDraftById(id);
+            if (!currentDraft || currentDraft.userId !== userId) {
+                throw new AppError(StatusCode.UNAUTHORIZED, Message.UNAUTHORIZED);
             }
+            await this.draftRepo.updateDraft(id, { title });
 
-            // Upload the file buffer to Cloudinary and get the uploaded file's details
-            const uploadedFile = await FileUploader.uploadStream(file.buffer);
+            // Process pages asynchronously
+            await Promise.all(
+                pages.map(async (page) => {
+                    const { id: pageId, content = null, order, type, isChanged } = page;
+                    if (!pageId) {
+                        // Create page
+                        return this.draftRepo.createPageForDraft(id, { content, order, type });
+                    } else {
+                        // Update page
+                        if (isChanged) {
+                            return this.draftRepo.updatePageForDraft(id, { content, order, type, id: pageId });
+                        }
+                    }
+                })
+            )
+            // Fetch the updated draft to return
+            const newDraft = await this.draftRepo.getDraftById(id);
 
-            const upadatedBook = { title, author, genreId, cover: uploadedFile.secure_url, description, isbn };
-
-            // Save the book details in the database and associate it with the user
-            const newBook = await this.bookRepo.createBook(userId, upadatedBook);
-
-            // Return the newly created book record without userId
-            return new BookModel(newBook);
+            // Return new Draft
+            return newDraft;
         } catch (error) {
             // If it's any other error, throw a generic one
             // throw new AppError(StatusCode.INTERNAL_SERVER_ERROR);
@@ -48,64 +89,42 @@ class DraftService {
     }
 
     // Fetch a single book by ID with recommendations based on genre or author
-    async getBookById(id) {
+    async getDraftById(id) {
         try {
-            const book = await this.bookRepo.getBookById(id);
-            if (!book) {
+            const draft = await this.draftRepo.getDraftById(id);
+            if (!draft) {
                 throw new AppError(StatusCode.NOT_FOUND, Message.BOOK_NOT_FOUND);
             }
-
-            // Fetch recommended books (same genreId or author)
-            const recommendations = await this.bookRepo.getRecommendations(book.genreId, book.author, book.id);
-            return { book, recommendations };
+            return draft;
         } catch (error) {
             throw error;
         }
     }
-
-    // Update an existing book by ID
-    async updatedBookById(userId, book) {
-        try {
-            const { file, id, ...updatedBook } = book;
-
-            const currentBook = await this.bookRepo.getBookById(id);
-            if (!currentBook || currentBook.userId !== userId) {
-                throw new AppError(StatusCode.BAD_REQUEST, Message.UNAUTHORIZED);
-            }
-            if (file) {
-                const uploadedFile = await FileUploader.uploadStream(file.buffer);
-                updatedBook.cover = uploadedFile.secure_url;
-            }
-            const newBook = await this.bookRepo.updateBookById(id, updatedBook);
-            return new BookModel(newBook);
-            // const book = await this.bookRepo.
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    // Delete a book by ID
-    async deleteBookById(userId, id) {
+    // Delete a Draft by ID
+    async deleteDraftById(userId, draftId) {
         try {
             // Delete book
-            const currentBook = await this.bookRepo.getBookById(id);
-            if (!currentBook) {
-                throw new AppError(StatusCode.NOT_FOUND, Message.BOOK_NOT_FOUND);
+            const currentDraft = await this.draftRepo.getDraftById(draftId);
+            if (!currentDraft) {
+                throw new AppError(StatusCode.NOT_FOUND, Message.NOT_FOUND);
             }
-            if (currentBook.userId !== userId) {
+            if (currentDraft.userId !== userId) {
                 throw new AppError(StatusCode.FORBIDDEN, Message.UNAUTHORIZED);
             }
 
-            return await this.bookRepo.deleteBookById(id);;
+            return await this.draftRepo.deleteDraft(draftId);
         } catch (error) {
             throw error;
         }
     }
-
-    // Fetch all categories (genres)Category
-    async getAllCategory() {
+    async deletePageById(userId, pageId) {
         try {
-            return await this.bookRepo.getAllCategory();
+            // Delete book
+            const currentPage = await this.draftRepo.getPageById(pageId);
+            if (!currentPage) {
+                throw new AppError(StatusCode.NOT_FOUND, Message.NOT_FOUND);
+            }
+            return await this.draftRepo.deletePageById(pageId);
         } catch (error) {
             throw error;
         }

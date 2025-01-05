@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { ReviewModel } from "../models/BookModel";
-import { useReviewApi } from "../hooks/useReviewApi";
-import ReviewFormModal, { ReviewFormValues } from "../components/comman/ReviewFormModal";
-import { useModal } from "../context/ModalContext";
-import LoaderSpinner from "../components/comman/LoaderSpinner";
-import ReviewItem from "../components/ReviewItem";
+import { ReviewModel } from "../../models/BookModel";
+import { useReviewApi } from "../../hooks/useReviewApi";
+import ReviewFormModal, { ReviewFormValues } from "../../components/comman/ReviewFormModal";
+import { useModal } from "../../context/ModalContext";
+import LoaderSpinner from "../../components/comman/LoaderSpinner";
+import ReviewItem from "../../components/ReviewItem";
 const MyReviewsPage: React.FC = () => {
   const [reviews, setReviews] = useState<Array<ReviewModel>>([]);
   const { getMyReviews, isLoading, updateReview, deleteReview } = useReviewApi();

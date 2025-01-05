@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { BookModel, ReviewModel } from "../models/BookModel";
-import Button from "../components/comman/Button";
-import ReviewItem from "../components/ReviewItem";
+import { BookModel, ReviewModel } from "../../models/BookModel";
+import Button from "../../components/comman/Button";
+import ReviewItem from "../../components/ReviewItem";
 import { ArrowLeftIcon } from "@heroicons/react/16/solid";
-import LoadingCard from "../components/comman/LoadingCard";
-import BookCard from "../components/BookCard";
-import LoaderSpinner from "../components/comman/LoaderSpinner";
-import ReviewFormModal, { ReviewFormValues } from "../components/comman/ReviewFormModal";
-import { useAuth } from "../context/AuthContext";
-import { useReviewApi } from "../hooks/useReviewApi";
-import Rating from "../components/comman/Rating";
-import { formatDate } from "../utils/helpers";
-import useBookApi from "../hooks/useBookApi";
-import { useModal } from "../context/ModalContext";
+import LoadingCard from "../../components/comman/LoadingCard";
+import BookCard from "../../components/BookCard";
+import LoaderSpinner from "../../components/comman/LoaderSpinner";
+import ReviewFormModal, { ReviewFormValues } from "../../components/comman/ReviewFormModal";
+import { useAuth } from "../../context/AuthContext";
+import { useReviewApi } from "../../hooks/useReviewApi";
+import Rating from "../../components/comman/Rating";
+import { formatDate } from "../../utils/helpers";
+import useBookApi from "../../hooks/useBookApi";
+import { useModal } from "../../context/ModalContext";
 import { toast } from "react-toastify";
 const BookDetailsPage = () => {
   const params = useParams<{ id: string }>();
@@ -54,7 +54,7 @@ const BookDetailsPage = () => {
     // showModal
     console.log(bookId);
     showModal({
-      title: "Delete Review",
+      title: "Delete Book",
       description: "Are you sure you want to delete this book? This action cannot be undone.",
       confirmLabel: "Yes, Delete",
       isLoading: isDeleteLoading,

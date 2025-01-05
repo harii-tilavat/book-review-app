@@ -17,8 +17,10 @@ interface NavigationModel {
 const navigation: Array<NavigationModel> = [
   // { name: "Dashboard", href: "/", current: true, isProtected: false },
   { name: "Add book", href: "/add-book", current: false, isProtected: true },
+  { name: "Create Draft", href: "/add-draft", current: false, isProtected: true },
   { name: "My reviews", href: "/my-reviews", current: false, isProtected: true },
   { name: "My books", href: "/my-books", current: false, isProtected: true },
+  { name: "My drafts", href: "/my-drafts", current: false, isProtected: true },
   // { name: "Calendar", href: "#", current: false },
 ];
 

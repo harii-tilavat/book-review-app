@@ -24,7 +24,7 @@ const BookList: React.FC<BookListProps> = ({ books = [], isLoading, isDeleteLoad
   function openDeleteModal(bookId: string) {
     // showModal
     showModal({
-      title: "Delete Review",
+      title: "Delete Book",
       description: "Are you sure you want to delete this book? This action cannot be undone.",
       confirmLabel: "Yes, Delete",
       cancelLabel: "Cancel",

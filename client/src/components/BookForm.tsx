@@ -134,8 +134,7 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
       <div className="max-w-6xl mx-auto py-4">
         <button
           onClick={() => navigate("/")} // Replace with your route or navigation logic
-          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm"
-        >
+          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm">
           <ArrowLeftIcon className="h-5 w-5 mr-2" /> {/* Icon with margin */}
           Back to Book List
         </button>
