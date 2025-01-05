@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import DraftList from "../../components/DraftList";
+import DraftList from "../../components/Drafts/DraftList";
 import { useDraftManager } from "../../hooks/useDraftManger";
 import { PaginationModel } from "../../models/PaginationModel";
 

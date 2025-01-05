@@ -76,6 +76,17 @@ class DraftController {
                     next(error);
                 }
             })
+        // app.route("/draft/publish")
+        //     .post(authMiddleware, async (req, res, next) => {
+        //         const { userId } = req.user;
+        //         const { draft, book } = req.body;
+        //         try {
+        //             const draft = await this.draftService.createDraft(userId, req.body);
+        //             return Response.created(res, "Draft created successfully!", draft);
+        //         } catch (error) {
+        //             next(error);
+        //         }
+        //     })
         app.route("/draft/pages")
             .delete(authMiddleware, async (req, res, next) => {
                 try {

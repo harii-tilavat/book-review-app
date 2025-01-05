@@ -16,8 +16,8 @@ class DraftRepo {
             const [drafts, totalDrafts] = await prisma.$transaction([
                 prisma.draft.findMany({
                     where: { userId, isPublished: false },
-                    skip: offset,
-                    take: limit,
+                    // skip: offset,
+                    // take: limit,
                     include: {
                         pages: true
                     },
@@ -91,10 +91,14 @@ class DraftRepo {
     // Get pages for draft
     async getPagesForDraft(draftId, limit = 5, offset = 0) {
         try {
+            // return await prisma.page.findMany({
+            //     where: { draftId },
+            //     skip: offset,
+            //     take: limit,
+            //     orderBy: { order: 'asc' }
+            // })
             return await prisma.page.findMany({
                 where: { draftId },
-                skip: offset,
-                take: limit,
                 orderBy: { order: 'asc' }
             })
         } catch (error) {

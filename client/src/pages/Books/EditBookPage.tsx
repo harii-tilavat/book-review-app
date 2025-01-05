@@ -56,8 +56,8 @@ const EditBookPage = () => {
     );
   }
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-800 pt-2 px-4">
-      <BookForm onSubmit={handleSubmit} bookDetail={currentBook} isLoading={isUpdateLoading} />
+    <div className="min-h-screen pt-2 px-4">
+      <BookForm onSubmit={handleSubmit} bookDetail={currentBook} isLoading={isUpdateLoading} btnLabel="Update" btnLoadingLabel="Updating..." headerText="Edit book"/>
     </div>
   );
 };

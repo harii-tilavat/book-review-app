@@ -1,6 +1,6 @@
 // import BookForm from "../../components/BookForm";
 import { useNavigate } from "react-router-dom";
-import DraftEditor from "../../components/DraftEditor";
+import DraftEditor from "../../components/Drafts/DraftEditor";
 import { useDraftManager } from "../../hooks/useDraftManger";
 import { DraftModel } from "../../models/DraftModel";
 

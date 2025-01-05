@@ -63,7 +63,7 @@ class BookRepo {
                     userId,
                     ...book,
                 },
-                include: { genre: true }
+                include: { genre: true, draft: true }
             });
             return newBook;
         } catch (error) {
@@ -72,22 +72,22 @@ class BookRepo {
     }
     async getBookById(id) {
         try {
-            const book = await prisma.book.findUnique(
-                {
-                    where: { id },
-                    include: {
-                        reviews: {
-                            include: {
-                                user: {
-                                    select: {
-                                        username: true
-                                    }
+            const book = await prisma.book.findUnique({
+                where: { id },
+                include: {
+                    reviews: {
+                        include: {
+                            user: {
+                                select: {
+                                    username: true
                                 }
-                            },
-                            orderBy: { createdAt: 'desc' }
-                        }, genre: true
-                    }
-                });
+                            }
+                        },
+                        orderBy: { createdAt: 'desc' }
+                    }, genre: true,
+                    draft: { include: { pages: true } }
+                }
+            });
             return book;
         } catch (error) {
             throw new Error(`Failed to fetch book by ID ${id}: ${error.message}`);

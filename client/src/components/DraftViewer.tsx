@@ -8,20 +8,19 @@ interface DraftViewerProps {
 }
 
 const DraftViewer: React.FC<DraftViewerProps> = ({ pages, label = "Draft Preview" }) => {
+  pages.sort((a, b) => a.order - b.order);
   return (
-    <div className="container max-w-6xl mx-auto py-6 px-4">
-      <h2 className="text-3xl font-bold mb-6 text-center">{label}</h2>
+    <div className="container max-w-6xl mx-auto py-8 px-6">
+      <h2 className="text-4xl  text-center mb-8 text-gray-800 dark:text-white font-semibold">{label}</h2>
       <div className="page-list space-y-8 max-h-[40rem] overflow-y-auto rounded-lg">
-        {pages.map((page) => (
-          <div className="mde-preview rounded-lg shadow-lg p-6 bg-gray-100 dark:bg-gray-700" key={page.order}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-semibold ">
-                {/* Page {index + 1} (Order: {page.order}) */}
-                Page {page.order}
-              </h3>
-              <span className="text-sm ">Type: {page.type || "N/A"}</span>
+        {pages.map((page, index) => (
+          <div className="mde-preview rounded-lg shadow-xl p-8 bg-white dark:bg-gray-800" key={page.order}>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">Page {index + 1}</h3>
+              {page.type !== "CONTENT" && <span className="text-sm text-gray-600 dark:text-gray-400">Type: {page.type || "N/A"}</span>}
             </div>
-            <div className="mde-preview-content prose max-w-none">
+
+            <div className="mde-preview-content prose max-w-none text-gray-800 dark:text-gray-200">
               <Markdown>{page.content || "_No content available._"}</Markdown>
             </div>
           </div>

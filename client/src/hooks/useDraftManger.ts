@@ -7,11 +7,16 @@ import { mapToPaginatedResponse } from "../utils/pagination";
 import { handleApiError } from "../utils/api";
 import { GenericReponseModel } from "../models";
 import { toast } from "react-toastify";
+import useBookApi from "./useBookApi";
+import { BookModel } from "../models/BookModel";
+import useBookStore from "../store/useBookStore";
 
 interface DraftManagerState {
     drafts: DraftModel[];
     currentDraft: DraftModel | null;
     isLoading: boolean;
+    isDraftLoading: boolean;
+    isDraftPublishing: boolean;
     getAllDrafts: (params: PaginationModel) => Promise<void>;
     getDraftById: (id: string) => Promise<void>;
     createDraft: (draft: DraftModel) => Promise<void>;
@@ -19,8 +24,9 @@ interface DraftManagerState {
     deleteDraft: (draftId: string) => Promise<void>;
     saveDraftLocally: (draft: DraftModel) => void;
     saveDraftToServer: (draft: DraftModel) => Promise<void>;
+    publishDraft: (updatedDraft: DraftModel, book: FormData) => Promise<void>;
     setCurrentDraft: (draft: DraftModel | null) => void;
-    updateContent: (order: number, content: string) => void;
+    updateContent: (order: number, content: string, editMode: boolean) => void;
     addPage: (type: PageModel["type"]) => void;
     deletePage: (order: number) => void;
 }
@@ -29,7 +35,8 @@ export const useDraftManager = create<DraftManagerState>((set, get) => ({
     drafts: [],
     currentDraft: null,
     isLoading: false,
-
+    isDraftLoading: false,
+    isDraftPublishing: false,
     getAllDrafts: async (params: PaginationModel) => {
         set({ isLoading: true });
         try {
@@ -44,7 +51,7 @@ export const useDraftManager = create<DraftManagerState>((set, get) => ({
     },
 
     getDraftById: async (id: string) => {
-        set({ isLoading: true });
+        set({ isDraftLoading: true });
         try {
             const storedDraft = localStorage.getItem(id);
             if (storedDraft) {
@@ -56,7 +63,7 @@ export const useDraftManager = create<DraftManagerState>((set, get) => ({
         } catch (error) {
             handleApiError(error);
         } finally {
-            set({ isLoading: false });
+            set({ isDraftLoading: false });
         }
     },
 
@@ -105,7 +112,29 @@ export const useDraftManager = create<DraftManagerState>((set, get) => ({
         saveDraftToLocalStorage(draft);
         set({ currentDraft: draft });
     },
+    publishDraft: async (updatedDraft: DraftModel, formData: FormData) => {
+        set({ isDraftPublishing: true });
+        try {
+            const draftToUpdate: DraftModel = { ...updatedDraft, isPublished: true };
+            await axiosInstance.put<GenericReponseModel<DraftModel>>("/draft", draftToUpdate);
 
+            // Append draftId to formData
+            formData.append("draftId", updatedDraft.id);
+
+            // Create the book
+            await useBookStore.getState().createBook(formData);
+
+            toast.success("Draft published successfully!");
+
+            // Clean up localStorage
+            localStorage.removeItem(updatedDraft.id);
+
+        } catch (error) {
+            handleApiError(error, true);
+        } finally {
+            set({ isDraftPublishing: false });
+        }
+    },
     saveDraftToServer: async (draft: DraftModel) => {
         try {
             const draftId = draft.id || "";
@@ -137,7 +166,7 @@ export const useDraftManager = create<DraftManagerState>((set, get) => ({
         set({ currentDraft: draft });
     },
     // New method to update content of a specific page in current draft
-    updateContent: (order: number, content: string) => {
+    updateContent: (order: number, content: string, editMode = false) => {
         const { currentDraft } = get();
         if (currentDraft) {
             const updatedPages = [...currentDraft.pages];
@@ -151,8 +180,10 @@ export const useDraftManager = create<DraftManagerState>((set, get) => ({
             // Update the draft with the new or updated pages
             const updatedDraft: DraftModel = { ...currentDraft, pages: updatedPages };
 
-            // Save the updated draft to localStorage
-            localStorage.setItem(updatedDraft.id, JSON.stringify(updatedDraft));
+            if (editMode) {
+                // Save the updated draft to localStorage
+                localStorage.setItem(updatedDraft.id, JSON.stringify(updatedDraft));
+            }
 
             // Update the state with the new draft
             set({ currentDraft: updatedDraft });

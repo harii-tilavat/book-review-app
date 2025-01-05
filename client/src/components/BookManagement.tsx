@@ -6,6 +6,7 @@ import { BookModel, FilterModel } from "../models/BookModel";
 import useBookApi from "../hooks/useBookApi";
 import BookManagementHeader from "./BookManagementHeader";
 import { toast } from "react-toastify";
+import useBookStore from "../store/useBookStore";
 
 interface BookManagementProps {
   isMyBooks: boolean;
@@ -16,14 +17,15 @@ const BookManagement: React.FC<BookManagementProps> = ({ isMyBooks = false }) =>
   const [books, setBooks] = useState<Array<BookModel>>([]);
   const [filters, setFilters] = useState<FilterModel>(new FilterModel());
   const [paginationState, setPaginationState] = useState<PaginationModel>(new PaginationModel());
-  const { isLoading, getAllBooks } = useBookApi();
+  // const { isLoading, getAllBooks } = useBookApi();
   const { deleteBook, isLoading: isDeleteLoading } = useBookApi();
+
+  const { getAllBooks, booksData, isLoading } = useBookStore();
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const { items, totalPages } = await getAllBooks<BookModel>(paginationState, isMyBooks, filters);
-        setBooks(items);
-        setPaginationState((prevState) => ({ ...prevState, totalPages }));
+        await getAllBooks(paginationState, isMyBooks, filters);
+        setPaginationState((prevState) => ({ ...prevState, totalPages: booksData.totalPages }));
       } catch (error) {
         console.log(error);
       }
@@ -49,7 +51,7 @@ const BookManagement: React.FC<BookManagementProps> = ({ isMyBooks = false }) =>
       console.log(`Delete not success review with ID: ${bookId}`, error);
     }
   }
-
+console.log("NEW BOOK DATA : ", booksData);
   return (
     <div className="container mx-auto p-6">
       {/* Landing Section */}
@@ -77,7 +79,7 @@ const BookManagement: React.FC<BookManagementProps> = ({ isMyBooks = false }) =>
 
         <BookManagementHeader onFilterChange={handleFilterChange} />
 
-        <BookList books={books} isLoading={isLoading} isDeleteLoading={isDeleteLoading} isMyBooks={isMyBooks} pagination={paginationState} onPageChange={handlePageChange} onDeleteBook={handleDeleteBook} />
+        <BookList books={booksData.items} isLoading={isLoading} isDeleteLoading={isDeleteLoading} isMyBooks={isMyBooks} pagination={paginationState} onPageChange={handlePageChange} onDeleteBook={handleDeleteBook} />
       </div>
     </div>
   );

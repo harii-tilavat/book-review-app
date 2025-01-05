@@ -15,9 +15,11 @@ import { formatDate } from "../../utils/helpers";
 import useBookApi from "../../hooks/useBookApi";
 import { useModal } from "../../context/ModalContext";
 import { toast } from "react-toastify";
+import DraftViewer from "../../components/DraftViewer";
 const BookDetailsPage = () => {
   const params = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [showBooks, setShowBooks] = useState(true);
 
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [currentBook, setCurrentBook] = useState<BookModel>();
@@ -40,7 +42,6 @@ const BookDetailsPage = () => {
         setCurrentBook(book);
         setBookList(recommendations);
       }
-      throw new Error("Invalid id.");
     } catch (error: any) {
       console.log(error);
     }
@@ -107,8 +108,7 @@ const BookDetailsPage = () => {
         <p className="text-lg text-gray-600 dark:text-gray-300">Sorry, we couldn't find the book you were looking for. Please check the ID or try again later.</p>
         <button
           onClick={() => navigate("/")} // Replace with your route or navigation logic
-          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm mt-4"
-        >
+          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm mt-4">
           <ArrowLeftIcon className="h-5 w-5 mr-2" /> {/* Icon with margin */}
           Back to Book List
         </button>
@@ -120,14 +120,13 @@ const BookDetailsPage = () => {
       <div className="navigate-back my-3">
         <button
           onClick={() => navigate("/")} // Replace with your route or navigation logic
-          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm"
-        >
+          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm">
           <ArrowLeftIcon className="h-5 w-5 mr-2" /> {/* Icon with margin */}
           Back to Book List
         </button>
       </div>
       {/* Book Details Section */}
-      <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-md p-6 dark:bg-gray-700">
+      <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-md p-6 dark:bg-gray-800">
         <img src={currentBook.cover} alt={currentBook.title} className="w-full lg:w-1/3 object-cover rounded-lg" />
         <div className="md:ml-6 mt-6 md:mt-0 flex-grow">
           <h1 className="text-3xl font-bold ">{currentBook.title}</h1>
@@ -160,26 +159,34 @@ const BookDetailsPage = () => {
 
           {currentUser && (
             <>
-              {/* Buttons Section */}
+              {/* Buttons Section - Edit and Delete Book */}
               {currentBook.userId === currentUser.id && (
-                <div className="mt-6 flex space-x-4">
-                  <Button onClick={() => navigate(`/edit-book/${currentBook.id}`)} className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-4 py-2 rounded-md shadow">
+                <div className="mt-6 flex space-x-4 justify-center md:justify-start">
+                  <Button onClick={() => navigate(`/edit-book/${currentBook.id}`)} className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-6 py-3 rounded-md shadow-md transition-all duration-200" aria-label="Edit this book">
                     Edit Book
                   </Button>
-                  <Button onClick={() => openDeleteModal(currentBook.id)} className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-md shadow">
+                  <Button onClick={() => openDeleteModal(currentBook.id)} className="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-3 rounded-md shadow-md transition-all duration-200" aria-label="Delete this book">
                     Delete Book
+                  </Button>
+                  <Button onClick={handleOpenReview} className="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-md shadow-md transition-all duration-200" aria-label="Add your review">
+                    Add Your Review
                   </Button>
                 </div>
               )}
-
-              {/* Add Review Button */}
-              <Button onClick={handleOpenReview} className="mt-4">
-                Add Your Review
-              </Button>
+              {/* Show/Hide Pages Button */}
+              {currentBook.draft && currentBook.draft.pages.length > 0 && (
+                <div className="mt-4">
+                  <Button onClick={() => setShowBooks((isShow) => !isShow)} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-md shadow-md transition-all duration-200" aria-label={showBooks ? "Hide book pages" : "Show book pages"}>
+                    {showBooks ? "Hide" : "Show"} Pages
+                  </Button>
+                </div>
+              )}
             </>
           )}
         </div>
       </div>
+      {/* Draft viewer */}
+      {currentBook.draft && currentBook.draft.pages.length > 0 && <div className="draft-view-container my-4 flex flex-col gap-4 items-center">{currentBook.draft && showBooks && <DraftViewer pages={currentBook.draft.pages} label="All pages" />}</div>}
 
       {/* Recommendation Section */}
       {bookList && bookList.length > 0 && (

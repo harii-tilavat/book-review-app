@@ -1,12 +1,12 @@
 import React from "react";
-import { PaginationModel } from "../models/PaginationModel";
-import { DraftModel } from "../models/DraftModel";
+import { PaginationModel } from "../../models/PaginationModel";
+import { DraftModel } from "../../models/DraftModel";
 import { PlusCircleIcon } from "@heroicons/react/16/solid";
 import { useNavigate } from "react-router-dom";
-import { formatDate } from "../utils/helpers";
-import LoaderSpinner from "./comman/LoaderSpinner";
-import { useDraftManager } from "../hooks/useDraftManger";
-import { useModal } from "../context/ModalContext";
+import { formatDate } from "../../utils/helpers";
+import LoaderSpinner from "../comman/LoaderSpinner";
+import { useDraftManager } from "../../hooks/useDraftManger";
+import { useModal } from "../../context/ModalContext";
 
 interface DraftListProps {
   onPageChange: (newPage: number) => void;
@@ -45,7 +45,7 @@ const DraftList: React.FC<DraftListProps> = ({ drafts, pagination, onPageChange,
     return <LoaderSpinner />;
   }
   return (
-    <div className={`container mx-auto px-4 py-8 bg-gray-800 text-white`}>
+    <div className={`container mx-auto px-4 py-8`}>
       {/* Landing Section */}
 
       {!drafts.length && !isLoading && (
@@ -65,7 +65,7 @@ const DraftList: React.FC<DraftListProps> = ({ drafts, pagination, onPageChange,
           <h1 className="text-3xl font-bold text-center mb-6">Your Drafts</h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6  py-2">
             {drafts.map((draft: DraftModel) => (
-              <div key={draft.id} className={`p-6 rounded-lg shadow-lg bg-gray-700`}>
+              <div key={draft.id} className={`p-6 rounded-lg shadow-lg bg-white dark:bg-gray-800`}>
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-xl font-semibold">{draft.title}</h3>
                   {/* <span className={`px-3 py-1 rounded-full text-white ${draft.isPublished ? "bg-green-500" : "bg-red-500"}`}>{draft.isPublished ? "Published" : "Draft"}</span> */}
@@ -87,9 +87,6 @@ const DraftList: React.FC<DraftListProps> = ({ drafts, pagination, onPageChange,
                   </button>
                   <button onClick={() => handleDelete(draft.id)} className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-400">
                     Delete
-                  </button>
-                  <button onClick={() => handlePublishToggle(draft.id)} className={`px-4 py-2 rounded-md ${draft.isPublished ? "bg-yellow-500" : "bg-green-500"} text-white hover:bg-opacity-80`}>
-                    {draft.isPublished ? "Unpublish" : "Publish"}
                   </button>
                 </div>
               </div>

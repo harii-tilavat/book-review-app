@@ -52,14 +52,14 @@ class DraftService {
     // Create a new book
     async updateDraft(userId, draft) {
         try {
-            const { title = null, id, pages = [] } = draft;
+            const { title = null, id, pages = [], isPublished = false } = draft;
             // Check if it's a new draft or an update
 
             const currentDraft = await this.draftRepo.getDraftById(id);
             if (!currentDraft || currentDraft.userId !== userId) {
                 throw new AppError(StatusCode.UNAUTHORIZED, Message.UNAUTHORIZED);
             }
-            await this.draftRepo.updateDraft(id, { title });
+            await this.draftRepo.updateDraft(id, { title, isPublished });
 
             // Process pages asynchronously
             await Promise.all(
@@ -129,6 +129,7 @@ class DraftService {
             throw error;
         }
     }
+
 }
 module.exports = DraftService;
 
