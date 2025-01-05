@@ -21,7 +21,10 @@ class ConfigService {
             const currentUser = { ...user, password: hashPassword };
 
             // Register the user in the database.
-            return await this.configRepo.register(currentUser);
+            const newUser = await this.configRepo.register(currentUser);
+            // Generate the JWT token
+            const token = JwtHelpwer.generateToken({ id: newUser.id, email: newUser.email });
+            return { token, user: new UserModel(newUser) }
         } catch (error) {
             throw error;
         }

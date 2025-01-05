@@ -1,3 +1,4 @@
+import { DraftModel } from "./DraftModel";
 import GenreModel from "./GenreModel";
 
 export interface BookModel {
@@ -14,6 +15,7 @@ export interface BookModel {
     reviews: Array<ReviewModel>;
     createdAt: string;
     updatedAt: string;
+    draft?: DraftModel;
 }
 
 export interface ReviewModel {

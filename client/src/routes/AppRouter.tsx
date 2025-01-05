@@ -1,14 +1,17 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import Login from "../pages/auth/Login";
-import Signup from "../pages/auth/Signup";
+import Login from "../pages/Auth/Login";
+import Signup from "../pages/Auth/Signup";
 import Home from "../pages/HomePage";
 import Layout from "../pages/Layout";
 import ProtectedRoute from "./ProtectedRoute";
-import AddBook from "../pages/AddBookPage";
-import BookDetails from "../pages/BookDetailsPage";
-import EditBookDetails from "../pages/EditBookPage";
-import MyReviewsPage from "../pages/MyReviewsPage";
-import MyBooksPage from "../pages/MyBooksPage";
+import AddBook from "../pages/Books/AddBookPage";
+import BookDetails from "../pages/Books/BookDetailsPage";
+import EditBookDetails from "../pages/Books/EditBookPage";
+import MyReviewsPage from "../pages/Reviews/MyReviewsPage";
+import MyBooksPage from "../pages/Books/MyBooksPage";
+import MyDraftsPages from "../pages/Drafts/MyDraftsPages";
+import AddDraftPage from "../pages/Drafts/AddDraftPage";
+import EditDraftPage from "../pages/Drafts/EditDraftPage";
 const AppRouter = () => {
   return (
     <Routes>
@@ -50,6 +53,30 @@ const AppRouter = () => {
           element={
             <ProtectedRoute>
               <MyBooksPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-drafts"
+          element={
+            <ProtectedRoute>
+              <MyDraftsPages />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/add-draft"
+          element={
+            <ProtectedRoute>
+              <AddDraftPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-draft/:id"
+          element={
+            <ProtectedRoute>
+              <EditDraftPage />
             </ProtectedRoute>
           }
         />

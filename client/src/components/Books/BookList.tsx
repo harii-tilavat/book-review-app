@@ -1,12 +1,12 @@
 import BookCard from "./BookCard";
-import { BookModel } from "../models/BookModel";
+import { BookModel } from "../../models/BookModel";
 import { useNavigate } from "react-router-dom";
 import React from "react";
-import LoadingCard from "./comman/LoadingCard";
+import LoadingCard from "../comman/LoadingCard";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
-import Pagination from "./comman/Pagination";
-import { PaginationModel } from "../models/PaginationModel";
-import { useModal } from "../context/ModalContext";
+import Pagination from "../comman/Pagination";
+import { PaginationModel } from "../../models/PaginationModel";
+import { useModal } from "../../context/ModalContext";
 
 interface BookListProps {
   onPageChange: (newPage: number) => void;
@@ -24,7 +24,7 @@ const BookList: React.FC<BookListProps> = ({ books = [], isLoading, isDeleteLoad
   function openDeleteModal(bookId: string) {
     // showModal
     showModal({
-      title: "Delete Review",
+      title: "Delete Book",
       description: "Are you sure you want to delete this book? This action cannot be undone.",
       confirmLabel: "Yes, Delete",
       cancelLabel: "Cancel",
@@ -35,7 +35,7 @@ const BookList: React.FC<BookListProps> = ({ books = [], isLoading, isDeleteLoad
   return (
     <>
       {!books.length && !isLoading && (
-        <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 shadow-lg rounded-lg p-8 mt-5">
+        <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8 mt-5">
           <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6">Books Not Found</h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">Sorry, we couldn't find {isMyBooks ? "yours" : ""} books. Please create the book</p>
           <button

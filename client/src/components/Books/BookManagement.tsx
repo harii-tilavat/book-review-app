@@ -1,11 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import BookList from "../components/BookList";
 import React, { FormEvent, useEffect, useState } from "react";
-import { PaginationModel } from "../models/PaginationModel";
-import { BookModel, FilterModel } from "../models/BookModel";
-import useBookApi from "../hooks/useBookApi";
+import { PaginationModel } from "../../models/PaginationModel";
+import {  FilterModel } from "../../models/BookModel";
 import BookManagementHeader from "./BookManagementHeader";
-import { toast } from "react-toastify";
+import useBookStore from "../../store/useBookStore";
+import BookList from "./BookList";
 
 interface BookManagementProps {
   isMyBooks: boolean;
@@ -13,23 +12,18 @@ interface BookManagementProps {
 
 const BookManagement: React.FC<BookManagementProps> = ({ isMyBooks = false }) => {
   const navigate = useNavigate();
-  const [books, setBooks] = useState<Array<BookModel>>([]);
   const [filters, setFilters] = useState<FilterModel>(new FilterModel());
   const [paginationState, setPaginationState] = useState<PaginationModel>(new PaginationModel());
-  const { isLoading, getAllBooks } = useBookApi();
-  const { deleteBook, isLoading: isDeleteLoading } = useBookApi();
+  const { deleteBook, isLoading: isDeleteLoading } = useBookStore(); // Pending...
+
+  const { getAllBooks, booksData, isLoading } = useBookStore();
   useEffect(() => {
     const fetchBooks = async () => {
-      try {
-        const { items, totalPages } = await getAllBooks<BookModel>(paginationState, isMyBooks, filters);
-        setBooks(items);
-        setPaginationState((prevState) => ({ ...prevState, totalPages }));
-      } catch (error) {
-        console.log(error);
-      }
+      await getAllBooks(paginationState, isMyBooks, filters);
+      setPaginationState((prevState) => ({ ...prevState, totalPages: booksData.totalPages }));
     };
     fetchBooks();
-  }, [paginationState.page, paginationState.itemsPerPage, filters]);
+  }, [paginationState.page, paginationState.itemsPerPage, filters, booksData.totalPages]);
 
   function handlePageChange(newPage: number) {
     setPaginationState((prevState) => ({ ...prevState, page: newPage }));
@@ -38,18 +32,10 @@ const BookManagement: React.FC<BookManagementProps> = ({ isMyBooks = false }) =>
     setFilters((prev) => ({ ...prev, [identifier]: (event.target as any).value }));
   }
   async function handleDeleteBook(bookId: string) {
-    try {
-      if (bookId) {
-        const { message } = await deleteBook(bookId);
-        setBooks((prevBooks) => [...prevBooks.filter((book) => book.id !== bookId)]);
-        toast.success(message || "Book deleted successfully.");
-      } else {
-      }
-    } catch (error) {
-      console.log(`Delete not success review with ID: ${bookId}`, error);
+    if (bookId) {
+      await deleteBook(bookId);
     }
   }
-
   return (
     <div className="container mx-auto p-6">
       {/* Landing Section */}
@@ -64,11 +50,10 @@ const BookManagement: React.FC<BookManagementProps> = ({ isMyBooks = false }) =>
               {/* <PlusCircleIcon /> */}
               <span>Create book</span>
             </button>
-            {isMyBooks && (
-              <button className="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg shadow-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 font-semibold" onClick={() => navigate("/my-reviews")}>
-                Explore Reviews
-              </button>
-            )}
+
+            <button className="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg shadow-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 font-semibold" onClick={() => navigate("/add-draft")}>
+              Create draft
+            </button>
           </div>
         </div>
       )}
@@ -78,7 +63,7 @@ const BookManagement: React.FC<BookManagementProps> = ({ isMyBooks = false }) =>
 
         <BookManagementHeader onFilterChange={handleFilterChange} />
 
-        <BookList books={books} isLoading={isLoading} isDeleteLoading={isDeleteLoading} isMyBooks={isMyBooks} pagination={paginationState} onPageChange={handlePageChange} onDeleteBook={handleDeleteBook} />
+        <BookList books={booksData.items} isLoading={isLoading} isDeleteLoading={isDeleteLoading} isMyBooks={isMyBooks} pagination={paginationState} onPageChange={handlePageChange} onDeleteBook={handleDeleteBook} />
       </div>
     </div>
   );

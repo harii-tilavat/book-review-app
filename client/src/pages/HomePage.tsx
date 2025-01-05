@@ -1,4 +1,5 @@
-import BookManagement from "../components/BookManagement";
+
+import BookManagement from "../components/Books/BookManagement";
 const Home = () => {
   return (
     <main>

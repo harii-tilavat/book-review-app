@@ -1,8 +1,8 @@
 import React from "react";
-import { BookModel } from "../models/BookModel";
+import { BookModel } from "../../models/BookModel";
 import { Link, useNavigate } from "react-router-dom";
-import { formatDate } from "../utils/helpers";
-import Rating from "./comman/Rating";
+import { formatDate } from "../../utils/helpers";
+import Rating from "../comman/Rating";
 
 interface BookCardProps {
   onDelete?: (id: string) => void;
@@ -21,7 +21,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, onDelete, showActions = false
   }
 
   return (
-    <div key={book.id} className="bg-white dark:bg-gray-700 shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+    <div key={book.id} className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
       {/* Book Cover */}
       <img src={book.cover} alt={book.title} className="h-48 w-full object-cover" />
 
@@ -42,7 +42,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, onDelete, showActions = false
             <span>{book.genre.name}</span>
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-300 flex justify-between">
-            <span className="font-semibold">Created at</span>
+            <span className="font-semibold">Created at:</span>
             <span>{formatDate(book.createdAt)}</span>
           </p>
         </div>

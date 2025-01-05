@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import TextBox from "../components/comman/TextBox";
-import Button from "../components/comman/Button";
-import { BookModel } from "../models/BookModel";
-import { ArrowLeftIcon, ArrowPathIcon } from "@heroicons/react/16/solid";
+import TextBox from "../comman/TextBox";
+import Button from "../comman/Button";
+import { BookModel } from "../../models/BookModel";
+import { ArrowLeftIcon } from "@heroicons/react/16/solid";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
-import { useBook } from "../context/BookContext";
-import { convertToBase64 } from "../utils/helpers";
+import { convertToBase64 } from "../../utils/helpers";
 import { toast } from "react-toastify";
+import useBookStore from "../../store/useBookStore";
 
 export interface BookFormValues {
   title: string;
@@ -22,10 +22,14 @@ interface BookFormProps {
   bookDetail?: BookModel;
   onSubmit: (book: FormData) => void;
   isLoading: boolean;
+  btnLabel?: string;
+  btnLoadingLabel?: string;
+  headerText?: string;
+  showBookBtn?: boolean;
 }
 
-const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) => {
-  const { genres } = useBook();
+const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading, btnLabel = "Save", btnLoadingLabel = "Saving...", headerText = "Add a New Book", showBookBtn = true }) => {
+  const { genres } = useBookStore();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const {
     control,
@@ -132,15 +136,17 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
   return (
     <>
       <div className="max-w-6xl mx-auto py-4">
-        <button
-          onClick={() => navigate("/")} // Replace with your route or navigation logic
-          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm"
-        >
-          <ArrowLeftIcon className="h-5 w-5 mr-2" /> {/* Icon with margin */}
-          Back to Book List
-        </button>
-        <div className="form-container-wrapper bg-white dark:bg-gray-900 shadow-lg rounded-lg p-8 mt-4">
-          <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6"> {bookDetail ? "Edit Book" : "Add a New Book"}</h1>
+        {showBookBtn && (
+          <button
+            onClick={() => navigate("/")} // Replace with your route or navigation logic
+            className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 font-semibold text-sm">
+            <ArrowLeftIcon className="h-5 w-5 mr-2" /> {/* Icon with margin */}
+            Back to Book List
+          </button>
+        )}
+
+        <div className="form-container-wrapper bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8 mt-4">
+          <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6"> {headerText}</h1>
           <form onSubmit={handleSubmit(handleSubmitForm)} className="space-y-6">
             {/* Title */}
             <TextBox id="title" label="Title" placeholder="Enter book title" error={errors.title} register={register("title", { required: "Title is required" })} />
@@ -171,7 +177,7 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
               </div>
               {/* JSX for remove button, shown only if imagePreview exists */}
               {imagePreview && (
-                <div className="mt-2 flex items-center space-x-4">
+                <div className="mt-2 flex flex-col md:flex-row items-start md:items-center gap-4 ">
                   <img src={imagePreview} alt="Cover preview" className="max-w-xs rounded-md" />
                   <button type="button" onClick={handleRemoveImage} className="text-red-500 hover:text-red-600 font-semibold">
                     Remove Image
@@ -208,7 +214,7 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
                 Reset
               </button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? (
+                {/* {isLoading ? (
                   <div className="flex items-center space-x-2">
                     <ArrowPathIcon className="h-5 w-5 text-white animate-spin" />
                     <span>{bookDetail ? "Updating Book..." : "Adding Book..."}</span>
@@ -217,7 +223,8 @@ const BookForm: React.FC<BookFormProps> = ({ bookDetail, onSubmit, isLoading }) 
                   "Update Book"
                 ) : (
                   "Add Book"
-                )}
+                )} */}
+                {isLoading ? btnLoadingLabel : btnLabel}
               </Button>
             </div>
           </form>

@@ -12,12 +12,11 @@ interface ReviewProps {
 }
 
 const ReviewItem: React.FC<ReviewProps> = ({ isMyReview = false, review, onDelete = () => {}, onEdit = () => {} }) => {
-  // const {} = useAuth
   const navigate = useNavigate();
   return (
     <>
       {isMyReview && (
-        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow-lg mb-6 flex flex-col sm:flex-row">
+        <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg shadow-lg mb-6 flex flex-col sm:flex-row">
           {/* Book Cover */}
           <img
             src={review.book?.cover || "/placeholder-book-cover.jpg"} // Placeholder if no cover image
@@ -62,7 +61,7 @@ const ReviewItem: React.FC<ReviewProps> = ({ isMyReview = false, review, onDelet
       )}
 
       {!isMyReview && (
-        <div className="bg-gray-50 dark:bg-gray-700 p-5 rounded-lg shadow-md flex items-start space-x-4 ">
+        <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-lg shadow-md flex items-start space-x-4 ">
           {/* Avatar Placeholder */}
           <div className="flex-shrink-0">
             <div className="w-12 h-12 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-300 font-bold">{review.user?.username[0].toUpperCase()}</div>

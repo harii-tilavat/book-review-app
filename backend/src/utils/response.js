@@ -54,6 +54,7 @@ const Message = Object.freeze({
   CREATED: "Resource created successfully.",
   UPDATED: "Resource updated successfully.",
   DELETED: "Resource deleted successfully.",
+  NOT_FOUND: "Resource not found.",
 
   // Validation
   INVALID_EMAIL: "Invalid email format.",

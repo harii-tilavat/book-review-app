@@ -1,4 +1,4 @@
-import BookManagement from "../components/BookManagement";
+import BookManagement from "../../components/Books/BookManagement";
 
 const MyBooksPage = () => {
   return (

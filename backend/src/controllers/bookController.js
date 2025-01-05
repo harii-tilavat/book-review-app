@@ -44,9 +44,7 @@ class BookController {
                     // Construct the grid response
                     const gridResponse = PaginatioHelper.generatePaginatedResponse(books, currentPage, itemsPerPage, totalBooks);
                     // Return the success response
-                    setTimeout(async () => {
-                        return await Response.success(res, Message.SUCCESS, gridResponse);
-                    }, 200);
+                    return await Response.success(res, Message.SUCCESS, gridResponse);
                     // Fetch paginated books
                 } catch (error) {
                     next(error);
@@ -60,9 +58,7 @@ class BookController {
                         throw new AppError(StatusCode.BAD_REQUEST, Message.INVALID_PARAMS)
                     }
                     const data = await this.bookService.getBookById(id);
-                    setTimeout(async () => {
-                        return await Response.success(res, Message.SUCCESS, data);
-                    }, 200);
+                    return await Response.success(res, Message.SUCCESS, data);
 
                 } catch (error) {
                     next(error);

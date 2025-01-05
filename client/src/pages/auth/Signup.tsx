@@ -1,11 +1,11 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import TextBox from "../../components/comman/TextBox";
 import Button from "../../components/comman/Button";
 import { UserGroupIcon } from "@heroicons/react/16/solid";
 import { UserModel } from "../../models/UserModel";
 import LoaderSpinner from "../../components/comman/LoaderSpinner";
-import { useAuthApi } from "../../hooks/useAuthApi";
+import { useAuthStore } from "../../store/useAuthStore";
 
 const SignUp = () => {
   // Initialize the form with useForm hook and TypeScript types
@@ -14,12 +14,13 @@ const SignUp = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<UserModel>();
-  const { isLoading, register: registerUser } = useAuthApi();
-  // const { registerUser } = useAuth();
+  const { isLoading, register: registerUser } = useAuthStore();
+  const navigate = useNavigate();
   // Handle form submission
   const onSubmit: SubmitHandler<UserModel> = async (user: UserModel) => {
     try {
-      registerUser(user);
+      await registerUser(user);
+      navigate("/");
     } catch (error: any) {
       console.log(error);
     }
