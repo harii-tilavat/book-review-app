@@ -13,7 +13,7 @@ class AppError extends Error {
 
 const errorHandlerMiddleware = (err, req, res, next) => {
     let { statusCode, message, errors } = err;
-
+    console.log("ERROR : ", err);
     // Handle Prisma-specific errors
     if (err.code === "P2003") {
         statusCode = 400; // Bad Request
@@ -34,5 +34,6 @@ const errorHandlerMiddleware = (err, req, res, next) => {
         errors: errors || [],
         errorCode: err.code || undefined
     });
+    
 };
 module.exports = { AppError, errorHandlerMiddleware };
