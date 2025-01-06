@@ -53,7 +53,14 @@ Live URL: https://bookreviewhub.netlify.app/
 - **`DELETE /api/reviews/:id`**: Delete a review by ID.  
 
 ---
+### Drafts
+- **`GET /api/drafts`**: Get list of drafts.
+- **`POST /api/drafts`**: Create a new draft.
+- **`GET /api/drafts/:id`**: Get a specific draft by ID.
+- **`PUT /api/drafts/:id`**: Update a draft by ID.  
+- **`DELETE /api/drafts/:id`**: Delete a draft by ID.  
 
+---
 ### Genres
 - **`GET /api/genres`**: Get all available genres.  
 
