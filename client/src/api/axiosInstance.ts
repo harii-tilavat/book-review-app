@@ -20,4 +20,23 @@ axiosInstance.interceptors.request.use((config) => {
     return config;
 }, (error) => Promise.reject(error));
 
+// Intercept responses to handle unauthorized errors
+axiosInstance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        // Check if the error response is due to unauthorized access 
+        if (error.response && error.response.status === 401) {
+            // Clear any authentication information
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+
+            // Redirect the user to the login page
+            window.location.href = "/login";
+        }
+
+        // Return the error so the calling code can handle it
+        return Promise.reject(error);
+    }
+);
+
 export default axiosInstance;

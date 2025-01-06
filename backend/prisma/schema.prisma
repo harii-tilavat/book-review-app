@@ -1,18 +1,3 @@
-// =============================================================================
-// PRISMA SCHEMA CONFIGURATION
-// =============================================================================
-// Depending on the database you're using, set the DATABASE_URL in your .env file:
-// - For MySQL, use: mysql://<user>:<password>@<host>:<port>/<dbname>
-// - For PostgreSQL, use: postgresql://<user>:<password>@<host>:<port>/<dbname>
-// Example for MySQL:
-// DATABASE_URL="mysql://user:password@localhost:3306/mydatabase"
-// Example for PostgreSQL:
-// DATABASE_URL="postgresql://user:password@localhost:5432/mydatabase"
-//
-// Ensure you set the appropriate connection string based on the database you're using.
-// After modifying the DATABASE_URL, run 'npx prisma migrate dev' or just 'npm run dev:prisma' to apply migrations.
-// =============================================================================
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -28,9 +13,9 @@ model User {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
-  Book      Book[] // One-to-many relation to Book
-  Review    Review[] // One-to-many relation to Review
+  Book      Book[]
   Draft     Draft[]
+  Review    Review[]
 }
 
 model Book {
@@ -39,7 +24,6 @@ model Book {
   title       String
   author      String
   genreId     String
-  genre       Genre    @relation(fields: [genreId], references: [id])
   isbn        String?
   cover       String?
   description String?  @db.VarChar(1000)
@@ -47,9 +31,14 @@ model Book {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   draftId     String?
-  user        User     @relation(fields: [userId], references: [id])
   draft       Draft?   @relation(fields: [draftId], references: [id], onDelete: Cascade)
-  reviews     Review[] // One-to-many relation with Review
+  genre       Genre    @relation(fields: [genreId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
+  reviews     Review[]
+
+  @@index([draftId], map: "Book_draftId_fkey")
+  @@index([genreId], map: "Book_genreId_fkey")
+  @@index([userId], map: "Book_userId_fkey")
 }
 
 model Review {
@@ -58,10 +47,13 @@ model Review {
   bookId    String
   text      String
   rating    Int      @default(1)
-  user      User     @relation(fields: [userId], references: [id])
-  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([bookId], map: "Review_bookId_fkey")
+  @@index([userId], map: "Review_userId_fkey")
 }
 
 model Genre {
@@ -69,10 +61,8 @@ model Genre {
   name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Book      Book[] // One-to-many relation with Book
+  Book      Book[]
 }
-
-// New models
 
 model Draft {
   id          String   @id @default(uuid())
@@ -81,9 +71,11 @@ model Draft {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   isPublished Boolean  @default(false)
+  books       Book[]
   user        User     @relation(fields: [userId], references: [id])
   pages       Page[]
-  books       Book[]
+
+  @@index([userId], map: "Draft_userId_fkey")
 }
 
 model Page {
@@ -94,7 +86,7 @@ model Page {
   content String?  @db.Text
   draft   Draft    @relation(fields: [draftId], references: [id], onDelete: Cascade)
 
-  @@index([draftId]) // Index on draftId for faster queries
+  @@index([draftId])
 }
 
 enum PageType {
