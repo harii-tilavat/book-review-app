@@ -16,7 +16,7 @@ interface DraftEditorProps {
 
 const DraftEditor: React.FC<DraftEditorProps> = ({ onSaveDraft, editMode = false }) => {
   const [title, setTitle] = useState<string>("");
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(true);
   const { currentDraft, updateContent, isLoading, addPage, deletePage, setCurrentDraft } = useDraftStore();
   const navigate = useNavigate();
   const { showModal } = useModal();
