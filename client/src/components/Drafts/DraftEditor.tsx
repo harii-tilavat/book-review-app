@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from "react";
-import "react-mde/lib/styles/css/react-mde-all.css";
 import { DraftModel } from "../../models/DraftModel";
 import { useDraftStore } from "../../store/useDraftStore";
 import { toast } from "react-toastify";
@@ -72,9 +71,9 @@ const DraftEditor: React.FC<DraftEditorProps> = ({ onSaveDraft, editMode = false
           </div>
           <div className="mb-4">
             <label htmlFor={"draft-title"} className="block text-gray-700 dark:text-gray-100 font-semibold">
-              Enter draft title
+              Title
             </label>
-            <input value={title} onChange={(e) => setTitle(e.target.value)} type="text" placeholder="New draft..." className="block w-full rounded-md border border-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-2 py-2 resize-none" />
+            <input id="draft-title" value={title} onChange={(e) => setTitle(e.target.value)} type="text" placeholder="Enter draft title..." className="block w-full rounded-md border border-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-2 py-2 resize-none" />
           </div>
           <div className="flex justify-center gap-4 mb-6">
             <button onClick={() => addPage("INDEX")} className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded shadow-md transition">

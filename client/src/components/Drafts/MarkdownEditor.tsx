@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { PageModel } from "../../models/DraftModel";
 import { XMarkIcon } from "@heroicons/react/16/solid";
 import MDEditor from "@uiw/react-md-editor";
@@ -20,7 +20,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ page, onDeletePage, onU
         </button>
       </div>
       <div className="editor">
-        <MDEditor value={page.content} onChange={(value) => onUpdatePageContent(page.order, value || "")} preview="edit" className="!bg-white dark:!bg-gray-900"/>
+        <MDEditor value={page.content} onChange={(value) => onUpdatePageContent(page.order, value || "")} preview="edit" className="!bg-white dark:!bg-gray-900" />
       </div>
     </div>
   );
